@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>aurora · obfuscator</title>
+<link href="https://fonts.cdnfonts.com/css/google-sans" rel="stylesheet" />
+<style>
+  :root{
+    --bg0:#03040c;--bg1:#070b1c;--ink:#f4f7ff;--ink-dim:#9aa3b8;
+    --blue:#6fc2ff;--teal:#2dd4bf;--violet:#8b5cf6;--sky:#38bdf8;
+    --panel:rgba(14,18,34,.62);--panel-hi:rgba(22,28,52,.75);--border:rgba(148,197,255,.18);
+    --fallback:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    --sans:'Product Sans','Google Sans',var(--fallback);
+    --mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;}html,body{height:100%;}
+  body{margin:0;font-family:var(--sans);color:var(--ink);background:radial-gradient(120% 90% at 50% 110%, rgba(45,212,191,.14), transparent 60%),linear-gradient(180deg, var(--bg0) 0%, var(--bg1) 55%, #0a1128 100%);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+  .aurora{position:fixed;inset:-10% -10% auto -10%;height:80%;z-index:0;pointer-events:none;}
+  .ribbon{position:absolute;border-radius:50%;filter:blur(72px);mix-blend-mode:screen;opacity:.45;}
+  .r1{width:55vw;height:46vh;left:4%;top:-6%;background:radial-gradient(ellipse at center, rgba(45,212,191,.7), transparent 62%);animation:d1 26s ease-in-out infinite alternate;}
+  .r2{width:46vw;height:40vh;left:34%;top:-14%;background:radial-gradient(ellipse at center, rgba(52,211,153,.6), transparent 60%);animation:d2 34s ease-in-out infinite alternate;}
+  .r3{width:50vw;height:42vh;right:2%;top:-8%;background:radial-gradient(ellipse at center, rgba(139,92,246,.55), transparent 60%);animation:d3 30s ease-in-out infinite alternate;}
+  @keyframes d1{from{transform:translate3d(0,0,0) rotate(-8deg);}to{transform:translate3d(6vw,5vh,0) rotate(6deg);}}
+  @keyframes d2{from{transform:translate3d(0,0,0) rotate(5deg);}to{transform:translate3d(-5vw,6vh,0) rotate(-6deg);}}
+  @keyframes d3{from{transform:translate3d(0,0,0) rotate(7deg);}to{transform:translate3d(-6vw,4vh,0) rotate(-5deg);}}
+  .noise{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.05;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+  .vignette{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(120% 120% at 50% 40%, transparent 55%, rgba(2,4,12,.6) 100%);}
+
+  /* ---- layout ---- */
+  .shell{position:relative;z-index:5;min-height:100vh;display:flex;}
+  .main{flex:1;padding:2.2rem 2.5rem 3rem;max-width:100%;}
+  @media (max-width:720px){.main{padding:1.5rem 1.2rem 2rem;}}
+
+  /* ---- hamburger ---- */
+  .burger{position:fixed;top:18px;left:18px;z-index:40;width:42px;height:42px;border-radius:10px;border:1px solid var(--border);background:var(--panel);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:var(--ink);font-size:18px;letter-spacing:2px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .25s ease, background .25s ease, border-color .25s ease;}
+  .burger:hover{background:var(--panel-hi);border-color:rgba(148,197,255,.4);transform:translateY(-1px);}
+  .burger svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;}
+
+  /* ---- sidebar ---- */
+  .backdrop{position:fixed;inset:0;z-index:30;background:rgba(2,4,12,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;pointer-events:none;transition:opacity .3s ease;}
+  .backdrop.show{opacity:1;pointer-events:auto;}
+  .sidebar{position:fixed;top:0;left:0;bottom:0;z-index:35;width:280px;max-width:82vw;background:rgba(8,12,26,.82);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-right:1px solid var(--border);transform:translateX(-100%);transition:transform .32s cubic-bezier(.2,.7,.3,1);display:flex;flex-direction:column;padding:70px 16px 24px;}
+  .sidebar.open{transform:translateX(0);}
+  .nav-brand{display:flex;align-items:center;gap:.65rem;padding:0 10px 18px;border-bottom:1px solid var(--border);margin-bottom:16px;}
+  .nav-dot{width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,#5eead4,var(--sky));box-shadow:0 0 14px rgba(56,189,248,.6);}
+  .nav-title{font-family:'Product Sans Black',var(--sans);font-weight:900;letter-spacing:.02em;font-size:1.05rem;}
+  .nav-sub{font-size:.7rem;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-dim);margin-left:auto;}
+  .nav-item{display:flex;align-items:center;gap:.85rem;padding:11px 14px;margin-bottom:4px;border-radius:10px;font-family:'Product Sans Medium',var(--sans);font-weight:500;color:#cfd6e6;cursor:pointer;border:1px solid transparent;transition:background .2s ease, border-color .2s ease, color .2s ease;}
+  .nav-item svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;flex:none;}
+  .nav-item:hover{background:rgba(148,197,255,.07);color:#fff;}
+  .nav-item.active{background:linear-gradient(90deg, rgba(56,189,248,.15), rgba(139,92,246,.12));border-color:rgba(148,197,255,.3);color:#fff;}
+  .nav-item.active svg{stroke:var(--sky);}
+  .nav-item.soon{color:#6d7690;cursor:default;}
+  .nav-item.soon:hover{background:transparent;color:#6d7690;}
+  .soon-tag{margin-left:auto;font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;padding:3px 8px;border-radius:100px;background:rgba(148,197,255,.1);color:#9aa3b8;font-family:'Product Sans Medium',var(--sans);}
+  .nav-footer{margin-top:auto;padding:12px 10px 0;border-top:1px solid var(--border);font-size:.72rem;color:#6d7690;letter-spacing:.12em;}
+
+  /* ---- header ---- */
+  .greeting{font-family:'Product Sans Medium',var(--sans);font-weight:500;font-size:1rem;color:var(--ink-dim);margin:0 0 6px;}
+  .username{font-family:'Product Sans Black',var(--sans);font-weight:900;font-size:clamp(1.9rem,4.4vw,2.7rem);letter-spacing:-0.01em;margin:0 0 4px;}
+  .username span{background:linear-gradient(180deg,#9fd4ff,var(--blue) 60%,#4a9eff);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .subline{color:var(--ink-dim);font-size:.95rem;margin:0 0 2rem;}
+
+  /* ---- stat card ---- */
+  .stat{display:inline-flex;align-items:center;gap:1.1rem;padding:1rem 1.4rem;border-radius:16px;background:var(--panel);border:1px solid var(--border);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);margin-bottom:2rem;}
+  .stat-icon{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#5eead4,var(--sky));display:flex;align-items:center;justify-content:center;flex:none;box-shadow:0 8px 22px rgba(56,189,248,.35);}
+  .stat-icon svg{width:22px;height:22px;stroke:#04121a;fill:none;stroke-width:2.2;}
+  .stat-label{font-size:.72rem;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-dim);margin:0 0 2px;}
+  .stat-value{font-family:'Product Sans Black',var(--sans);font-weight:900;font-size:1.8rem;margin:0;line-height:1;}
+
+  /* ---- page views ---- */
+  .view{display:none;animation:fade .35s ease;}
+  .view.active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+
+  /* ---- home view ---- */
+  .hero-card{padding:1.6rem;border-radius:18px;background:var(--panel);border:1px solid var(--border);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);margin-bottom:1.5rem;}
+  .hero-title{margin:0 0 .6rem;font-size:1.3rem;font-family:'Product Sans Black',var(--sans);font-weight:900;}
+  .hero-text{margin:0 0 1.2rem;color:var(--ink-dim);line-height:1.6;font-size:.95rem;}
+  .btn{display:inline-flex;align-items:center;gap:.6rem;padding:.85rem 1.4rem;border-radius:12px;font-family:'Product Sans Medium','Google Sans',var(--sans);font-weight:500;font-size:.98rem;border:1px solid transparent;cursor:pointer;transition:transform .22s cubic-bezier(.2,.7,.3,1), box-shadow .22s ease, background .22s ease, border-color .22s ease;text-decoration:none;color:inherit;}
+  .btn svg{width:1.1rem;height:1.1rem;flex:none;transition:transform .22s ease;}
+  .btn:active{transform:translateY(0) scale(.98);}
+  .btn-primary{color:#04121a;background:linear-gradient(135deg,#5eead4,var(--sky) 55%,#818cf8);box-shadow:0 8px 26px rgba(56,189,248,.4), inset 0 1px 0 rgba(255,255,255,.5);}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 34px rgba(56,189,248,.55);}
+  .btn-ghost{color:#e6f1ff;background:rgba(148,197,255,.07);border-color:rgba(148,197,255,.35);}
+  .btn-ghost:hover{background:rgba(148,197,255,.14);border-color:rgba(170,210,255,.6);}
+
+  /* ---- obfuscation view: recent scripts ---- */
+  .list{display:flex;flex-direction:column;gap:.8rem;margin-top:1.5rem;}
+  .item{padding:1rem 1.1rem;border-radius:12px;background:var(--panel);border:1px solid var(--border);display:flex;align-items:center;gap:1rem;cursor:pointer;transition:border-color .2s ease, background .2s ease;}
+  .item:hover{border-color:rgba(148,197,255,.4);background:var(--panel-hi);}
+  .item-icon{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#c4b5fd,var(--violet));display:flex;align-items:center;justify-content:center;flex:none;}
+  .item-icon svg{width:20px;height:20px;stroke:#0c0820;fill:none;stroke-width:2.2;}
+  .item-name{font-family:'Product Sans Medium',var(--sans);font-weight:500;font-size:.95rem;}
+  .item-meta{font-size:.76rem;color:var(--ink-dim);margin-top:2px;}
+  .item-copy{margin-left:auto;padding:.45rem .9rem;border-radius:8px;background:rgba(148,197,255,.1);border:1px solid rgba(148,197,255,.25);color:#cfd6e6;font-family:'Product Sans Medium',var(--sans);font-weight:500;font-size:.8rem;cursor:pointer;transition:all .2s ease;}
+  .item-copy:hover{background:rgba(148,197,255,.2);color:#fff;}
+  .empty{padding:2.2rem;text-align:center;color:var(--ink-dim);background:var(--panel);border:1px dashed var(--border);border-radius:14px;}
+
+  /* ---- modal ---- */
+  .modal-backdrop{position:fixed;inset:0;z-index:50;background:rgba(2,4,12,.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .25s ease;}
+  .modal-backdrop.show{opacity:1;pointer-events:auto;}
+  .modal{width:100%;max-width:680px;max-height:86vh;background:rgba(12,16,30,.92);border:1px solid var(--border);border-radius:18px;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);display:flex;flex-direction:column;overflow:hidden;transform:scale(.96) translateY(10px);transition:transform .3s cubic-bezier(.2,.7,.3,1);}
+  .modal-backdrop.show .modal{transform:none;}
+  .modal-header{padding:1.2rem 1.4rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+  .modal-title{margin:0;font-family:'Product Sans Black',var(--sans);font-weight:900;font-size:1.15rem;}
+  .modal-close{width:34px;height:34px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--ink-dim);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s ease;}
+  .modal-close:hover{color:#fff;border-color:rgba(148,197,255,.5);background:rgba(148,197,255,.08);}
+  .modal-body{padding:1.4rem;flex:1;overflow:auto;}
+  .modal-footer{padding:1rem 1.4rem;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:.6rem;}
+
+  /* ---- step 1: paste ---- */
+  .step-label{font-size:.72rem;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-dim);margin:0 0 .6rem;}
+  textarea{width:100%;min-height:220px;padding:14px;border-radius:12px;background:rgba(3,5,14,.6);border:1px solid var(--border);color:var(--ink);font-family:var(--mono);font-size:.88rem;line-height:1.55;resize:vertical;outline:none;transition:border-color .2s ease;}
+  textarea:focus{border-color:rgba(148,197,255,.5);}
+
+  /* ---- step 2: progress ---- */
+  .progress-wrap{padding:1rem 0;}
+  .progress-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.8rem;}
+  .progress-title{font-family:'Product Sans Medium',var(--sans);font-weight:500;font-size:1.05rem;}
+  .progress-percent{font-family:var(--mono);font-size:.9rem;color:var(--sky);}
+  .bar{height:10px;border-radius:100px;background:rgba(148,197,255,.1);overflow:hidden;position:relative;}
+  .bar-fill{height:100%;width:0;border-radius:100px;background:linear-gradient(90deg,#5eead4,var(--sky) 50%,#818cf8);transition:width .2s linear;position:relative;box-shadow:0 0 18px rgba(56,189,248,.45);}
+  .bar-fill::after{content:"";position:absolute;top:0;right:0;bottom:0;width:50px;background:linear-gradient(90deg, transparent, rgba(255,255,255,.4));animation:shine 1.4s linear infinite;}
+  @keyframes shine{from{transform:translateX(-100%);}to{transform:translateX(200%);}}
+  .progress-log{margin-top:1rem;padding:12px;border-radius:10px;background:rgba(3,5,14,.55);font-family:var(--mono);font-size:.82rem;line-height:1.6;color:#a8b3c7;min-height:88px;max-height:160px;overflow:auto;}
+  .log-line{opacity:0;animation:logIn .25s ease forwards;}
+  @keyframes logIn{to{opacity:1;}}
+  .log-ok{color:#5eead4;}.log-warn{color:#fbbf24;}.log-done{color:#9fd4ff;font-weight:600;}
+
+  /* spinner (inside the continue button during progress) */
+  .spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  /* ---- step 3: output ---- */
+  .output{width:100%;min-height:240px;max-height:60vh;padding:14px;border-radius:12px;background:rgba(3,5,14,.6);border:1px solid var(--border);color:#a8b3c7;font-family:var(--mono);font-size:.82rem;line-height:1.55;overflow:auto;white-space:pre-wrap;word-break:break-all;}
+  .out-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem;}
+  .out-title{font-family:'Product Sans Medium',var(--sans);font-weight:500;font-size:1.05rem;}
+  .out-meta{font-size:.76rem;color:var(--ink-dim);letter-spacing:.15em;text-transform:uppercase;}
+
+  /* toast */
+  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);z-index:100;padding:.8rem 1.3rem;border-radius:12px;background:rgba(12,16,30,.92);border:1px solid rgba(148,197,255,.35);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font-family:'Product Sans Medium',var(--sans);font-weight:500;font-size:.9rem;opacity:0;pointer-events:none;transition:opacity .25s ease, transform .3s cubic-bezier(.2,.7,.3,1);}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  @media (prefers-reduced-motion: reduce){.ribbon,.bar-fill::after{animation:none !important;}.log-line{animation:none !important;opacity:1;}}
+</style>
+</head>
+<body>
+  <div class="aurora">
+    <div class="ribbon r1"></div><div class="ribbon r2"></div><div class="ribbon r3"></div>
+  </div>
+  <div class="vignette"></div>
+
+  <button class="burger" id="burger" aria-label="Toggle menu">
+    <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+
+  <div class="backdrop" id="backdrop"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="nav-brand">
+      <div class="nav-dot"></div>
+      <div class="nav-title">aurora</div>
+      <div class="nav-sub">obf</div>
+    </div>
+    <div class="nav-item active" data-view="home">
+      <svg viewBox="0 0 24 24"><path d="M3 12L12 3l9 9"/><path d="M5 10v10h14V10"/></svg>
+      Home
+    </div>
+    <div class="nav-item" data-view="obfuscation">
+      <svg viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5-3.5 9-9 10-5.5-1-9-5-9-10V6l9-4z"/></svg>
+      Obfuscation
+    </div>
+    <div class="nav-item soon">
+      <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 9h16"/><path d="M9 4v16"/></svg>
+      APIs
+      <span class="soon-tag">soon</span>
+    </div>
+    <div class="nav-item soon">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Settings
+      <span class="soon-tag">soon</span>
+    </div>
+    <div class="nav-footer">© aurora · obfuscator</div>
+  </aside>
+
+  <main class="shell">
+    <div class="main">
+      <p class="greeting" id="greeting">Good Morning,</p>
+      <h1 class="username">Admin <span>·</span></h1>
+      <p class="subline">Protect your work. Make it unstealable.</p>
+
+      <div class="stat">
+        <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5-3.5 9-9 10-5.5-1-9-5-9-10V6l9-4z"/><polyline points="9 12 11 14 15 10"/></svg></div>
+        <div>
+          <p class="stat-label">Scripts obfuscated</p>
+          <p class="stat-value" id="totalCount">0</p>
+        </div>
+      </div>
+
+      <!-- HOME VIEW -->
+      <section class="view active" data-view="home">
+        <div class="hero-card">
+          <h2 class="hero-title">Protect your hard work</h2>
+          <p class="hero-text">Aurora's obfuscator scrambles your Lua scripts — mangling variable names, hex-encoding strings, and shuffling control flow — so skidders can't read or steal what you built. Paste your code, hit publish, and get back a protected version.</p>
+          <div style="display:flex;gap:.6rem;flex-wrap:wrap;">
+            <button class="btn btn-primary" id="heroAddBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add script
+            </button>
+            <a class="btn btn-ghost" href="index.html">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+              Back to landing
+            </a>
+          </div>
+        </div>
+
+        <h3 style="font-family:'Product Sans Black',var(--sans);font-weight:900;font-size:1.1rem;margin:2rem 0 1rem;">Recent scripts</h3>
+        <div id="recentList" class="list">
+          <div class="empty">No scripts obfuscated yet. Click <strong>Add script</strong> to protect your first one.</div>
+        </div>
+      </section>
+
+      <!-- OBFUSCATION VIEW -->
+      <section class="view" data-view="obfuscation">
+        <div class="hero-card">
+          <h2 class="hero-title">Obfuscation</h2>
+          <p class="hero-text">Upload and protect your scripts. Each obfuscation applies variable mangling, string hex-encoding, and control-flow shuffling to produce unreadable output.</p>
+          <button class="btn btn-primary" id="addBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add
+          </button>
+        </div>
+        <h3 style="font-family:'Product Sans Black',var(--sans);font-weight:900;font-size:1.1rem;margin:2rem 0 1rem;">All scripts</h3>
+        <div id="allList" class="list">
+          <div class="empty">No scripts yet.</div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- MODAL -->
+  <div class="modal-backdrop" id="modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalTitle">Paste your Lua script</h3>
+        <button class="modal-close" id="modalClose" aria-label="Close">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <div id="stepPaste">
+          <p class="step-label">Lua source</p>
+          <textarea id="srcInput" placeholder="-- paste your lua script here&#10;print('hello aurora')"></textarea>
+        </div>
+
+        <div id="stepProgress" style="display:none;">
+          <div class="progress-wrap">
+            <div class="progress-head">
+              <div class="progress-title">Obfuscation in progress…</div>
+              <div class="progress-percent" id="progPercent">0%</div>
+            </div>
+            <div class="bar"><div class="bar-fill" id="progFill"></div></div>
+            <div class="progress-log" id="progLog"></div>
+          </div>
+        </div>
+
+        <div id="stepOutput" style="display:none;">
+          <div class="out-head">
+            <div class="out-title">Protected script</div>
+            <div class="out-meta" id="outMeta">0 chars · 0 vars</div>
+          </div>
+          <pre class="output" id="outCode"></pre>
+        </div>
+
+      </div>
+      <div class="modal-footer" id="modalFooter">
+        <button class="btn btn-ghost" id="cancelBtn">Cancel</button>
+        <button class="btn btn-primary" id="primaryBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          Continue
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Copied to clipboard</div>
+  <div class="noise"></div>
+
+<script>
+  const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---- greeting ---- */
+  const greetEl = document.getElementById('greeting');
+  const h = new Date().getHours();
+  greetEl.textContent = (h < 12 ? 'Good Morning,' : h < 18 ? 'Good Afternoon,' : 'Good Evening,');
+
+  /* ---- persistence ---- */
+  const STORE_KEY = 'aurora_obf_scripts_v1';
+  let scripts = [];
+  try { scripts = JSON.parse(localStorage.getItem(STORE_KEY) || '[]'); } catch(_){ scripts = []; }
+  const totalCountEl = document.getElementById('totalCount');
+  function bump(){ totalCountEl.textContent = scripts.length; localStorage.setItem(STORE_KEY, JSON.stringify(scripts)); }
+  bump();
+
+  /* ---- sidebar ---- */
+  const burger = document.getElementById('burger');
+  const sidebar = document.getElementById('sidebar');
+  const backdrop = document.getElementById('backdrop');
+  function openSidebar(){ sidebar.classList.add('open'); backdrop.classList.add('show'); }
+  function closeSidebar(){ sidebar.classList.remove('open'); backdrop.classList.remove('show'); }
+  burger.addEventListener('click', ()=> sidebar.classList.contains('open') ? closeSidebar() : openSidebar());
+  backdrop.addEventListener('click', closeSidebar);
+
+  /* ---- view switch ---- */
+  const views = document.querySelectorAll('.view');
+  const navItems = document.querySelectorAll('.nav-item[data-view]');
+  function switchView(name){
+    views.forEach(v=> v.classList.toggle('active', v.dataset.view === name));
+    navItems.forEach(n=> n.classList.toggle('active', n.dataset.view === name));
+    closeSidebar();
+  }
+  navItems.forEach(n=> n.addEventListener('click', ()=> switchView(n.dataset.view)));
+
+  /* ---- recent / all lists ---- */
+  const recentList = document.getElementById('recentList');
+  const allList    = document.getElementById('allList');
+  function renderLists(){
+    const sorted = [...scripts].sort((a,b)=> b.ts - a.ts);
+    const recent = sorted.slice(0, 3);
+
+    function buildList(container, arr){
+      container.innerHTML = '';
+      if(arr.length === 0){
+        const empty = document.createElement('div'); empty.className = 'empty';
+        empty.innerHTML = 'No scripts obfuscated yet. Click <strong>Add script</strong> to protect your first one.';
+        container.appendChild(empty);
+        return;
+      }
+      arr.forEach(s=>{
+        const row = document.createElement('div'); row.className = 'item';
+        row.innerHTML = `
+          <div class="item-icon"><svg viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5-3.5 9-9 10-5.5-1-9-5-9-10V6l9-4z"/><polyline points="9 12 11 14 15 10"/></svg></div>
+          <div style="min-width:0;">
+            <div class="item-name">${escapeHtml(s.name)}</div>
+            <div class="item-meta">${new Date(s.ts).toLocaleString()} · ${s.out.length.toLocaleString()} chars</div>
+          </div>
+          <button class="item-copy">Copy</button>
+        `;
+        row.querySelector('.item-copy').addEventListener('click', (e)=>{ e.stopPropagation(); copyText(s.out); });
+        container.appendChild(row);
+      });
+    }
+
+    buildList(recentList, recent);
+    buildList(allList, sorted);
+  }
+  renderLists();
+
+  function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
+
+  /* ---- modal flow ---- */
+  const modal = document.getElementById('modal');
+  const modalTitle = document.getElementById('modalTitle');
+  const stepPaste = document.getElementById('stepPaste');
+  const stepProgress = document.getElementById('stepProgress');
+  const stepOutput = document.getElementById('stepOutput');
+  const srcInput = document.getElementById('srcInput');
+  const progFill = document.getElementById('progFill');
+  const progPercent = document.getElementById('progPercent');
+  const progLog = document.getElementById('progLog');
+  const outCode = document.getElementById('outCode');
+  const outMeta = document.getElementById('outMeta');
+  const primaryBtn = document.getElementById('primaryBtn');
+  const cancelBtn = document.getElementById('cancelBtn');
+  const modalClose = document.getElementById('modalClose');
+  let currentSrc = '';
+  let currentOut = '';
+
+  function openModal(){
+    srcInput.value = '';
+    stepPaste.style.display = 'block';
+    stepProgress.style.display = 'none';
+    stepOutput.style.display = 'none';
+    modalTitle.textContent = 'Paste your Lua script';
+    primaryBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Continue`;
+    primaryBtn.disabled = false; primaryBtn.style.opacity = '1';
+    modal.classList.add('show');
+    setTimeout(()=> srcInput.focus(), 250);
+  }
+  function closeModal(){ modal.classList.remove('show'); }
+  cancelBtn.addEventListener('click', closeModal);
+  modalClose.addEventListener('click', closeModal);
+  modal.addEventListener('click', e=>{ if(e.target === modal) closeModal(); });
+
+  document.getElementById('heroAddBtn').addEventListener('click', openModal);
+  document.getElementById('addBtn').addEventListener('click', openModal);
+
+  primaryBtn.addEventListener('click', ()=>{
+    if(stepPaste.style.display !== 'none'){
+      const src = srcInput.value.trim();
+      if(!src){ srcInput.focus(); srcInput.style.borderColor = 'rgba(239,68,68,.6)'; setTimeout(()=> srcInput.style.borderColor='', 1200); return; }
+      currentSrc = src;
+      runObfuscation();
+    } else if(stepOutput.style.display !== 'none'){
+      copyText(currentOut);
+    }
+  });
+
+  /* ---- fake obfuscation engine (lightweight showcase) ---- */
+  const STAGES = [
+    { t: 4,  log: 'parsing lua source…',          kind: '' },
+    { t: 12, log: 'building identifier map…',     kind: '' },
+    { t: 22, log: 'mangling variable names…',     kind: 'ok' },
+    { t: 34, log: 'hex-encoding string literals…', kind: 'ok' },
+    { t: 46, log: 'shuffling control flow…',      kind: 'ok' },
+    { t: 58, log: 'inserting opaque predicates…', kind: 'ok' },
+    { t: 70, log: 'flattening locals…',           kind: 'ok' },
+    { t: 82, log: 'rewriting arithmetic…',        kind: 'ok' },
+    { t: 92, log: 'applying watermark header…',   kind: 'ok' },
+    { t: 100, log: '✓ protected script ready',    kind: 'done' },
+  ];
+
+  function sleep(ms){ return new Promise(r=> setTimeout(r, REDUCED ? 10 : ms)); }
+  function addLog(text, kind){
+    const l = document.createElement('div');
+    l.className = 'log-line' + (kind ? ' log-' + kind : '');
+    l.textContent = '> ' + text;
+    progLog.appendChild(l);
+    progLog.scrollTop = progLog.scrollHeight;
+  }
+
+  /* a real obfuscator this is not — it's a showcase transform */
+  function obfuscate(src){
+    const manglePrefix = 'a';
+    const identMap = {};
+    let identCount = 0;
+    const mangle = (name)=>{
+      if(!identMap[name]){ identCount++; identMap[name] = manglePrefix + identCount.toString(36).padStart(3,'0') + '_' + Math.random().toString(36).slice(2,5); }
+      return identMap[name];
+    };
+
+    // hex-encode string literals: "abc" -> (function() return string.char(...) end)()
+    let out = src.replace(/"([^"\n]*)"/g, (_, str)=>{
+      const chars = str.split('').map(c=> '\\x' + c.charCodeAt(0).toString(16).padStart(2,'0'));
+      return `(${mangle('_str')} and "${chars.join('')}" or "${chars.join('')}")`;
+    });
+
+    // mangle identifiers (words >= 3 chars that aren't keywords)
+    const KW = new Set(['and','break','do','else','elseif','end','false','for','function','goto','if','in','local','nil','not','or','repeat','return','then','true','until','while']);
+    out = out.replace(/\b([a-zA-Z_][a-zA-Z0-9_]{2,})\b/g, (m)=> KW.has(m) ? m : mangle(m));
+
+    // comment header
+    const header = `--[[\n   protected by aurora obfuscator\n   generated ${new Date().toISOString()}\n   unauthorized deobfuscation is a bannable offense\n--]]\n`;
+
+    // arithmetic rewrite: replace numeric literals with a runtime expression
+    out = out.replace(/\b(\d{1,6})\b/g, (n)=>{
+      const x = parseInt(n,10); const a = (Math.random()*x|0)+1; const b = x - a;
+      return `(${a}+${b})`;
+    });
+
+    return header + out;
+  }
+
+  async function runObfuscation(){
+    stepPaste.style.display = 'none';
+    stepProgress.style.display = 'block';
+    progLog.innerHTML = '';
+    progFill.style.width = '0%';
+    progPercent.textContent = '0%';
+    primaryBtn.disabled = true; primaryBtn.style.opacity = '.5';
+    primaryBtn.innerHTML = '<div class="spinner"></div> Obfuscating…';
+
+    for(const stage of STAGES){
+      await sleep(280 + Math.random()*220);
+      progFill.style.width = stage.t + '%';
+      progPercent.textContent = stage.t + '%';
+      addLog(stage.log, stage.kind);
+    }
+
+    await sleep(220);
+    currentOut = obfuscate(currentSrc);
+
+    stepProgress.style.display = 'none';
+    stepOutput.style.display = 'block';
+    modalTitle.textContent = 'Protected script ready';
+    outCode.textContent = currentOut;
+    const mangledVars = (currentOut.match(/\ba[0-9a-z]{3}_[0-9a-z]{3}/g) || []).length;
+    outMeta.textContent = `${currentOut.length.toLocaleString()} chars · ${mangledVars} mangled vars`;
+
+    primaryBtn.disabled = false; primaryBtn.style.opacity = '1';
+    primaryBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy protected code`;
+    cancelBtn.textContent = 'Publish';
+    cancelBtn.addEventListener('click', publishOnce, { once: true });
+  }
+
+  function publishOnce(){
+    if(!currentOut) return;
+    const name = currentSrc.split('\n').find(l=> l.trim() && !l.trim().startsWith('--')) || 'untitled.lua';
+    const cleanName = name.replace(/^--\s*/,'').slice(0, 48).trim() || 'untitled.lua';
+    scripts.unshift({ name: cleanName, src: currentSrc, out: currentOut, ts: Date.now() });
+    bump();
+    renderLists();
+    showToast('✓ Published to your library');
+    closeModal();
+  }
+
+  /* ---- copy + toast ---- */
+  const toast = document.getElementById('toast');
+  let toastTimer;
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=> toast.classList.remove('show'), 2200);
+  }
+  function copyText(t){
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(t).then(()=> showToast('Copied to clipboard')).catch(()=> fallbackCopy(t));
+    } else fallbackCopy(t);
+  }
+  function fallbackCopy(t){
+    const ta = document.createElement('textarea'); ta.value = t; ta.style.position='fixed'; ta.style.left='-9999px';
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); showToast('Copied to clipboard'); } catch(_){ showToast('Copy failed'); }
+    document.body.removeChild(ta);
+  }
+</script>
+</body>
+</html>
