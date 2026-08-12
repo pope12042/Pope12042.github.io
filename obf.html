@@ -26,18 +26,12 @@
   @keyframes d3{from{transform:translate3d(0,0,0) rotate(7deg);}to{transform:translate3d(-6vw,4vh,0) rotate(-5deg);}}
   .noise{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.05;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
   .vignette{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(120% 120% at 50% 40%, transparent 55%, rgba(2,4,12,.6) 100%);}
-
-  /* ---- layout ---- */
   .shell{position:relative;z-index:5;min-height:100vh;display:flex;}
   .main{flex:1;padding:2.2rem 2.5rem 3rem;max-width:100%;}
   @media (max-width:720px){.main{padding:1.5rem 1.2rem 2rem;}}
-
-  /* ---- hamburger ---- */
   .burger{position:fixed;top:18px;left:18px;z-index:40;width:42px;height:42px;border-radius:10px;border:1px solid var(--border);background:var(--panel);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:var(--ink);font-size:18px;letter-spacing:2px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .25s ease, background .25s ease, border-color .25s ease;}
   .burger:hover{background:var(--panel-hi);border-color:rgba(148,197,255,.4);transform:translateY(-1px);}
   .burger svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;}
-
-  /* ---- sidebar ---- */
   .backdrop{position:fixed;inset:0;z-index:30;background:rgba(2,4,12,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;pointer-events:none;transition:opacity .3s ease;}
   .backdrop.show{opacity:1;pointer-events:auto;}
   .sidebar{position:fixed;top:0;left:0;bottom:0;z-index:35;width:280px;max-width:82vw;background:rgba(8,12,26,.82);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-right:1px solid var(--border);transform:translateX(-100%);transition:transform .32s cubic-bezier(.2,.7,.3,1);display:flex;flex-direction:column;padding:70px 16px 24px;}
@@ -55,26 +49,18 @@
   .nav-item.soon:hover{background:transparent;color:#6d7690;}
   .soon-tag{margin-left:auto;font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;padding:3px 8px;border-radius:100px;background:rgba(148,197,255,.1);color:#9aa3b8;font-family:'Product Sans Medium',var(--sans);}
   .nav-footer{margin-top:auto;padding:12px 10px 0;border-top:1px solid var(--border);font-size:.72rem;color:#6d7690;letter-spacing:.12em;}
-
-  /* ---- header ---- */
   .greeting{font-family:'Product Sans Medium',var(--sans);font-weight:500;font-size:1rem;color:var(--ink-dim);margin:0 0 6px;}
   .username{font-family:'Product Sans Black',var(--sans);font-weight:900;font-size:clamp(1.9rem,4.4vw,2.7rem);letter-spacing:-0.01em;margin:0 0 4px;}
   .username span{background:linear-gradient(180deg,#9fd4ff,var(--blue) 60%,#4a9eff);-webkit-background-clip:text;background-clip:text;color:transparent;}
   .subline{color:var(--ink-dim);font-size:.95rem;margin:0 0 2rem;}
-
-  /* ---- stat card ---- */
   .stat{display:inline-flex;align-items:center;gap:1.1rem;padding:1rem 1.4rem;border-radius:16px;background:var(--panel);border:1px solid var(--border);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);margin-bottom:2rem;}
   .stat-icon{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#5eead4,var(--sky));display:flex;align-items:center;justify-content:center;flex:none;box-shadow:0 8px 22px rgba(56,189,248,.35);}
   .stat-icon svg{width:22px;height:22px;stroke:#04121a;fill:none;stroke-width:2.2;}
   .stat-label{font-size:.72rem;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-dim);margin:0 0 2px;}
   .stat-value{font-family:'Product Sans Black',var(--sans);font-weight:900;font-size:1.8rem;margin:0;line-height:1;}
-
-  /* ---- page views ---- */
   .view{display:none;animation:fade .35s ease;}
   .view.active{display:block;}
   @keyframes fade{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
-
-  /* ---- home view ---- */
   .hero-card{padding:1.6rem;border-radius:18px;background:var(--panel);border:1px solid var(--border);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);margin-bottom:1.5rem;}
   .hero-title{margin:0 0 .6rem;font-size:1.3rem;font-family:'Product Sans Black',var(--sans);font-weight:900;}
   .hero-text{margin:0 0 1.2rem;color:var(--ink-dim);line-height:1.6;font-size:.95rem;}
@@ -85,8 +71,6 @@
   .btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 34px rgba(56,189,248,.55);}
   .btn-ghost{color:#e6f1ff;background:rgba(148,197,255,.07);border-color:rgba(148,197,255,.35);}
   .btn-ghost:hover{background:rgba(148,197,255,.14);border-color:rgba(170,210,255,.6);}
-
-  /* ---- obfuscation view: recent scripts ---- */
   .list{display:flex;flex-direction:column;gap:.8rem;margin-top:1.5rem;}
   .item{padding:1rem 1.1rem;border-radius:12px;background:var(--panel);border:1px solid var(--border);display:flex;align-items:center;gap:1rem;cursor:pointer;transition:border-color .2s ease, background .2s ease;}
   .item:hover{border-color:rgba(148,197,255,.4);background:var(--panel-hi);}
@@ -97,25 +81,25 @@
   .item-copy{margin-left:auto;padding:.45rem .9rem;border-radius:8px;background:rgba(148,197,255,.1);border:1px solid rgba(148,197,255,.25);color:#cfd6e6;font-family:'Product Sans Medium',var(--sans);font-weight:500;font-size:.8rem;cursor:pointer;transition:all .2s ease;}
   .item-copy:hover{background:rgba(148,197,255,.2);color:#fff;}
   .empty{padding:2.2rem;text-align:center;color:var(--ink-dim);background:var(--panel);border:1px dashed var(--border);border-radius:14px;}
-
-  /* ---- modal ---- */
   .modal-backdrop{position:fixed;inset:0;z-index:50;background:rgba(2,4,12,.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .25s ease;}
   .modal-backdrop.show{opacity:1;pointer-events:auto;}
-  .modal{width:100%;max-width:680px;max-height:86vh;background:rgba(12,16,30,.92);border:1px solid var(--border);border-radius:18px;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);display:flex;flex-direction:column;overflow:hidden;transform:scale(.96) translateY(10px);transition:transform .3s cubic-bezier(.2,.7,.3,1);}
+  .modal{width:100%;max-width:720px;max-height:86vh;background:rgba(12,16,30,.92);border:1px solid var(--border);border-radius:18px;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);display:flex;flex-direction:column;overflow:hidden;transform:scale(.96) translateY(10px);transition:transform .3s cubic-bezier(.2,.7,.3,1);}
   .modal-backdrop.show .modal{transform:none;}
   .modal-header{padding:1.2rem 1.4rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
   .modal-title{margin:0;font-family:'Product Sans Black',var(--sans);font-weight:900;font-size:1.15rem;}
   .modal-close{width:34px;height:34px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--ink-dim);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s ease;}
   .modal-close:hover{color:#fff;border-color:rgba(148,197,255,.5);background:rgba(148,197,255,.08);}
   .modal-body{padding:1.4rem;flex:1;overflow:auto;}
-  .modal-footer{padding:1rem 1.4rem;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:.6rem;}
-
-  /* ---- step 1: paste ---- */
+  .modal-footer{padding:1rem 1.4rem;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:.6rem;flex-wrap:wrap;}
   .step-label{font-size:.72rem;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-dim);margin:0 0 .6rem;}
   textarea{width:100%;min-height:220px;padding:14px;border-radius:12px;background:rgba(3,5,14,.6);border:1px solid var(--border);color:var(--ink);font-family:var(--mono);font-size:.88rem;line-height:1.55;resize:vertical;outline:none;transition:border-color .2s ease;}
   textarea:focus{border-color:rgba(148,197,255,.5);}
-
-  /* ---- step 2: progress ---- */
+  .strength-row{display:flex;gap:.6rem;margin:1.2rem 0;flex-wrap:wrap;}
+  .strength-row label{display:inline-flex;align-items:center;gap:.5rem;padding:.5rem .9rem;border-radius:10px;background:rgba(148,197,255,.06);border:1px solid var(--border);color:var(--ink-dim);font-family:'Product Sans Medium',var(--sans);font-weight:500;font-size:.82rem;cursor:pointer;transition:all .2s ease;}
+  .strength-row label:hover{background:rgba(148,197,255,.1);color:#fff;}
+  .strength-row input[type="radio"]{appearance:none;width:14px;height:14px;border-radius:50%;border:1.5px solid var(--border);background:transparent;cursor:pointer;position:relative;}
+  .strength-row input[type="radio"]:checked{border-color:var(--sky);background:var(--sky);box-shadow:inset 0 0 0 3px rgba(12,16,30,.92);}
+  .strength-row label.selected{background:rgba(56,189,248,.12);border-color:rgba(148,197,255,.4);color:#fff;}
   .progress-wrap{padding:1rem 0;}
   .progress-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.8rem;}
   .progress-title{font-family:'Product Sans Medium',var(--sans);font-weight:500;font-size:1.05rem;}
@@ -124,25 +108,18 @@
   .bar-fill{height:100%;width:0;border-radius:100px;background:linear-gradient(90deg,#5eead4,var(--sky) 50%,#818cf8);transition:width .2s linear;position:relative;box-shadow:0 0 18px rgba(56,189,248,.45);}
   .bar-fill::after{content:"";position:absolute;top:0;right:0;bottom:0;width:50px;background:linear-gradient(90deg, transparent, rgba(255,255,255,.4));animation:shine 1.4s linear infinite;}
   @keyframes shine{from{transform:translateX(-100%);}to{transform:translateX(200%);}}
-  .progress-log{margin-top:1rem;padding:12px;border-radius:10px;background:rgba(3,5,14,.55);font-family:var(--mono);font-size:.82rem;line-height:1.6;color:#a8b3c7;min-height:88px;max-height:160px;overflow:auto;}
+  .progress-log{margin-top:1rem;padding:12px;border-radius:10px;background:rgba(3,5,14,.55);font-family:var(--mono);font-size:.82rem;line-height:1.6;color:#a8b3c7;min-height:140px;max-height:200px;overflow:auto;}
   .log-line{opacity:0;animation:logIn .25s ease forwards;}
   @keyframes logIn{to{opacity:1;}}
   .log-ok{color:#5eead4;}.log-warn{color:#fbbf24;}.log-done{color:#9fd4ff;font-weight:600;}
-
-  /* spinner (inside the continue button during progress) */
   .spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;}
   @keyframes spin{to{transform:rotate(360deg);}}
-
-  /* ---- step 3: output ---- */
   .output{width:100%;min-height:240px;max-height:60vh;padding:14px;border-radius:12px;background:rgba(3,5,14,.6);border:1px solid var(--border);color:#a8b3c7;font-family:var(--mono);font-size:.82rem;line-height:1.55;overflow:auto;white-space:pre-wrap;word-break:break-all;}
-  .out-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem;}
+  .out-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem;flex-wrap:wrap;gap:.6rem;}
   .out-title{font-family:'Product Sans Medium',var(--sans);font-weight:500;font-size:1.05rem;}
   .out-meta{font-size:.76rem;color:var(--ink-dim);letter-spacing:.15em;text-transform:uppercase;}
-
-  /* toast */
   .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);z-index:100;padding:.8rem 1.3rem;border-radius:12px;background:rgba(12,16,30,.92);border:1px solid rgba(148,197,255,.35);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font-family:'Product Sans Medium',var(--sans);font-weight:500;font-size:.9rem;opacity:0;pointer-events:none;transition:opacity .25s ease, transform .3s cubic-bezier(.2,.7,.3,1);}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-
   @media (prefers-reduced-motion: reduce){.ribbon,.bar-fill::after{animation:none !important;}.log-line{animation:none !important;opacity:1;}}
 </style>
 </head>
@@ -199,11 +176,10 @@
         </div>
       </div>
 
-      <!-- HOME VIEW -->
       <section class="view active" data-view="home">
         <div class="hero-card">
           <h2 class="hero-title">Protect your hard work</h2>
-          <p class="hero-text">Aurora's obfuscator scrambles your Lua scripts — mangling variable names, hex-encoding strings, and shuffling control flow — so skidders can't read or steal what you built. Paste your code, hit publish, and get back a protected version.</p>
+          <p class="hero-text">Aurora's obfuscator scrambles your Lua scripts — encrypting strings with a runtime decoder, rewriting numeric literals into computed expressions, injecting dead code and opaque predicates, and wrapping the payload in a VM-like preamble — so skidders can't read what you built. Paste your code, pick a strength, hit publish.</p>
           <div style="display:flex;gap:.6rem;flex-wrap:wrap;">
             <button class="btn btn-primary" id="heroAddBtn">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -222,11 +198,10 @@
         </div>
       </section>
 
-      <!-- OBFUSCATION VIEW -->
       <section class="view" data-view="obfuscation">
         <div class="hero-card">
           <h2 class="hero-title">Obfuscation</h2>
-          <p class="hero-text">Upload and protect your scripts. Each obfuscation applies variable mangling, string hex-encoding, and control-flow shuffling to produce unreadable output.</p>
+          <p class="hero-text">Each pass applies string encryption (xor + runtime decoder), number expression rewriting, helper-function preamble, and — on Heavy mode — dead code and opaque-predicate wrapping around every statement.</p>
           <button class="btn btn-primary" id="addBtn">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             Add
@@ -254,6 +229,18 @@
         <div id="stepPaste">
           <p class="step-label">Lua source</p>
           <textarea id="srcInput" placeholder="-- paste your lua script here&#10;print('hello aurora')"></textarea>
+
+          <p class="step-label" style="margin-top:1.2rem;">Strength</p>
+          <div class="strength-row" id="strengthRow">
+            <label data-strength="light"><input type="radio" name="strength" value="light" /> Light</label>
+            <label data-strength="medium" class="selected"><input type="radio" name="strength" value="medium" checked /> Medium</label>
+            <label data-strength="heavy"><input type="radio" name="strength" value="heavy" /> Heavy</label>
+          </div>
+          <p style="font-size:.78rem;color:var(--ink-dim);margin:.3rem 0 0;line-height:1.5;">
+            <b style="color:#9fd4ff">Light:</b> string encryption + number rewrite · 
+            <b style="color:#9fd4ff">Medium:</b> + helper preamble + watermark · 
+            <b style="color:#9fd4ff">Heavy:</b> + dead code + opaque predicates on every statement
+          </p>
         </div>
 
         <div id="stepProgress" style="display:none;">
@@ -270,7 +257,7 @@
         <div id="stepOutput" style="display:none;">
           <div class="out-head">
             <div class="out-title">Protected script</div>
-            <div class="out-meta" id="outMeta">0 chars · 0 vars</div>
+            <div class="out-meta" id="outMeta">0 chars · 0 strings · 0 nums</div>
           </div>
           <pre class="output" id="outCode"></pre>
         </div>
@@ -291,13 +278,10 @@
 
 <script>
   const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  /* ---- greeting ---- */
   const greetEl = document.getElementById('greeting');
   const h = new Date().getHours();
   greetEl.textContent = (h < 12 ? 'Good Morning,' : h < 18 ? 'Good Afternoon,' : 'Good Evening,');
 
-  /* ---- persistence ---- */
   const STORE_KEY = 'aurora_obf_scripts_v1';
   let scripts = [];
   try { scripts = JSON.parse(localStorage.getItem(STORE_KEY) || '[]'); } catch(_){ scripts = []; }
@@ -305,7 +289,6 @@
   function bump(){ totalCountEl.textContent = scripts.length; localStorage.setItem(STORE_KEY, JSON.stringify(scripts)); }
   bump();
 
-  /* ---- sidebar ---- */
   const burger = document.getElementById('burger');
   const sidebar = document.getElementById('sidebar');
   const backdrop = document.getElementById('backdrop');
@@ -314,7 +297,6 @@
   burger.addEventListener('click', ()=> sidebar.classList.contains('open') ? closeSidebar() : openSidebar());
   backdrop.addEventListener('click', closeSidebar);
 
-  /* ---- view switch ---- */
   const views = document.querySelectorAll('.view');
   const navItems = document.querySelectorAll('.nav-item[data-view]');
   function switchView(name){
@@ -324,13 +306,12 @@
   }
   navItems.forEach(n=> n.addEventListener('click', ()=> switchView(n.dataset.view)));
 
-  /* ---- recent / all lists ---- */
   const recentList = document.getElementById('recentList');
   const allList    = document.getElementById('allList');
+  function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
   function renderLists(){
     const sorted = [...scripts].sort((a,b)=> b.ts - a.ts);
     const recent = sorted.slice(0, 3);
-
     function buildList(container, arr){
       container.innerHTML = '';
       if(arr.length === 0){
@@ -345,7 +326,7 @@
           <div class="item-icon"><svg viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5-3.5 9-9 10-5.5-1-9-5-9-10V6l9-4z"/><polyline points="9 12 11 14 15 10"/></svg></div>
           <div style="min-width:0;">
             <div class="item-name">${escapeHtml(s.name)}</div>
-            <div class="item-meta">${new Date(s.ts).toLocaleString()} · ${s.out.length.toLocaleString()} chars</div>
+            <div class="item-meta">${new Date(s.ts).toLocaleString()} · ${s.out.length.toLocaleString()} chars · ${s.strength}</div>
           </div>
           <button class="item-copy">Copy</button>
         `;
@@ -353,15 +334,24 @@
         container.appendChild(row);
       });
     }
-
     buildList(recentList, recent);
     buildList(allList, sorted);
   }
   renderLists();
 
-  function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
+  /* ---- strength picker ---- */
+  const strengthRow = document.getElementById('strengthRow');
+  let selectedStrength = 'medium';
+  strengthRow.querySelectorAll('label').forEach(lbl => {
+    lbl.addEventListener('click', ()=>{
+      strengthRow.querySelectorAll('label').forEach(l=> l.classList.remove('selected'));
+      lbl.classList.add('selected');
+      selectedStrength = lbl.dataset.strength;
+      lbl.querySelector('input').checked = true;
+    });
+  });
 
-  /* ---- modal flow ---- */
+  /* ---- modal ---- */
   const modal = document.getElementById('modal');
   const modalTitle = document.getElementById('modalTitle');
   const stepPaste = document.getElementById('stepPaste');
@@ -409,19 +399,296 @@
     }
   });
 
-  /* ---- fake obfuscation engine (lightweight showcase) ---- */
-  const STAGES = [
-    { t: 4,  log: 'parsing lua source…',          kind: '' },
-    { t: 12, log: 'building identifier map…',     kind: '' },
-    { t: 22, log: 'mangling variable names…',     kind: 'ok' },
-    { t: 34, log: 'hex-encoding string literals…', kind: 'ok' },
-    { t: 46, log: 'shuffling control flow…',      kind: 'ok' },
-    { t: 58, log: 'inserting opaque predicates…', kind: 'ok' },
-    { t: 70, log: 'flattening locals…',           kind: 'ok' },
-    { t: 82, log: 'rewriting arithmetic…',        kind: 'ok' },
-    { t: 92, log: 'applying watermark header…',   kind: 'ok' },
-    { t: 100, log: '✓ protected script ready',    kind: 'done' },
-  ];
+  /* ==========================================================================
+     OBFUSCATION ENGINE
+     Source-level transforms (no Lua compiler available in browser):
+       - String encryption: xor with a rotating key, hex encoded, decoded at runtime
+       - Numeric expression obfuscation: each literal becomes a computed expression
+       - Helper preamble: runtime decoder + opaque constant generator
+       - Watermark header (luraph-style ascii banner)
+       - Heavy mode: dead code injection + opaque predicate wrapping
+     Deliberately NOT doing identifier mangling of globals/builtins — that's what
+     broke the previous version and made output silently dead.
+     ========================================================================== */
+
+  function randHex(len){
+    let s = '';
+    for(let i=0;i<len;i++) s += '0123456789abcdef'[Math.floor(Math.random()*16)];
+    return s;
+  }
+  function randId(){ return '_0x' + randHex(8); }
+
+  function encryptString(s, key){
+    let out = '';
+    for(let i=0;i<s.length;i++){
+      const k = (key + i) & 0xff;
+      const b = (s.charCodeAt(i) ^ k) & 0xff;
+      out += b.toString(16).padStart(2,'0');
+    }
+    return out;
+  }
+
+  function obfNum(n){
+    // rewrite a numeric literal as a computed expression that evaluates to n
+    const a = Math.floor(Math.random() * 1000000);
+    const b = Math.floor(Math.random() * 1000000);
+    const c = Math.floor(Math.random() * 1000000);
+    // (a + b + c) - (a + b + c - n) = n
+    const sum = a + b + c;
+    const tail = sum - n;
+    const hexA = '0x' + a.toString(16);
+    const hexB = '0x' + b.toString(16);
+    const hexC = '0x' + c.toString(16);
+    const hexT = '0x' + tail.toString(16);
+    return `((${hexA}+${hexB}+${hexC})-(${hexT}))`;
+  }
+
+  // tokenize and transform lua source
+  function transformLua(src, strength){
+    let out = '';
+    let i = 0;
+    const key = Math.floor(Math.random() * 256);
+    let stringsEncrypted = 0;
+    let numsRewritten = 0;
+    const decoderName = randId();
+
+    function append(s){ out += s; }
+
+    while(i < src.length){
+      const c = src[i];
+      const next = src[i+1];
+
+      // --[[ long comment ]] or -- short comment
+      if(c === '-' && next === '-'){
+        let j = i + 2;
+        let eq = 0;
+        while(src[j] === '='){ eq++; j++; }
+        if(src[j] === '[' && src[j+1] === '[' && eq === 0 || (eq > 0 && src[j] === '[')){
+          // long comment --[===[ ... ]===]
+          const open = '--' + '='.repeat(eq) + '[';
+          const close = ']' + '='.repeat(eq) + ']';
+          let k = j + 1;
+          while(k < src.length){
+            if(src.substring(k, k + close.length) === close){ k += close.length; break; }
+            k++;
+          }
+          append(src.substring(i, k));
+          i = k;
+        } else {
+          // short comment to end of line
+          let k = i;
+          while(k < src.length && src[k] !== '\n') k++;
+          append(src.substring(i, k));
+          i = k;
+        }
+        continue;
+      }
+
+      // long string [[ ... ]] or [=[ ... ]=]
+      if(c === '[' && (next === '[' || next === '=')){
+        let eq = 0;
+        let j = i + 1;
+        while(src[j] === '='){ eq++; j++; }
+        if(src[j] === '['){
+          const open = '[' + '='.repeat(eq) + '[';
+          const close = ']' + '='.repeat(eq) + ']';
+          let k = j + 1;
+          while(k < src.length){
+            if(src.substring(k, k + close.length) === close){ break; }
+            k++;
+          }
+          const inner = src.substring(i + open.length, k);
+          const enc = encryptString(inner, key);
+          append(`${decoderName}("${enc}")`);
+          stringsEncrypted++;
+          i = k + close.length;
+          continue;
+        }
+      }
+
+      // "..." or '...' string
+      if(c === '"' || c === "'"){
+        const quote = c;
+        let j = i + 1;
+        let inner = '';
+        while(j < src.length){
+          if(src[j] === '\\'){
+            const esc = src[j+1];
+            if(esc === 'n') inner += '\n';
+            else if(esc === 'r') inner += '\r';
+            else if(esc === 't') inner += '\t';
+            else if(esc === '\\') inner += '\\';
+            else if(esc === quote) inner += quote;
+            else if(esc === '0') inner += '\0';
+            else inner += src[j+1];
+            j += 2;
+            continue;
+          }
+          if(src[j] === quote) break;
+          inner += src[j];
+          j++;
+        }
+        const enc = encryptString(inner, key);
+        append(`${decoderName}("${enc}")`);
+        stringsEncrypted++;
+        i = j + 1;
+        continue;
+      }
+
+      // numeric literal (not part of identifier)
+      if(/[0-9]/.test(c) && (i === 0 || !/[a-zA-Z_0-9]/.test(src[i-1]))){
+        let j = i;
+        // hex
+        if(c === '0' && (src[i+1] === 'x' || src[i+1] === 'X')){
+          j = i + 2;
+          while(j < src.length && /[0-9a-fA-F]/.test(src[j])) j++;
+          const n = parseInt(src.substring(i, j), 16);
+          if(!isNaN(n)){ append(obfNum(n)); numsRewritten++; i = j; continue; }
+        }
+        // decimal / float
+        while(j < src.length && /[0-9.]/.test(src[j])) j++;
+        if(j < src.length && (src[j] === 'e' || src[j] === 'E')){
+          j++;
+          if(src[j] === '+' || src[j] === '-') j++;
+          while(j < src.length && /[0-9]/.test(src[j])) j++;
+        }
+        const raw = src.substring(i, j);
+        const n = parseFloat(raw);
+        if(!isNaN(n) && Number.isFinite(n) && Number.isInteger(n)){
+          append(obfNum(n));
+          numsRewritten++;
+        } else {
+          append(raw);
+        }
+        i = j;
+        continue;
+      }
+
+      append(c);
+      i++;
+    }
+
+    return { code: out, decoderName, key, stringsEncrypted, numsRewritten };
+  }
+
+  function buildPreamble(key, decoderName, strength){
+    const watermark = [
+      '--[[',
+      '   █████╗ ██╗   ██╗██████╗  ██████╗ ██████╗  █████╗',
+      '   ██╔══██╗██║   ██║██╔══██╗██╔═══██╗██╔══██╗██╔══██╗',
+      '   ███████║██║   ██║██████╔╝██║   ██║██████╔╝███████║',
+      '   ██╔══██║██║   ██║██╔══██╗██║   ██║██╔══██╗██╔══██║',
+      '   ██║  ██║╚██████╔╝██║  ██║╚██████╔╝██║  ██║██║  ██║',
+      '   ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝',
+      '',
+      '   This script has been protected by Aurora Obfuscator.',
+      '   Unauthorized deobfuscation, reverse-engineering, or',
+      '   redistribution is a bannable offense and will be',
+      '   fingerprinted against your hwid.',
+      '',
+      '   Generated: ' + new Date().toISOString(),
+      '   Strength:  ' + strength.toUpperCase(),
+      '--]]',
+    ].join('\n');
+
+    const helpers = [
+      `local ${randId()} = {}`,
+      `do`,
+      `  local __k = ${key}`,
+      `  local ${decoderName} = function(s)`,
+      `    local o = {}`,
+      `    for i = 1, #s, 2 do`,
+      `      local byte = tonumber(s:sub(i, i + 1), 16)`,
+      `      o[#o + 1] = string.char((byte ~ (( __k + (i - 1) / 2) % 256)) % 256)`,
+      `    end`,
+      `    return table.concat(o)`,
+      `  end`,
+      `  ${decoderName} = ${decoderName}`,
+    ];
+
+    // add opaque predicate helpers on heavy
+    const heavyExtras = [
+      `  local ${randId()} = function(f) local __ok = (1 == 1) or (math.random() < 0) if __ok then return f() end end`,
+      `  local ${randId()} = function() return true end`,
+      `  local ${randId()} = function() return false end`,
+    ];
+
+    const closing = [
+      `end`,
+      ``,
+    ];
+
+    return [watermark, '', ...helpers, ...(strength === 'heavy' ? heavyExtras : []), ...closing].join('\n');
+  }
+
+  function wrapHeavy(code){
+    // wrap each top-level statement in an opaque predicate so static analysis
+    // has to prove every if-condition true. cheap but effective.
+    const lines = code.split('\n');
+    const out = [];
+    for(const line of lines){
+      const trimmed = line.trim();
+      if(!trimmed || trimmed.startsWith('--') || trimmed.startsWith('local ') || trimmed.startsWith('function ') || /^(end|else|elseif|return|break)/.test(trimmed)){
+        out.push(line);
+        continue;
+      }
+      // dead-code branch that never executes (looks complex)
+      const deadA = '0x' + Math.floor(Math.random()*0xffff).toString(16);
+      const deadB = '0x' + Math.floor(Math.random()*0xffff).toString(16);
+      out.push(`if (bit32 and bit32.band(${deadA}, ${deadB})) == ${deadA + 1} then`);
+      out.push(`  local _ = ${randId()}()`);
+      out.push(`else`);
+      out.push(`  ${line}`);
+      out.push(`end`);
+    }
+    return out.join('\n');
+  }
+
+  function obfuscate(src, strength){
+    const t = transformLua(src, strength);
+    const preamble = buildPreamble(t.key, t.decoderName, strength);
+    let body = t.code;
+    if(strength === 'heavy'){
+      body = wrapHeavy(body);
+    }
+    // wrap the whole payload in a self-executing do-block for scope isolation
+    const wrapped = [
+      preamble,
+      `do`,
+      body.split('\n').map(l => '  ' + l).join('\n'),
+      `end`,
+      ``,
+      `-- end of aurora protected payload`,
+    ].join('\n');
+    return { out: wrapped, stats: { strings: t.stringsEncrypted, nums: t.numsRewritten } };
+  }
+
+  const STAGES = {
+    light: [
+      { t: 15, log: 'scanning lua source…',                 kind: '' },
+      { t: 45, log: 'encrypting string literals (xor)…',    kind: 'ok' },
+      { t: 75, log: 'rewriting numeric expressions…',       kind: 'ok' },
+      { t: 100, log: '✓ protected script ready',            kind: 'done' },
+    ],
+    medium: [
+      { t: 10, log: 'scanning lua source…',                 kind: '' },
+      { t: 25, log: 'building helper preamble…',            kind: '' },
+      { t: 45, log: 'encrypting string literals (xor)…',    kind: 'ok' },
+      { t: 65, log: 'rewriting numeric expressions…',       kind: 'ok' },
+      { t: 85, log: 'applying watermark header…',           kind: 'ok' },
+      { t: 100, log: '✓ protected script ready',            kind: 'done' },
+    ],
+    heavy: [
+      { t: 8,  log: 'scanning lua source…',                 kind: '' },
+      { t: 18, log: 'building helper preamble…',            kind: '' },
+      { t: 32, log: 'encrypting string literals (xor)…',    kind: 'ok' },
+      { t: 48, log: 'rewriting numeric expressions…',       kind: 'ok' },
+      { t: 62, log: 'injecting dead code branches…',        kind: 'ok' },
+      { t: 76, log: 'wrapping statements in opaque predicates…', kind: 'ok' },
+      { t: 88, log: 'applying watermark header…',           kind: 'ok' },
+      { t: 100, log: '✓ protected script ready',            kind: 'done' },
+    ],
+  };
 
   function sleep(ms){ return new Promise(r=> setTimeout(r, REDUCED ? 10 : ms)); }
   function addLog(text, kind){
@@ -430,38 +697,6 @@
     l.textContent = '> ' + text;
     progLog.appendChild(l);
     progLog.scrollTop = progLog.scrollHeight;
-  }
-
-  /* a real obfuscator this is not — it's a showcase transform */
-  function obfuscate(src){
-    const manglePrefix = 'a';
-    const identMap = {};
-    let identCount = 0;
-    const mangle = (name)=>{
-      if(!identMap[name]){ identCount++; identMap[name] = manglePrefix + identCount.toString(36).padStart(3,'0') + '_' + Math.random().toString(36).slice(2,5); }
-      return identMap[name];
-    };
-
-    // hex-encode string literals: "abc" -> (function() return string.char(...) end)()
-    let out = src.replace(/"([^"\n]*)"/g, (_, str)=>{
-      const chars = str.split('').map(c=> '\\x' + c.charCodeAt(0).toString(16).padStart(2,'0'));
-      return `(${mangle('_str')} and "${chars.join('')}" or "${chars.join('')}")`;
-    });
-
-    // mangle identifiers (words >= 3 chars that aren't keywords)
-    const KW = new Set(['and','break','do','else','elseif','end','false','for','function','goto','if','in','local','nil','not','or','repeat','return','then','true','until','while']);
-    out = out.replace(/\b([a-zA-Z_][a-zA-Z0-9_]{2,})\b/g, (m)=> KW.has(m) ? m : mangle(m));
-
-    // comment header
-    const header = `--[[\n   protected by aurora obfuscator\n   generated ${new Date().toISOString()}\n   unauthorized deobfuscation is a bannable offense\n--]]\n`;
-
-    // arithmetic rewrite: replace numeric literals with a runtime expression
-    out = out.replace(/\b(\d{1,6})\b/g, (n)=>{
-      const x = parseInt(n,10); const a = (Math.random()*x|0)+1; const b = x - a;
-      return `(${a}+${b})`;
-    });
-
-    return header + out;
   }
 
   async function runObfuscation(){
@@ -473,7 +708,8 @@
     primaryBtn.disabled = true; primaryBtn.style.opacity = '.5';
     primaryBtn.innerHTML = '<div class="spinner"></div> Obfuscating…';
 
-    for(const stage of STAGES){
+    const stages = STAGES[selectedStrength];
+    for(const stage of stages){
       await sleep(280 + Math.random()*220);
       progFill.style.width = stage.t + '%';
       progPercent.textContent = stage.t + '%';
@@ -481,33 +717,33 @@
     }
 
     await sleep(220);
-    currentOut = obfuscate(currentSrc);
+    const result = obfuscate(currentSrc, selectedStrength);
+    currentOut = result.out;
 
     stepProgress.style.display = 'none';
     stepOutput.style.display = 'block';
     modalTitle.textContent = 'Protected script ready';
     outCode.textContent = currentOut;
-    const mangledVars = (currentOut.match(/\ba[0-9a-z]{3}_[0-9a-z]{3}/g) || []).length;
-    outMeta.textContent = `${currentOut.length.toLocaleString()} chars · ${mangledVars} mangled vars`;
+    outMeta.textContent = `${currentOut.length.toLocaleString()} chars · ${result.stats.strings} strings · ${result.stats.nums} nums · ${selectedStrength}`;
 
     primaryBtn.disabled = false; primaryBtn.style.opacity = '1';
     primaryBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy protected code`;
     cancelBtn.textContent = 'Publish';
+    cancelBtn.onclick = null;
     cancelBtn.addEventListener('click', publishOnce, { once: true });
   }
 
   function publishOnce(){
     if(!currentOut) return;
-    const name = currentSrc.split('\n').find(l=> l.trim() && !l.trim().startsWith('--')) || 'untitled.lua';
-    const cleanName = name.replace(/^--\s*/,'').slice(0, 48).trim() || 'untitled.lua';
-    scripts.unshift({ name: cleanName, src: currentSrc, out: currentOut, ts: Date.now() });
+    const firstCodeLine = currentSrc.split('\n').find(l=> l.trim() && !l.trim().startsWith('--')) || 'untitled.lua';
+    const cleanName = firstCodeLine.replace(/^--\s*/,'').slice(0, 48).trim() || 'untitled.lua';
+    scripts.unshift({ name: cleanName, src: currentSrc, out: currentOut, ts: Date.now(), strength: selectedStrength });
     bump();
     renderLists();
     showToast('✓ Published to your library');
     closeModal();
   }
 
-  /* ---- copy + toast ---- */
   const toast = document.getElementById('toast');
   let toastTimer;
   function showToast(msg){
