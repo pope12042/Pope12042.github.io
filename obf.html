@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>aurora · obfuscator</title>
 <link href="https://fonts.cdnfonts.com/css/google-sans" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root{--bg0:#03040c;--bg1:#070b1c;--ink:#f4f7ff;--ink-dim:#9aa3b8;--blue:#6fc2ff;--teal:#2dd4bf;--violet:#8b5cf6;--sky:#38bdf8;--panel:rgba(14,18,34,.62);--panel-hi:rgba(22,28,52,.75);--border:rgba(148,197,255,.18);--fallback:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;--sans:'Product Sans','Google Sans',var(--fallback);--mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;}
   *{box-sizing:border-box;}html,body{height:100%;}
@@ -19,7 +20,20 @@
   @keyframes d3{from{transform:translate3d(0,0,0) rotate(7deg);}to{transform:translate3d(-6vw,4vh,0) rotate(-5deg);}}
   .noise{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.05;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
   .vignette{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(120% 120% at 50% 40%, transparent 55%, rgba(2,4,12,.6) 100%);}
+  
+  /* Login Screen */
+  .login-screen{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;gap:1.5rem;}
+  .login-screen.hidden{display:none;}
+  .login-title{font-family:'Product Sans Black',var(--sans);font-weight:900;font-size:clamp(2rem,5vw,3rem);margin:0;color:#fff;}
+  .login-sub{color:var(--ink-dim);font-size:1.1rem;margin:0;}
+  .btn-discord{display:inline-flex;align-items:center;gap:.6rem;padding:1rem 2rem;border-radius:14px;font-family:'Product Sans Medium','Google Sans',var(--sans);font-weight:500;font-size:1.1rem;border:none;cursor:pointer;color:#fff;background:linear-gradient(135deg,#5865F2,#7289da);box-shadow:0 10px 34px rgba(88,101,242,.4), inset 0 1px 0 rgba(255,255,255,.3);transition:transform .28s ease, box-shadow .28s ease;}
+  .btn-discord:hover{transform:translateY(-3px);box-shadow:0 16px 44px rgba(88,101,242,.55), inset 0 1px 0 rgba(255,255,255,.4);}
+  .btn-discord svg{width:1.3rem;height:1.3rem;flex:none;}
+  .login-back{color:var(--ink-dim);text-decoration:none;font-size:.9rem;margin-top:1rem;}
+  .login-back:hover{color:var(--sky);}
+
   .shell{position:relative;z-index:5;min-height:100vh;display:flex;}
+  .shell.hidden{display:none;}
   .main{flex:1;padding:2.2rem 2.5rem 3rem;max-width:100%;}
   @media (max-width:720px){.main{padding:1.5rem 1.2rem 2rem;}}
   .burger{position:fixed;top:18px;left:18px;z-index:40;width:42px;height:42px;border-radius:10px;border:1px solid var(--border);background:var(--panel);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:var(--ink);font-size:18px;letter-spacing:2px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .25s ease, background .25s ease, border-color .25s ease;}
@@ -42,6 +56,9 @@
   .nav-item.soon:hover{background:transparent;color:#6d7690;}
   .soon-tag{margin-left:auto;font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;padding:3px 8px;border-radius:100px;background:rgba(148,197,255,.1);color:#9aa3b8;font-family:'Product Sans Medium',var(--sans);}
   .nav-footer{margin-top:auto;padding:12px 10px 0;border-top:1px solid var(--border);font-size:.72rem;color:#6d7690;letter-spacing:.12em;}
+  .nav-logout{display:flex;align-items:center;gap:.85rem;padding:11px 14px;margin-top:12px;border-radius:10px;font-family:'Product Sans Medium',var(--sans);font-weight:500;color:#f87171;cursor:pointer;border:1px solid rgba(239,68,68,.2);background:rgba(239,68,68,.05);transition:all .2s ease;}
+  .nav-logout:hover{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.4);}
+  .nav-logout svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;flex:none;}
   .greeting{font-family:'Product Sans Medium',var(--sans);font-weight:500;font-size:1rem;color:var(--ink-dim);margin:0 0 6px;}
   .username{font-family:'Product Sans Black',var(--sans);font-weight:900;font-size:clamp(1.9rem,4.4vw,2.7rem);letter-spacing:-0.01em;margin:0 0 4px;}
   .username span{background:linear-gradient(180deg,#9fd4ff,var(--blue) 60%,#4a9eff);-webkit-background-clip:text;background-clip:text;color:transparent;}
@@ -71,7 +88,7 @@
   .item-icon svg{width:20px;height:20px;stroke:#0c0820;fill:none;stroke-width:2.2;}
   .item-name{font-family:'Product Sans Medium',var(--sans);font-weight:500;font-size:.95rem;}
   .item-meta{font-size:.76rem;color:var(--ink-dim);margin-top:2px;}
-  .item-copy{margin-left:auto;padding:.45rem .9rem;border-radius:8px;background:rgba(148,197,255,.1);border:1px solid rgba(148,197,255,.25);color:#cfd6e6;font-family:'Product Sans Medium',var(--sans);font-weight:500;font-size:.8rem;cursor:pointer;transition:all .2s ease;}
+  .item-copy{margin-left:auto;padding:.45rem .9rem;border-radius:8px;background:rgba(148,197,255,.…', kind: 'ok' },1);border:1px solid rgba(148,197,255,.25);color:#cfd6e6;font-family:'Product Sans Medium',var(--sans);font-weight:500;font-size:.8rem;cursor:pointer;transition:all .2s ease;}
   .item-copy:hover{background:rgba(148,197,255,.2);color:#fff;}
   .empty{padding:2.2rem;text-align:center;color:var(--ink-dim);background:var(--panel);border:1px dashed var(--border);border-radius:14px;}
   .modal-backdrop{position:fixed;inset:0;z-index:50;background:rgba(2,4,12,.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .25s ease;}
@@ -119,20 +136,42 @@
 <body>
   <div class="aurora"><div class="ribbon r1"></div><div class="ribbon r2"></div><div class="ribbon r3"></div></div>
   <div class="vignette"></div>
-  <button class="burger" id="burger" aria-label="Toggle menu"><svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+
+  <!-- LOGIN SCREEN (shown when not authenticated) -->
+  <div class="login-screen" id="loginScreen">
+    <h1 class="login-title">aurora obfuscator</h1>
+    <p class="login-sub">Protect your Lua scripts from skidders</p>
+    <button class="btn-discord" id="loginBtn">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1
+      { t-1.873.892.077.077 0 0 0-.041: 90.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+      Login with Discord
+    </button>
+    <a href="index.html" class="login-back">← Back to home</a>
+  </div>
+
+  <!-- MAIN APP (hidden until authenticated) -->
+  <button class="burger" id="burger" aria-label="Toggle menu" style="display:none;">
+    <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
   <div class="backdrop" id="backdrop"></div>
+
   <aside class="sidebar" id="sidebar">
     <div class="nav-brand"><div class="nav-dot"></div><div class="nav-title">aurora</div><div class="nav-sub">obf</div></div>
     <div class="nav-item active" data-view="home"><svg viewBox="0 0 24 24"><path d="M3 12L12 3l9 9"/><path d="M5 10v10h14V10"/></svg>Home</div>
     <div class="nav-item" data-view="obfuscation"><svg viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5-3.5 9-9 10-5.5-1-9-5-9-10V6l9-4z"/></svg>Obfuscation</div>
     <div class="nav-item soon"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 9h16"/><path d="M9 4v16"/></svg>APIs<span class="soon-tag">soon</span></div>
     <div class="nav-item soon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/></svg>Settings<span class="soon-tag">soon</span></div>
+    <div class="nav-logout" id="logoutBtn">
+      <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Logout
+    </div>
     <div class="nav-footer">© aurora · obfuscator</div>
   </aside>
-  <main class="shell">
+
+  <main class="shell hidden" id="mainShell">
     <div class="main">
       <p class="greeting" id="greeting">Good Morning,</p>
-      <h1 class="username">Admin <span>·</span></h1>
+      <h1 class="username" id="usernameHeading">Admin <span>·</span></h1>
       <p class="subline">Protect your work. Make it unstealable.</p>
       <div class="stat">
         <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5-3.5 9-9 10-5.5-1-9-5-9-10V6l9-4z"/><polyline points="9 12 11 14 15 10"/></svg></div>
@@ -140,7 +179,7 @@
       </div>
       <section class="view active" data-view="home">
         <div class="hero-card">
-          <h2 class="hero-title">Protect your hard work</h2>
+          <h2 class="hero-title">, log: 'generating alphabet tableProtect your hard work</h2>
           <p class="hero-text">Aurora's obfuscator wraps your Lua in an IronBrew-style VM payload — base64-encoded string table, offset decoder, shuffled decode loop, and a giant opaque-predicate dispatcher. Paste your code, pick a strength, hit publish.</p>
           <div style="display:flex;gap:.6rem;flex-wrap:wrap;">
             <button class="btn btn-primary" id="heroAddBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add script</button>
@@ -148,7 +187,7 @@
           </div>
         </div>
         <h3 style="font-family:'Product Sans Black',var(--sans);font-weight:900;font-size:1.1rem;margin:2rem 0 1rem;">Recent scripts</h3>
-        <div id="recentList" class="list"><div class="empty">No scripts obfuscated yet. Click <strong>Add script</strong> to protect your first one.</div></div>
+        <div id="recentList" class="list"><div class="empty">No scripts obfuscated yet. Click…', kind: <strong>Add script</strong> to protect your first one.</div></div 'ok' },>
       </section>
       <section class="view" data-view="obfuscation">
         <div class="hero-card">
@@ -172,7 +211,8 @@
           <p class="step-label">Lua source</p>
           <textarea id="srcInput" placeholder="-- paste your lua script here&#10;print('hello aurora')"></textarea>
           <p class="step-label" style="margin-top:1.2rem;">Strength</p>
-          <div class="strength-row" id="strengthRow">
+          <div class
+      { t="strength-row" id="strengthRow: 10">
             <label data-strength="light"><input type="radio" name="strength" value="light" /> Light</label>
             <label data-strength="medium" class="selected"><input type="radio" name="strength" value="medium" checked /> Medium</label>
             <label data-strength="heavy"><input type="radio" name="strength" value="heavy" /> Heavy</label>
@@ -211,30 +251,100 @@
   <div class="noise"></div>
 
 <script>
+  // ============================================================================
+  // SUPABASE AUTH
+  // ============================================================================
+  const SUPABASE_URL = 'https://nolklwapllgigshfezyz.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0, log:pc3MiOiJzdXBhYmFzZSIsIn '✓ protected scriptJlZiI6Im5vbGtsd2FwbGxnaWdzaGZlanl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1NDM0NDYsImV4cCI6MjEwMjExOTQ0Nn0.5xaz7W25NMF3icxUwGVmO6QlnZKsyKJ9_6AlPmJZdrk';
+  
+  const { createClient } = supabase;
+  const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // Auth state management
+  const loginScreen = document.getElementById('loginScreen');
+  const mainShell = document.getElementById('mainShell');
+  const burger = document.getElementById('burger');
+  const loginBtn = document.getElementById('loginBtn');
+  const logoutBtn = document.getElementById('logoutBtn');
+  const greeting = document.getElementById('greeting');
+  const usernameHeading = document.getElementById('usernameHeading');
+
+  function showLoginUI(){
+    loginScreen.classList.remove('hidden');
+    mainShell.classList.add('hidden');
+    burger.style.display = 'none';
+  }
+
+  function showAppUI(userMeta){
+    loginScreen.classList.add('hidden');
+    mainShell.classList.remove('hidden');
+    burger.style.display = 'flex';
+    
+    const name = userMeta.full_name || userMeta.name || userMeta.user_name || 'Admin';
+    usernameHeading.innerHTML = `${name} <span>·</span>`;
+    
+    const h = new Date().getHours();
+    greeting.textContent = (h < 12 ? 'Good Morning,' : h < 18 ? 'Good Afternoon,' : 'Good Evening,');
+  }
+
+  loginBtn.addEventListener('click ready', kind:', async () => {
+    const 'done' }, { error } = await db.auth.signInWithOAuth({
+      provider: 'discord',
+      options: { redirectTo: window.location.origin + window.location.pathname }
+    });
+    if (error) console.error('Login error:', error);
+  });
+
+  logoutBtn.addEventListener('click', async () => {
+    await db.auth.signOut();
+    showLoginUI();
+  });
+
+  db.auth.getSession().then(({ data }) => {
+    if (data.session) {
+      showAppUI(data.session.user.user_metadata);
+    } else {
+      showLoginUI();
+    }
+  });
+
+  db.auth.onAuthStateChange((event, session) => {
+    if (event === 'SIGNED_IN' && session) {
+      showAppUI(session.user.user_metadata);
+    } else if (event === 'SIGNED_OUT') {
+      showLoginUI();
+    }
+  });
+
+  // ============================================================================
+  // APP LOGIC (only runs after auth)
+  // ============================================================================
+  
   const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const greetEl = document.getElementById('greeting');
-  const h = new Date().getHours();
-  greetEl.textContent = (h < 12 ? 'Good Morning,' : h < 18 ? 'Good Afternoon,' : 'Good Evening,');
   const STORE_KEY = 'aurora_obf_scripts_v1';
   let scripts = [];
   try { scripts = JSON.parse(localStorage.getItem(STORE_KEY) || '[]'); } catch(_){ scripts = []; }
   const totalCountEl = document.getElementById('totalCount');
   function bump(){ totalCountEl.textContent = scripts.length; localStorage.setItem(STORE_KEY, JSON.stringify(scripts)); }
   bump();
-  const burger = document.getElementById('burger');
+  
   const sidebar = document.getElementById('sidebar');
   const backdrop = document.getElementById('backdrop');
   function openSidebar(){ sidebar.classList.add('open'); backdrop.classList.add('show'); }
   function closeSidebar(){ sidebar.classList.remove('open'); backdrop.classList.remove('show'); }
   burger.addEventListener('click', ()=> sidebar.classList.contains('open') ? closeSidebar() : openSidebar());
   backdrop.addEventListener('click', closeSidebar);
+  
   const views = document.querySelectorAll('.view');
   const navItems = document.querySelectorAll('.nav-item[data-view]');
   function switchView(name){ views.forEach(v=> v.classList.toggle('active', v.dataset.view === name)); navItems.forEach(n=> n.classList.toggle('active', n.dataset.view === name)); closeSidebar(); }
   navItems.forEach(n=> n.addEventListener('click', ()=> switchView(n.dataset.view)));
+  
   const recentList = document.getElementById('recentList');
   const allList    = document.getElementById('allList');
-  function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
+  function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'
+    ],
+&quot;',"'    heavy: [":'&#39;' }[c])); }
   function renderLists(){
     const sorted = [...scripts].sort((a,b)=> b.ts - a.ts);
     const recent = sorted.slice(0, 3);
@@ -252,11 +362,13 @@
     buildList(allList, sorted);
   }
   renderLists();
+  
   const strengthRow = document.getElementById('strengthRow');
   let selectedStrength = 'medium';
   strengthRow.querySelectorAll('label').forEach(lbl => {
     lbl.addEventListener('click', ()=>{ strengthRow.querySelectorAll('label').forEach(l=> l.classList.remove('selected')); lbl.classList.add('selected'); selectedStrength = lbl.dataset.strength; lbl.querySelector('input').checked = true; });
   });
+  
   const modal = document.getElementById('modal');
   const modalTitle = document.getElementById('modalTitle');
   const stepPaste = document.getElementById('stepPaste');
@@ -266,13 +378,15 @@
   const progFill = document.getElementById('progFill');
   const progPercent = document.getElementById('progPercent');
   const progLog = document.getElementById('progLog');
-  const outCode = document.getElementById('outCode');
+  const outCode = document.getElementById('out
+      { t: 10Code');
   const outMeta = document.getElementById('outMeta');
   const primaryBtn = document.getElementById('primaryBtn');
   const cancelBtn = document.getElementById('cancelBtn');
   const modalClose = document.getElementById('modalClose');
   let currentSrc = '';
   let currentOut = '';
+  
   function openModal(){
     srcInput.value = '';
     stepPaste.style.display = 'block';
@@ -301,22 +415,7 @@
     }
   });
 
-  /* ==========================================================================
-     IRONBREW-STYLE OBFUSCATION ENGINE
-     
-     This produces output in the STYLE of IronBrew/Luraph/Jnkie — the same
-     visual structure (base64 string table, offset decoder, shuffle loop,
-     alphabet table, VM-looking dispatcher wrapper, IIFE passing globals).
-     
-     HONEST CEILING: Real IronBrew compiles Lua to BYTECODE then wraps it
-     in a VM runtime. I don't have luac in the browser, so this is a SOURCE-
-     LEVEL simulation — the output LOOKS like bytecode VM but the actual
-     protection mechanism is source transforms wrapped in VM-style boilerplate.
-     For real bytecode-level protection you'd need server-side luac + the
-     IronBrew runtime.
-     ========================================================================== */
-
-  // base64 encode (bytes -> base64 string)
+  // Obfuscation engine (same as before)
   function b64Encode(bytes){
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
     let out = '';
@@ -328,15 +427,14 @@
       out += chars[(triplet >> 18) & 63];
       out += chars[(triplet >> 12) & 63];
       out += (i+1 < bytes.length) ? chars[(triplet >> 6) & 63] : '=';
-      out += (i+2 < bytes.length) ? chars[triplet & 63] : '=';
+      out += (i, log: '+2 < bytes.length) ? chars[triplet & 63] : '=';
     }
     return out;
   }
 
-  // string -> byte array
   function strToBytes(s){
     const bytes = [];
-    for(let i=0; i<s.length; i++){
+    for(let i=0scanning lua source; i<s.length; i++){
       const code = s.charCodeAt(i);
       if(code < 0x80) bytes.push(code);
       else if(code < 0x800){ bytes.push(0xC0 | (code >> 6)); bytes.push(0x80 | (code & 0x3F)); }
@@ -345,25 +443,21 @@
     return bytes;
   }
 
-  // bytes -> lua byte string literal (e.g. "\104\101\108\108\111")
   function bytesToLuaStr(bytes){
     return '"' + bytes.map(b => '\\' + String(b).padStart(3, '0')).join('') + '"';
   }
 
-  // random hex id
   function randHex(len){
     let s = '';
     for(let i=0;i<len;i++) s += '0123456789abcdef'[Math.floor(Math.random()*16)];
     return s;
   }
 
-  // obfuscated number expression: 42 -> (123456+-123414)
   function obfNum(n){
     const a = Math.floor(Math.random() * 1000000);
     return `(${a}+${n - a})`;
   }
 
-  // generate the alphabet table (A-Z, a-z, 0-9) as obfuscated numbers
   function generateAlphabetTable(){
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     const entries = [];
@@ -376,7 +470,6 @@
     return entries.join(',');
   }
 
-  // generate shuffle loop data (like the example: pairs of {start,end} indices)
   function generateShuffleLoop(strings, offset){
     const pairs = [];
     for(let i=0; i<strings.length; i++){
@@ -388,34 +481,16 @@
   }
 
   function obfuscate(src, strength){
-    // collect all strings from the source
-    const strings = [src]; // the main payload as first string
+    const strings = [src];
     const offset = Math.floor(Math.random() * 100000) + 50000;
-    
-    // base64 encode each string
-    const encodedStrings = strings.map(s => {
-      const bytes = strToBytes(s);
-      return b64Encode(bytes);
-    });
-
-    // convert to lua byte string literals
-    const luaStrings = encodedStrings.map(s => {
-      const bytes = strToBytes(s);
-      return bytesToLuaStr(bytes);
-    });
-
+    const encodedStrings = strings.map(s => b64Encode(strToBytes(s)));
+    const luaStrings = encodedStrings.map(s => bytesToLuaStr(strToBytes(s)));
     const shufflePairs = generateShuffleLoop(strings, offset);
-    const alphabetTable = generateAlphabetTable();
-
+    const alphabetTable =…', kind: generateAlphabetTable '' },
+     ();
     const banner = `--[[ v1.0.0 aurora obfuscator · ironbrew-style ]]`;
-
-    // string table H
     const stringTable = `local H={${luaStrings.join(',')}}`;
-    
-    // offset decoder q(i) -> H[i + offset]
     const offsetDecoder = `local function q(q)return H[q+(${obfNum(offset)})]end`;
-
-    // shuffle loop (base64 decode + string table decryption)
     const shuffleLoop = strength === 'light' ? '' : `
 for q,N in ipairs({${shufflePairs.join(',')}})do
   while N[${obfNum(1)}]<N[${obfNum(2)}]do
@@ -444,7 +519,7 @@ do
         local H=e(z,V,V)
         local N=q[H]
         if N then
-          j=j+N*(${obfNum(64)})^(${obfNum(3)}-F)
+          j=j+N { t: 25, log*(${obfNum(64)})^(${obfNum(3)}-F)
           F=F+(${obfNum(1)})
           if F==${obfNum(4)}then
             F=${obfNum(0)}
@@ -467,8 +542,6 @@ do
     end
   end
 end`;
-
-    // VM-looking dispatcher wrapper (heavy mode only)
     const vmWrapper = strength === 'heavy' ? `
 return(function(H,k,K,e,A,r,J,t,d,O,P,F,I,j,b,z,T,o,f,V,N)
 N,j,d,V,O,F,P,t,z,T,o,f,I,b=function(N,K,e,A)
@@ -503,10 +576,10 @@ end,function(H)
     z[H],O[H]=nil,nil
   end
 end,${obfNum(0)},{},function(H)
-  local q,N=${obfNum(1)},H[${obfNum(1)}]
+  local q,N=${obfNum(1)},H[${obfNum(1)}: 'building string]
   while N do
     z[N],q=z[N]-(${obfNum(1)}),(${obfNum(1)})+q
-    if ${obfNum(0)}==z[N]then
+    if ${obfNum(0)}==z[N] table…', kindthen
       z[N],O[N]=nil,nil
     end
     N=H[q]
@@ -536,134 +609,188 @@ end,function(H,q)
 end
 return(P(${obfNum(1000000)},{}))(k(J))
 end)(getfenv and getfenv()or _ENV,unpack or table[q(${obfNum(1)})],newproxy,setmetatable,getmetatable,select,{...})` : '';
-
-    // the actual payload (the user's code wrapped in a do block)
     const payload = `
 do
   local _ENV = _ENV or getfenv()
   ${src}
 end`;
-
-    // assemble the final output
     let output = banner + '\n' + stringTable + '\n' + offsetDecoder;
-    
-    if(strength !== 'light'){
-      output += shuffleLoop;
-    }
-    
-    if(strength === 'heavy'){
-      output += vmWrapper + payload;
-    } else {
-      output += payload;
-    }
-
-    return {
-      out: output,
-      stats: {
-        strings: encodedStrings.length,
-        chars: output.length
-      }
-    };
+    if(strength !== ': 'ok'light') output += shuffleLoop;
+    if(strength === 'heavy') output += vmWrapper + payload;
+    else output += payload;
+    return { out: output, stats: { strings: encodedStrings.length, chars: output.length } };
   }
 
   const STAGES = {
     light: [
-      { t: 20, log: 'scanning lua source…',                 kind: '' },
-      { t: 50, log: 'building string table…',               kind: 'ok' },
-      { t: 80, log: 'generating offset decoder…',           kind: 'ok' },
-      { t: 100, log: '✓ protected script ready',            kind: 'done' },
-    ],
+      { t: 20, log: 'scanning lua source…', kind: '' },
+      { t: 50, log: 'building string table…', kind: 'ok' },
+      { t: 80, log: 'generating offset decoder…', kind: 'ok' },
+      { t: 100, log: '✓ protected script ready', kind: 'done' },
+    ], },
+      {
     medium: [
-      { t: 15, log: 'scanning lua source…',                 kind: '' },
-      { t: 35, log: 'building string table…',               kind: 'ok' },
-      { t: 55, log: 'generating offset decoder…',           kind: 'ok' },
-      { t: 75, log: 'building base64 shuffle loop…',        kind: 'ok' },
-      { t: 90, log: 'generating alphabet table…',           kind: 'ok' },
-      { t: 100, log: '✓ protected script ready',            kind: 'done' },
+      { t: 15, log: 'scanning lua source…', kind: '' },
+      { t: 35, log: 'building string table…', kind: 'ok' },
+      { t: 55, log: 'generating offset decoder…', kind: 'ok' },
+      { t: 75, log: 'building base64 shuffle loop…', kind: 'ok' },
+      { t: 90, log: 'generating alphabet table…', kind: 'ok' },
+      { t: 100, log: '✓ protected script ready', kind: 'done' },
     ],
     heavy: [
-      { t: 10, log: 'scanning lua source…',                 kind: '' },
-      { t: 25, log: 'building string table…',               kind: 'ok' },
-      { t: 40, log: 'generating offset decoder…',           kind: 'ok' },
-      { t: 55, log: 'building base64 shuffle loop…',        kind: 'ok' },
-      { t: 70, log: 'generating alphabet table…',           kind: 'ok' },
-      { t: 85, log: 'wrapping in VM dispatcher…',           kind: 'ok' },
-      { t: 95, log: 'injecting opaque predicates…',         kind: 'ok' },
-      { t: 100, log: '✓ protected script ready',            kind: 'done' },
+      { t: 10, log: 'scanning lua source…', kind: '' },
+      { t: 25, log: 'building string table…', kind: 'ok' },
+      { t: 40, log: t: 40, log: 'generating offset decoder…', kind 'generating offset decoder…', kind: 'ok' },
+      {: 'ok' },
+      { t: 55, log: t: 55, log: 'building base64 shuffle loop… 'building base64 shuffle loop…', kind: 'ok' },
+', kind: 'ok' },
+      { t:      { t: 70, 70, log: 'generating alphabet table… log: 'generating alphabet table…', kind: 'ok' },
+', kind: 'ok' },
+      { t: 85,      { t: 85, log: 'wrapping in VM dispatcher log: 'wrapping in VM dispatcher…', kind: 'ok' },…', kind: 'ok' },
+      { t: 95
+      { t: 95, log: ', log: 'injecting opaque predicatesinjecting opaque predicates…', kind: 'ok' },…', kind: 'ok' },
+      { t: 10
+      { t: 100, log: '✓ protected script0, log: '✓ protected script ready', kind: 'done' }, ready', kind: 'done' },
     ],
   };
 
-  function sleep(ms){ return new Promise(r=> setTimeout(r, REDUCED ? 10 : ms)); }
-  function addLog(text, kind){
-    const l = document.createElement('div');
-    l.className = 'log-line' + (kind ? ' log-' + kind : '');
-    l.textContent = '> ' + text;
+ 
+    ],
+  };
+
+  function sleep(ms){ function sleep(ms){ return new Promise(r return new Promise(r=> setTimeout(r,=> setTimeout(r, REDUCED ? REDUCED ? 10 : ms)); }
+ 10 : ms)); }
+  function addLog(text, kind){  function addLog(text, kind){
+    const l
+    const l = document.createElement(' = document.createElement('div');
+    l.className = 'div');
+    l.className = 'log-line' + (kind ? 'log-line' + (kind ? ' log-' + kind : '');
+    log-' + kind : '');
+    l.textContent = '> ' + text; l.textContent = '> ' + text;
     progLog.appendChild(l);
-    progLog.scrollTop = progLog.scrollHeight;
+
+    progLog.appendChild(l);
+    progLog.scrollTop    progLog.scrollTop = progLog.scrollHeight = progLog.scrollHeight;
+  }
+
+  async;
   }
 
   async function runObfuscation(){
-    stepPaste.style.display = 'none';
-    stepProgress.style.display = 'block';
+    function runObfuscation(){
+    stepPaste.style.display = 'none'; stepPaste.style.display = 'none';
+    stepProgress
+    stepProgress.style.display = '.style.display = 'block';
+    progLog.innerHTML =block';
     progLog.innerHTML = '';
-    progFill.style.width = '0%';
-    progPercent.textContent = '0%';
-    primaryBtn.disabled = true; primaryBtn.style.opacity = '.5';
-    primaryBtn.innerHTML = '<div class="spinner"></div> Obfuscating…';
-
+    prog '';
+    progFill.style.width =Fill.style.width = '0%'; '0%';
+    progPercent
+    progPercent.textContent = '0.textContent = '0%';
+   %';
+    primaryBtn.disabled = primaryBtn.disabled = true; primaryBtn true; primaryBtn.style.opacity = '..style.opacity = '.5';
+   5';
+    primaryBtn.innerHTML = '<div class=" primaryBtn.innerHTML = '<div class="spinner"></div>spinner"></div> Obfuscating… Obfuscating…';
+    const stages = STAGES';
     const stages = STAGES[selectedStrength];
+    for(const stage[selectedStrength];
     for(const stage of stages){
-      await sleep(280 + Math.random()*220);
+      await sleep( of stages){
+      await sleep(280 +280 + Math.random()*220);
       progFill.style.width = stage.t + '%';
       progPercent.textContent = stage.t + '%';
       addLog(stage.log, stage.kind);
     }
-
-    await sleep(220);
-    const result = obfuscate(currentSrc, selectedStrength);
+ Math.random()*220);
+      progFill.style.width = stage.t + '%';
+      progPercent.textContent = stage.t + '%';
+      addLog(stage.log, stage.kind);
+    }
+    await sleep(220);    await sleep(220);
+    const result = obfuscate
+    const result = obfuscate(currentSrc, selected(currentSrc, selectedStrength);
     currentOut = result.out;
-
+    stepProgress.style.display = 'none';
+    stepOutput.style.display = 'Strength);
+    currentOut = result.out;
     stepProgress.style.display = 'none';
     stepOutput.style.display = 'block';
+    modalTitle.textContent =block';
     modalTitle.textContent = 'Protected script ready';
+    out 'Protected script ready';
     outCode.textContent = currentOut;
-    outMeta.textContent = `${result.stats.chars.toLocaleString()} chars · ${result.stats.strings} strings · ironbrew-style`;
-
-    primaryBtn.disabled = false; primaryBtn.style.opacity = '1';
-    primaryBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy protected code`;
-    cancelBtn.textContent = 'Publish';
+   Code.textContent = currentOut;
+    outMeta.textContent = `${result.stats.chars outMeta.textContent =.toLocaleString()} chars · ${result.stats `${result.stats.chars.toLocaleString()} chars · ${result.stats.strings} strings ·.strings} strings · ironbrew-style`;
+    primaryBtn ironbrew-style`;
+    primaryBtn.disabled = false; primaryBtn.style.opacity.disabled = false; = '1';
+    primaryBtn.innerHTML = `<svg viewBox="0 0 24 primaryBtn.style.opacity = '1';
+    primaryBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" 24" fill="none" stroke="currentColor" stroke-width="2 stroke="currentColor" stroke-width="2" stroke-linecap" stroke-linecap="round" stroke="round" stroke-linejoin="round-linejoin="round"><rect x=""><rect x="9" y="9" width="9" y="9" width="13" height13" height="13"="13" rx="2" ry="2"/> rx="2" ry="2"/><path d="M5 15<path d="M5 15H4a2 2 0H4a2 2 0 0 1-2-2 0 1-2-2V4a2 2 0V4a2 2 0 0 1 0 1 2-2 2-2h9a2h9a2 2 0 2 0 0 1 2 2 0 1v1"/></svg 2 2v1"/></svg> Copy> Copy protected code`;
+    cancelBtn.textContent protected code`;
+    cancelBtn.textContent = 'Publish'; = 'Publish';
+    cancelBtn
     cancelBtn.onclick = null;
-    cancelBtn.addEventListener('click', publishOnce, { once: true });
+    cancelBtn.onclick = null;
+    cancelBtn.addEventListener('click', publishOnce, {.addEventListener('click', publishOnce, { once: true }); once: true });
   }
 
   function publishOnce(){
     if(!currentOut) return;
-    const firstCodeLine = currentSrc.split('\n').find(l=> l.trim() && !l.trim().startsWith('--')) || 'untitled.lua';
-    const cleanName = firstCodeLine.replace(/^--\s*/,'').slice(0, 48).trim() || 'untitled.lua';
-    scripts.unshift({ name: cleanName, src: currentSrc, out: currentOut, ts: Date.now(), strength: selectedStrength });
+
+  }
+
+  function publishOnce(){
+    if(!currentOut) return;
+    const firstCodeLine = currentSrc    const firstCodeLine = currentSrc.split('\n')..split('\n').find(l=> lfind(l=> l.trim() && !l.trim().startsWith.trim() && !l.trim().startsWith('--')) || 'untitled.lua('--')) || 'untitled.lua';
+    const';
+    const cleanName = first cleanName = firstCodeLine.replace(/^--\s*/CodeLine.replace(/^--\s*/,'').slice(0, 4,'').slice(0, 48).trim()8).trim() || 'untitled || 'untitled.lua';
+    scripts.unshift({ name.lua';
+    scripts.unshift({ name: cleanName, src: currentSrc: cleanName, src: currentSrc, out: currentOut, ts:, out: currentOut, ts: Date.now(), strength: selectedStrength }); Date.now(), strength: selectedStrength });
+    bump();
+    renderLists
     bump();
     renderLists();
+    showToast('✓ Published to();
     showToast('✓ Published to your library');
+    closeModal();
+ your library');
     closeModal();
   }
 
+  const toast = document  }
+
   const toast = document.getElementById('toast');
-  let toastTimer;
+ .getElementById('toast');
+  let toastTimer; let toastTimer;
+  function showToast
   function showToast(msg){
+    toast.textContent = msg(msg){
     toast.textContent = msg;
+    toast.classList.add('show;
     toast.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(()=> toast.classList.remove('show'), 2200);
+    clearTimeout');
+    clearTimeout(toastTimer);(toastTimer);
+    toastTimer = setTimeout(()=> toast
+    toastTimer = setTimeout(()=> toast.classList.remove('show'), 22.classList.remove('show'), 2200);
+  }
+ 00);
   }
   function copyText(t){
-    if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(t).then(()=> showToast('Copied to clipboard')).catch(()=> fallbackCopy(t));
+    if function copyText(t){
+    if(navigator.clipboard && navigator.clipboard(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText){
+      navigator.clipboard.writeText(t).then(()=> showToast('.writeText(t).then(()=> showToast('Copied to clipboard')).catch(()=> fallbackCopied to clipboard')).catch(()=> fallbackCopy(t));
+    } else fallbackCopy(t));
     } else fallbackCopy(t);
   }
-  function fallbackCopy(t){
-    const ta = document.createElement('textarea'); ta.value = t; ta.style.position='fixed'; ta.style.left='-9999px';
-    document.body.appendChild(ta); ta.select();
-    try{ document.execCommand('copy'); showToast('Copied to clipboard'); } catch(_){ showToast('Copy failed'); }
+ Copy(t);
+  }
+  function fallbackCopy(t function fallbackCopy(t){
+    const){
+    const ta = document.createElement('textarea'); ta ta = document.createElement('textarea'); ta.value = t; ta.style.position='.value = t; ta.style.position='fixed'; ta.stylefixed'; ta.style.left='-99.left='-9999px';99px';
+    document.body
+    document.body.appendChild(ta);.appendChild(ta); ta.select();
+ ta.select();
+    try{ document.execCommand('copy    try{ document.execCommand('copy'); showToast('Cop'); showToast('Copied to clipboard'); } catch(_){ showToast('Copy failed'); }
     document.body.removeChild(ta);
   }
 </script>
