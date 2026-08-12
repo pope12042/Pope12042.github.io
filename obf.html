@@ -283,13 +283,14 @@
     greeting.textContent = (h < 12 ? 'Good Morning,' : h < 18 ? 'Good Afternoon,' : 'Good Evening,');
   }
 
-  loginBtn.addEventListener('click', async () => {
+    loginBtn.addEventListener('click', async () => {
     const { error } = await db.auth.signInWithOAuth({
       provider: 'discord',
-      options: { redirectTo: window.location.origin + window.location.pathname }
+      options: { redirectTo: window.location.href }
     });
-    if (error) console.error('Login error:', error);
+    if (error) alert("OAUTH ERROR: " + error.message);
   });
+
 
   logoutBtn.addEventListener('click', async () => {
     await db.auth.signOut();
