@@ -21,7 +21,9 @@
   .noise{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.05;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
   .vignette{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(120% 120% at 50% 40%, transparent 55%, rgba(2,4,12,.6) 100%);}
   
-  .login-screen{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;gap:1.5rem;}
+  /* Login screen - highest z-index, covers everything */
+  .login-screen{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;gap:1.5rem;background:radial-gradient(120% 90% at 50% 110%, rgba(45,212,191,.14), transparent 60%),linear-gradient(180deg, var(--bg0) 0%, var(--bg1) 55%, #0a1128 100%);}
+  .login-screen.hidden{display:none;}
   .login-title{font-family:'Product Sans Black',var(--sans);font-weight:900;font-size:clamp(2rem,5vw,3rem);margin:0;color:#fff;}
   .login-sub{color:var(--ink-dim);font-size:1.1rem;margin:0;}
   .btn-discord{display:inline-flex;align-items:center;gap:.6rem;padding:1rem 2rem;border-radius:14px;font-family:'Product Sans Medium','Google Sans',var(--sans);font-weight:500;font-size:1.1rem;border:none;cursor:pointer;color:#fff;background:linear-gradient(135deg,#5865F2,#7289da);box-shadow:0 10px 34px rgba(88,101,242,.4), inset 0 1px 0 rgba(255,255,255,.3);transition:transform .28s ease, box-shadow .28s ease;}
@@ -30,7 +32,11 @@
   .login-back{color:var(--ink-dim);text-decoration:none;font-size:.9rem;margin-top:1rem;}
   .login-back:hover{color:var(--sky);}
 
-  .shell{position:relative;z-index:5;min-height:100vh;display:flex;}
+  /* Main app container */
+  .app-container{position:relative;z-index:5;min-height:100vh;}
+  .app-container.hidden{display:none;}
+
+  .shell{display:flex;min-height:100vh;}
   .main{flex:1;padding:2.2rem 2.5rem 3rem;max-width:100%;}
   @media (max-width:720px){.main{padding:1.5rem 1.2rem 2rem;}}
   .burger{position:fixed;top:18px;left:18px;z-index:40;width:42px;height:42px;border-radius:10px;border:1px solid var(--border);background:var(--panel);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:var(--ink);font-size:18px;letter-spacing:2px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .25s ease, background .25s ease, border-color .25s ease;}
@@ -134,6 +140,7 @@
   <div class="aurora"><div class="ribbon r1"></div><div class="ribbon r2"></div><div class="ribbon r3"></div></div>
   <div class="vignette"></div>
 
+  <!-- LOGIN SCREEN -->
   <div class="login-screen" id="loginScreen">
     <h1 class="login-title">aurora obfuscator</h1>
     <p class="login-sub">Protect your Lua scripts from skidders</p>
@@ -144,7 +151,8 @@
     <a href="index.html" class="login-back">← Back to home</a>
   </div>
 
-  <div id="mainApp" style="display: none;">
+  <!-- MAIN APP -->
+  <div class="app-container hidden" id="appContainer">
     <button class="burger" id="burger" aria-label="Toggle menu">
       <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
@@ -163,7 +171,7 @@
       <div class="nav-footer">© aurora · obfuscator</div>
     </aside>
 
-    <main class="shell">
+    <div class="shell">
       <div class="main">
         <p class="greeting" id="greeting">Good Morning,</p>
         <h1 class="username" id="usernameHeading">Admin <span>·</span></h1>
@@ -194,9 +202,10 @@
           <div id="allList" class="list"><div class="empty">No scripts yet.</div></div>
         </section>
       </div>
-    </main>
+    </div>
   </div>
 
+  <!-- MODAL -->
   <div class="modal-backdrop" id="modal">
     <div class="modal">
       <div class="modal-header">
@@ -247,22 +256,27 @@
   <div class="noise"></div>
 
 <script>
+  // Supabase Auth
   const SUPABASE_URL = 'https://nolklwapllgigshfezyz.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5vbGtsd2FwbGxnaWdzaGZlanl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1NDM0NDYsImV4cCI6MjEwMjExOTQ0Nn0.5xaz7W25NMF3icxUwGVmO6QlnZKsyKJ9_6AlPmJZdrk';
   const { createClient } = supabase;
   const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   const loginScreen = document.getElementById('loginScreen');
-  const mainApp = document.getElementById('mainApp');
+  const appContainer = document.getElementById('appContainer');
   const loginBtn = document.getElementById('loginBtn');
   const logoutBtn = document.getElementById('logoutBtn');
   const greeting = document.getElementById('greeting');
   const usernameHeading = document.getElementById('usernameHeading');
 
-  function showLoginUI(){ loginScreen.style.display = 'flex'; mainApp.style.display = 'none'; }
+  function showLoginUI(){
+    loginScreen.classList.remove('hidden');
+    appContainer.classList.add('hidden');
+  }
+
   function showAppUI(userMeta){
-    loginScreen.style.display = 'none';
-    mainApp.style.display = 'block';
+    loginScreen.classList.add('hidden');
+    appContainer.classList.remove('hidden');
     const name = userMeta.full_name || userMeta.name || userMeta.user_name || 'Admin';
     usernameHeading.innerHTML = `${name} <span>·</span>`;
     const h = new Date().getHours();
@@ -270,11 +284,17 @@
   }
 
   loginBtn.addEventListener('click', async () => {
-    const { error } = await db.auth.signInWithOAuth({ provider: 'discord', options: { redirectTo: window.location.origin + window.location.pathname } });
+    const { error } = await db.auth.signInWithOAuth({
+      provider: 'discord',
+      options: { redirectTo: window.location.origin + window.location.pathname }
+    });
     if (error) console.error('Login error:', error);
   });
 
-  logoutBtn.addEventListener('click', async () => { await db.auth.signOut(); showLoginUI(); });
+  logoutBtn.addEventListener('click', async () => {
+    await db.auth.signOut();
+    showLoginUI();
+  });
 
   db.auth.getSession().then(({ data }) => {
     if (data.session) showAppUI(data.session.user.user_metadata);
@@ -286,6 +306,7 @@
     else if (event === 'SIGNED_OUT') showLoginUI();
   });
 
+  // App Logic
   const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const STORE_KEY = 'aurora_obf_scripts_v1';
   let scripts = [];
@@ -402,7 +423,6 @@
   }
 
   function bytesToLuaStr(bytes){ return '"' + bytes.map(b => '\\' + String(b).padStart(3, '0')).join('') + '"'; }
-
   function obfNum(n){ const a = Math.floor(Math.random() * 1000000); return `(${a}+${n - a})`; }
 
   function generateAlphabetTable(){
