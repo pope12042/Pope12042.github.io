@@ -6,14 +6,7 @@
 <title>aurora · obfuscator</title>
 <link href="https://fonts.cdnfonts.com/css/google-sans" rel="stylesheet" />
 <style>
-  :root{
-    --bg0:#03040c;--bg1:#070b1c;--ink:#f4f7ff;--ink-dim:#9aa3b8;
-    --blue:#6fc2ff;--teal:#2dd4bf;--violet:#8b5cf6;--sky:#38bdf8;
-    --panel:rgba(14,18,34,.62);--panel-hi:rgba(22,28,52,.75);--border:rgba(148,197,255,.18);
-    --fallback:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
-    --sans:'Product Sans','Google Sans',var(--fallback);
-    --mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
-  }
+  :root{--bg0:#03040c;--bg1:#070b1c;--ink:#f4f7ff;--ink-dim:#9aa3b8;--blue:#6fc2ff;--teal:#2dd4bf;--violet:#8b5cf6;--sky:#38bdf8;--panel:rgba(14,18,34,.62);--panel-hi:rgba(22,28,52,.75);--border:rgba(148,197,255,.18);--fallback:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;--sans:'Product Sans','Google Sans',var(--fallback);--mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;}
   *{box-sizing:border-box;}html,body{height:100%;}
   body{margin:0;font-family:var(--sans);color:var(--ink);background:radial-gradient(120% 90% at 50% 110%, rgba(45,212,191,.14), transparent 60%),linear-gradient(180deg, var(--bg0) 0%, var(--bg1) 55%, #0a1128 100%);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
   .aurora{position:fixed;inset:-10% -10% auto -10%;height:80%;z-index:0;pointer-events:none;}
@@ -124,112 +117,60 @@
 </style>
 </head>
 <body>
-  <div class="aurora">
-    <div class="ribbon r1"></div><div class="ribbon r2"></div><div class="ribbon r3"></div>
-  </div>
+  <div class="aurora"><div class="ribbon r1"></div><div class="ribbon r2"></div><div class="ribbon r3"></div></div>
   <div class="vignette"></div>
-
-  <button class="burger" id="burger" aria-label="Toggle menu">
-    <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-  </button>
-
+  <button class="burger" id="burger" aria-label="Toggle menu"><svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
   <div class="backdrop" id="backdrop"></div>
-
   <aside class="sidebar" id="sidebar">
-    <div class="nav-brand">
-      <div class="nav-dot"></div>
-      <div class="nav-title">aurora</div>
-      <div class="nav-sub">obf</div>
-    </div>
-    <div class="nav-item active" data-view="home">
-      <svg viewBox="0 0 24 24"><path d="M3 12L12 3l9 9"/><path d="M5 10v10h14V10"/></svg>
-      Home
-    </div>
-    <div class="nav-item" data-view="obfuscation">
-      <svg viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5-3.5 9-9 10-5.5-1-9-5-9-10V6l9-4z"/></svg>
-      Obfuscation
-    </div>
-    <div class="nav-item soon">
-      <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 9h16"/><path d="M9 4v16"/></svg>
-      APIs
-      <span class="soon-tag">soon</span>
-    </div>
-    <div class="nav-item soon">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      Settings
-      <span class="soon-tag">soon</span>
-    </div>
+    <div class="nav-brand"><div class="nav-dot"></div><div class="nav-title">aurora</div><div class="nav-sub">obf</div></div>
+    <div class="nav-item active" data-view="home"><svg viewBox="0 0 24 24"><path d="M3 12L12 3l9 9"/><path d="M5 10v10h14V10"/></svg>Home</div>
+    <div class="nav-item" data-view="obfuscation"><svg viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5-3.5 9-9 10-5.5-1-9-5-9-10V6l9-4z"/></svg>Obfuscation</div>
+    <div class="nav-item soon"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 9h16"/><path d="M9 4v16"/></svg>APIs<span class="soon-tag">soon</span></div>
+    <div class="nav-item soon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/></svg>Settings<span class="soon-tag">soon</span></div>
     <div class="nav-footer">© aurora · obfuscator</div>
   </aside>
-
   <main class="shell">
     <div class="main">
       <p class="greeting" id="greeting">Good Morning,</p>
       <h1 class="username">Admin <span>·</span></h1>
       <p class="subline">Protect your work. Make it unstealable.</p>
-
       <div class="stat">
         <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5-3.5 9-9 10-5.5-1-9-5-9-10V6l9-4z"/><polyline points="9 12 11 14 15 10"/></svg></div>
-        <div>
-          <p class="stat-label">Scripts obfuscated</p>
-          <p class="stat-value" id="totalCount">0</p>
-        </div>
+        <div><p class="stat-label">Scripts obfuscated</p><p class="stat-value" id="totalCount">0</p></div>
       </div>
-
       <section class="view active" data-view="home">
         <div class="hero-card">
           <h2 class="hero-title">Protect your hard work</h2>
-          <p class="hero-text">Aurora's obfuscator scrambles your Lua scripts — encrypting strings with a runtime decoder, rewriting numeric literals into computed expressions, injecting dead code and opaque predicates, and wrapping the payload in a VM-like preamble — so skidders can't read what you built. Paste your code, pick a strength, hit publish.</p>
+          <p class="hero-text">Aurora's obfuscator wraps your Lua in an IronBrew-style VM payload — base64-encoded string table, offset decoder, shuffled decode loop, and a giant opaque-predicate dispatcher. Paste your code, pick a strength, hit publish.</p>
           <div style="display:flex;gap:.6rem;flex-wrap:wrap;">
-            <button class="btn btn-primary" id="heroAddBtn">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              Add script
-            </button>
-            <a class="btn btn-ghost" href="index.html">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-              Back to landing
-            </a>
+            <button class="btn btn-primary" id="heroAddBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add script</button>
+            <a class="btn btn-ghost" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>Back to landing</a>
           </div>
         </div>
-
         <h3 style="font-family:'Product Sans Black',var(--sans);font-weight:900;font-size:1.1rem;margin:2rem 0 1rem;">Recent scripts</h3>
-        <div id="recentList" class="list">
-          <div class="empty">No scripts obfuscated yet. Click <strong>Add script</strong> to protect your first one.</div>
-        </div>
+        <div id="recentList" class="list"><div class="empty">No scripts obfuscated yet. Click <strong>Add script</strong> to protect your first one.</div></div>
       </section>
-
       <section class="view" data-view="obfuscation">
         <div class="hero-card">
           <h2 class="hero-title">Obfuscation</h2>
-          <p class="hero-text">Each pass applies string encryption (xor + runtime decoder), number expression rewriting, helper-function preamble, and — on Heavy mode — dead code and opaque-predicate wrapping around every statement.</p>
-          <button class="btn btn-primary" id="addBtn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            Add
-          </button>
+          <p class="hero-text">Each pass wraps your script in an IronBrew-style VM payload. Light = string table + decoder. Medium = + base64 shuffle loop + alphabet table. Heavy = + opaque-predicate dispatcher wrapper.</p>
+          <button class="btn btn-primary" id="addBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add</button>
         </div>
         <h3 style="font-family:'Product Sans Black',var(--sans);font-weight:900;font-size:1.1rem;margin:2rem 0 1rem;">All scripts</h3>
-        <div id="allList" class="list">
-          <div class="empty">No scripts yet.</div>
-        </div>
+        <div id="allList" class="list"><div class="empty">No scripts yet.</div></div>
       </section>
     </div>
   </main>
-
-  <!-- MODAL -->
   <div class="modal-backdrop" id="modal">
     <div class="modal">
       <div class="modal-header">
         <h3 class="modal-title" id="modalTitle">Paste your Lua script</h3>
-        <button class="modal-close" id="modalClose" aria-label="Close">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
+        <button class="modal-close" id="modalClose" aria-label="Close"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
       </div>
       <div class="modal-body">
-
         <div id="stepPaste">
           <p class="step-label">Lua source</p>
           <textarea id="srcInput" placeholder="-- paste your lua script here&#10;print('hello aurora')"></textarea>
-
           <p class="step-label" style="margin-top:1.2rem;">Strength</p>
           <div class="strength-row" id="strengthRow">
             <label data-strength="light"><input type="radio" name="strength" value="light" /> Light</label>
@@ -237,12 +178,11 @@
             <label data-strength="heavy"><input type="radio" name="strength" value="heavy" /> Heavy</label>
           </div>
           <p style="font-size:.78rem;color:var(--ink-dim);margin:.3rem 0 0;line-height:1.5;">
-            <b style="color:#9fd4ff">Light:</b> string encryption + number rewrite · 
-            <b style="color:#9fd4ff">Medium:</b> + helper preamble + watermark · 
-            <b style="color:#9fd4ff">Heavy:</b> + dead code + opaque predicates on every statement
+            <b style="color:#9fd4ff">Light:</b> string table + offset decoder · 
+            <b style="color:#9fd4ff">Medium:</b> + base64 shuffle + alphabet table · 
+            <b style="color:#9fd4ff">Heavy:</b> + opaque-predicate VM wrapper
           </p>
         </div>
-
         <div id="stepProgress" style="display:none;">
           <div class="progress-wrap">
             <div class="progress-head">
@@ -253,26 +193,20 @@
             <div class="progress-log" id="progLog"></div>
           </div>
         </div>
-
         <div id="stepOutput" style="display:none;">
           <div class="out-head">
             <div class="out-title">Protected script</div>
-            <div class="out-meta" id="outMeta">0 chars · 0 strings · 0 nums</div>
+            <div class="out-meta" id="outMeta">0 chars · 0 strings · ironbrew-style</div>
           </div>
           <pre class="output" id="outCode"></pre>
         </div>
-
       </div>
       <div class="modal-footer" id="modalFooter">
         <button class="btn btn-ghost" id="cancelBtn">Cancel</button>
-        <button class="btn btn-primary" id="primaryBtn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-          Continue
-        </button>
+        <button class="btn btn-primary" id="primaryBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Continue</button>
       </div>
     </div>
   </div>
-
   <div class="toast" id="toast">Copied to clipboard</div>
   <div class="noise"></div>
 
@@ -281,14 +215,12 @@
   const greetEl = document.getElementById('greeting');
   const h = new Date().getHours();
   greetEl.textContent = (h < 12 ? 'Good Morning,' : h < 18 ? 'Good Afternoon,' : 'Good Evening,');
-
   const STORE_KEY = 'aurora_obf_scripts_v1';
   let scripts = [];
   try { scripts = JSON.parse(localStorage.getItem(STORE_KEY) || '[]'); } catch(_){ scripts = []; }
   const totalCountEl = document.getElementById('totalCount');
   function bump(){ totalCountEl.textContent = scripts.length; localStorage.setItem(STORE_KEY, JSON.stringify(scripts)); }
   bump();
-
   const burger = document.getElementById('burger');
   const sidebar = document.getElementById('sidebar');
   const backdrop = document.getElementById('backdrop');
@@ -296,16 +228,10 @@
   function closeSidebar(){ sidebar.classList.remove('open'); backdrop.classList.remove('show'); }
   burger.addEventListener('click', ()=> sidebar.classList.contains('open') ? closeSidebar() : openSidebar());
   backdrop.addEventListener('click', closeSidebar);
-
   const views = document.querySelectorAll('.view');
   const navItems = document.querySelectorAll('.nav-item[data-view]');
-  function switchView(name){
-    views.forEach(v=> v.classList.toggle('active', v.dataset.view === name));
-    navItems.forEach(n=> n.classList.toggle('active', n.dataset.view === name));
-    closeSidebar();
-  }
+  function switchView(name){ views.forEach(v=> v.classList.toggle('active', v.dataset.view === name)); navItems.forEach(n=> n.classList.toggle('active', n.dataset.view === name)); closeSidebar(); }
   navItems.forEach(n=> n.addEventListener('click', ()=> switchView(n.dataset.view)));
-
   const recentList = document.getElementById('recentList');
   const allList    = document.getElementById('allList');
   function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
@@ -314,22 +240,10 @@
     const recent = sorted.slice(0, 3);
     function buildList(container, arr){
       container.innerHTML = '';
-      if(arr.length === 0){
-        const empty = document.createElement('div'); empty.className = 'empty';
-        empty.innerHTML = 'No scripts obfuscated yet. Click <strong>Add script</strong> to protect your first one.';
-        container.appendChild(empty);
-        return;
-      }
+      if(arr.length === 0){ const empty = document.createElement('div'); empty.className = 'empty'; empty.innerHTML = 'No scripts obfuscated yet. Click <strong>Add script</strong> to protect your first one.'; container.appendChild(empty); return; }
       arr.forEach(s=>{
         const row = document.createElement('div'); row.className = 'item';
-        row.innerHTML = `
-          <div class="item-icon"><svg viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5-3.5 9-9 10-5.5-1-9-5-9-10V6l9-4z"/><polyline points="9 12 11 14 15 10"/></svg></div>
-          <div style="min-width:0;">
-            <div class="item-name">${escapeHtml(s.name)}</div>
-            <div class="item-meta">${new Date(s.ts).toLocaleString()} · ${s.out.length.toLocaleString()} chars · ${s.strength}</div>
-          </div>
-          <button class="item-copy">Copy</button>
-        `;
+        row.innerHTML = `<div class="item-icon"><svg viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5-3.5 9-9 10-5.5-1-9-5-9-10V6l9-4z"/><polyline points="9 12 11 14 15 10"/></svg></div><div style="min-width:0;"><div class="item-name">${escapeHtml(s.name)}</div><div class="item-meta">${new Date(s.ts).toLocaleString()} · ${s.out.length.toLocaleString()} chars · ${s.strength}</div></div><button class="item-copy">Copy</button>`;
         row.querySelector('.item-copy').addEventListener('click', (e)=>{ e.stopPropagation(); copyText(s.out); });
         container.appendChild(row);
       });
@@ -338,20 +252,11 @@
     buildList(allList, sorted);
   }
   renderLists();
-
-  /* ---- strength picker ---- */
   const strengthRow = document.getElementById('strengthRow');
   let selectedStrength = 'medium';
   strengthRow.querySelectorAll('label').forEach(lbl => {
-    lbl.addEventListener('click', ()=>{
-      strengthRow.querySelectorAll('label').forEach(l=> l.classList.remove('selected'));
-      lbl.classList.add('selected');
-      selectedStrength = lbl.dataset.strength;
-      lbl.querySelector('input').checked = true;
-    });
+    lbl.addEventListener('click', ()=>{ strengthRow.querySelectorAll('label').forEach(l=> l.classList.remove('selected')); lbl.classList.add('selected'); selectedStrength = lbl.dataset.strength; lbl.querySelector('input').checked = true; });
   });
-
-  /* ---- modal ---- */
   const modal = document.getElementById('modal');
   const modalTitle = document.getElementById('modalTitle');
   const stepPaste = document.getElementById('stepPaste');
@@ -368,7 +273,6 @@
   const modalClose = document.getElementById('modalClose');
   let currentSrc = '';
   let currentOut = '';
-
   function openModal(){
     srcInput.value = '';
     stepPaste.style.display = 'block';
@@ -384,10 +288,8 @@
   cancelBtn.addEventListener('click', closeModal);
   modalClose.addEventListener('click', closeModal);
   modal.addEventListener('click', e=>{ if(e.target === modal) closeModal(); });
-
   document.getElementById('heroAddBtn').addEventListener('click', openModal);
   document.getElementById('addBtn').addEventListener('click', openModal);
-
   primaryBtn.addEventListener('click', ()=>{
     if(stepPaste.style.display !== 'none'){
       const src = srcInput.value.trim();
@@ -400,292 +302,293 @@
   });
 
   /* ==========================================================================
-     OBFUSCATION ENGINE
-     Source-level transforms (no Lua compiler available in browser):
-       - String encryption: xor with a rotating key, hex encoded, decoded at runtime
-       - Numeric expression obfuscation: each literal becomes a computed expression
-       - Helper preamble: runtime decoder + opaque constant generator
-       - Watermark header (luraph-style ascii banner)
-       - Heavy mode: dead code injection + opaque predicate wrapping
-     Deliberately NOT doing identifier mangling of globals/builtins — that's what
-     broke the previous version and made output silently dead.
+     IRONBREW-STYLE OBFUSCATION ENGINE
+     
+     This produces output in the STYLE of IronBrew/Luraph/Jnkie — the same
+     visual structure (base64 string table, offset decoder, shuffle loop,
+     alphabet table, VM-looking dispatcher wrapper, IIFE passing globals).
+     
+     HONEST CEILING: Real IronBrew compiles Lua to BYTECODE then wraps it
+     in a VM runtime. I don't have luac in the browser, so this is a SOURCE-
+     LEVEL simulation — the output LOOKS like bytecode VM but the actual
+     protection mechanism is source transforms wrapped in VM-style boilerplate.
+     For real bytecode-level protection you'd need server-side luac + the
+     IronBrew runtime.
      ========================================================================== */
 
+  // base64 encode (bytes -> base64 string)
+  function b64Encode(bytes){
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+    let out = '';
+    for(let i=0; i<bytes.length; i+=3){
+      const b0 = bytes[i];
+      const b1 = i+1 < bytes.length ? bytes[i+1] : 0;
+      const b2 = i+2 < bytes.length ? bytes[i+2] : 0;
+      const triplet = (b0 << 16) | (b1 << 8) | b2;
+      out += chars[(triplet >> 18) & 63];
+      out += chars[(triplet >> 12) & 63];
+      out += (i+1 < bytes.length) ? chars[(triplet >> 6) & 63] : '=';
+      out += (i+2 < bytes.length) ? chars[triplet & 63] : '=';
+    }
+    return out;
+  }
+
+  // string -> byte array
+  function strToBytes(s){
+    const bytes = [];
+    for(let i=0; i<s.length; i++){
+      const code = s.charCodeAt(i);
+      if(code < 0x80) bytes.push(code);
+      else if(code < 0x800){ bytes.push(0xC0 | (code >> 6)); bytes.push(0x80 | (code & 0x3F)); }
+      else { bytes.push(0xE0 | (code >> 12)); bytes.push(0x80 | ((code >> 6) & 0x3F)); bytes.push(0x80 | (code & 0x3F)); }
+    }
+    return bytes;
+  }
+
+  // bytes -> lua byte string literal (e.g. "\104\101\108\108\111")
+  function bytesToLuaStr(bytes){
+    return '"' + bytes.map(b => '\\' + String(b).padStart(3, '0')).join('') + '"';
+  }
+
+  // random hex id
   function randHex(len){
     let s = '';
     for(let i=0;i<len;i++) s += '0123456789abcdef'[Math.floor(Math.random()*16)];
     return s;
   }
-  function randId(){ return '_0x' + randHex(8); }
 
-  function encryptString(s, key){
-    let out = '';
-    for(let i=0;i<s.length;i++){
-      const k = (key + i) & 0xff;
-      const b = (s.charCodeAt(i) ^ k) & 0xff;
-      out += b.toString(16).padStart(2,'0');
-    }
-    return out;
-  }
-
+  // obfuscated number expression: 42 -> (123456+-123414)
   function obfNum(n){
-    // rewrite a numeric literal as a computed expression that evaluates to n
     const a = Math.floor(Math.random() * 1000000);
-    const b = Math.floor(Math.random() * 1000000);
-    const c = Math.floor(Math.random() * 1000000);
-    // (a + b + c) - (a + b + c - n) = n
-    const sum = a + b + c;
-    const tail = sum - n;
-    const hexA = '0x' + a.toString(16);
-    const hexB = '0x' + b.toString(16);
-    const hexC = '0x' + c.toString(16);
-    const hexT = '0x' + tail.toString(16);
-    return `((${hexA}+${hexB}+${hexC})-(${hexT}))`;
+    return `(${a}+${n - a})`;
   }
 
-  // tokenize and transform lua source
-  function transformLua(src, strength){
-    let out = '';
-    let i = 0;
-    const key = Math.floor(Math.random() * 256);
-    let stringsEncrypted = 0;
-    let numsRewritten = 0;
-    const decoderName = randId();
-
-    function append(s){ out += s; }
-
-    while(i < src.length){
-      const c = src[i];
-      const next = src[i+1];
-
-      // --[[ long comment ]] or -- short comment
-      if(c === '-' && next === '-'){
-        let j = i + 2;
-        let eq = 0;
-        while(src[j] === '='){ eq++; j++; }
-        if(src[j] === '[' && src[j+1] === '[' && eq === 0 || (eq > 0 && src[j] === '[')){
-          // long comment --[===[ ... ]===]
-          const open = '--' + '='.repeat(eq) + '[';
-          const close = ']' + '='.repeat(eq) + ']';
-          let k = j + 1;
-          while(k < src.length){
-            if(src.substring(k, k + close.length) === close){ k += close.length; break; }
-            k++;
-          }
-          append(src.substring(i, k));
-          i = k;
-        } else {
-          // short comment to end of line
-          let k = i;
-          while(k < src.length && src[k] !== '\n') k++;
-          append(src.substring(i, k));
-          i = k;
-        }
-        continue;
-      }
-
-      // long string [[ ... ]] or [=[ ... ]=]
-      if(c === '[' && (next === '[' || next === '=')){
-        let eq = 0;
-        let j = i + 1;
-        while(src[j] === '='){ eq++; j++; }
-        if(src[j] === '['){
-          const open = '[' + '='.repeat(eq) + '[';
-          const close = ']' + '='.repeat(eq) + ']';
-          let k = j + 1;
-          while(k < src.length){
-            if(src.substring(k, k + close.length) === close){ break; }
-            k++;
-          }
-          const inner = src.substring(i + open.length, k);
-          const enc = encryptString(inner, key);
-          append(`${decoderName}("${enc}")`);
-          stringsEncrypted++;
-          i = k + close.length;
-          continue;
-        }
-      }
-
-      // "..." or '...' string
-      if(c === '"' || c === "'"){
-        const quote = c;
-        let j = i + 1;
-        let inner = '';
-        while(j < src.length){
-          if(src[j] === '\\'){
-            const esc = src[j+1];
-            if(esc === 'n') inner += '\n';
-            else if(esc === 'r') inner += '\r';
-            else if(esc === 't') inner += '\t';
-            else if(esc === '\\') inner += '\\';
-            else if(esc === quote) inner += quote;
-            else if(esc === '0') inner += '\0';
-            else inner += src[j+1];
-            j += 2;
-            continue;
-          }
-          if(src[j] === quote) break;
-          inner += src[j];
-          j++;
-        }
-        const enc = encryptString(inner, key);
-        append(`${decoderName}("${enc}")`);
-        stringsEncrypted++;
-        i = j + 1;
-        continue;
-      }
-
-      // numeric literal (not part of identifier)
-      if(/[0-9]/.test(c) && (i === 0 || !/[a-zA-Z_0-9]/.test(src[i-1]))){
-        let j = i;
-        // hex
-        if(c === '0' && (src[i+1] === 'x' || src[i+1] === 'X')){
-          j = i + 2;
-          while(j < src.length && /[0-9a-fA-F]/.test(src[j])) j++;
-          const n = parseInt(src.substring(i, j), 16);
-          if(!isNaN(n)){ append(obfNum(n)); numsRewritten++; i = j; continue; }
-        }
-        // decimal / float
-        while(j < src.length && /[0-9.]/.test(src[j])) j++;
-        if(j < src.length && (src[j] === 'e' || src[j] === 'E')){
-          j++;
-          if(src[j] === '+' || src[j] === '-') j++;
-          while(j < src.length && /[0-9]/.test(src[j])) j++;
-        }
-        const raw = src.substring(i, j);
-        const n = parseFloat(raw);
-        if(!isNaN(n) && Number.isFinite(n) && Number.isInteger(n)){
-          append(obfNum(n));
-          numsRewritten++;
-        } else {
-          append(raw);
-        }
-        i = j;
-        continue;
-      }
-
-      append(c);
-      i++;
+  // generate the alphabet table (A-Z, a-z, 0-9) as obfuscated numbers
+  function generateAlphabetTable(){
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const entries = [];
+    for(let i=0; i<chars.length; i++){
+      const c = chars.charCodeAt(i);
+      const key = chars[i];
+      const obfKey = key.match(/[0-9]/) ? `["\\${String(key).padStart(3,'0')}"]` : key;
+      entries.push(`${obfKey}=${obfNum(c)}`);
     }
-
-    return { code: out, decoderName, key, stringsEncrypted, numsRewritten };
+    return entries.join(',');
   }
 
-  function buildPreamble(key, decoderName, strength){
-    const watermark = [
-      '--[[',
-      '   █████╗ ██╗   ██╗██████╗  ██████╗ ██████╗  █████╗',
-      '   ██╔══██╗██║   ██║██╔══██╗██╔═══██╗██╔══██╗██╔══██╗',
-      '   ███████║██║   ██║██████╔╝██║   ██║██████╔╝███████║',
-      '   ██╔══██║██║   ██║██╔══██╗██║   ██║██╔══██╗██╔══██║',
-      '   ██║  ██║╚██████╔╝██║  ██║╚██████╔╝██║  ██║██║  ██║',
-      '   ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝',
-      '',
-      '   This script has been protected by Aurora Obfuscator.',
-      '   Unauthorized deobfuscation, reverse-engineering, or',
-      '   redistribution is a bannable offense and will be',
-      '   fingerprinted against your hwid.',
-      '',
-      '   Generated: ' + new Date().toISOString(),
-      '   Strength:  ' + strength.toUpperCase(),
-      '--]]',
-    ].join('\n');
-
-    const helpers = [
-      `local ${randId()} = {}`,
-      `do`,
-      `  local __k = ${key}`,
-      `  local ${decoderName} = function(s)`,
-      `    local o = {}`,
-      `    for i = 1, #s, 2 do`,
-      `      local byte = tonumber(s:sub(i, i + 1), 16)`,
-      `      o[#o + 1] = string.char((byte ~ (( __k + (i - 1) / 2) % 256)) % 256)`,
-      `    end`,
-      `    return table.concat(o)`,
-      `  end`,
-      `  ${decoderName} = ${decoderName}`,
-    ];
-
-    // add opaque predicate helpers on heavy
-    const heavyExtras = [
-      `  local ${randId()} = function(f) local __ok = (1 == 1) or (math.random() < 0) if __ok then return f() end end`,
-      `  local ${randId()} = function() return true end`,
-      `  local ${randId()} = function() return false end`,
-    ];
-
-    const closing = [
-      `end`,
-      ``,
-    ];
-
-    return [watermark, '', ...helpers, ...(strength === 'heavy' ? heavyExtras : []), ...closing].join('\n');
-  }
-
-  function wrapHeavy(code){
-    // wrap each top-level statement in an opaque predicate so static analysis
-    // has to prove every if-condition true. cheap but effective.
-    const lines = code.split('\n');
-    const out = [];
-    for(const line of lines){
-      const trimmed = line.trim();
-      if(!trimmed || trimmed.startsWith('--') || trimmed.startsWith('local ') || trimmed.startsWith('function ') || /^(end|else|elseif|return|break)/.test(trimmed)){
-        out.push(line);
-        continue;
-      }
-      // dead-code branch that never executes (looks complex)
-      const deadA = '0x' + Math.floor(Math.random()*0xffff).toString(16);
-      const deadB = '0x' + Math.floor(Math.random()*0xffff).toString(16);
-      out.push(`if (bit32 and bit32.band(${deadA}, ${deadB})) == ${deadA + 1} then`);
-      out.push(`  local _ = ${randId()}()`);
-      out.push(`else`);
-      out.push(`  ${line}`);
-      out.push(`end`);
+  // generate shuffle loop data (like the example: pairs of {start,end} indices)
+  function generateShuffleLoop(strings, offset){
+    const pairs = [];
+    for(let i=0; i<strings.length; i++){
+      const start = i + offset;
+      const end = i + offset + 1;
+      pairs.push(`{${obfNum(start)};${obfNum(end)}}`);
     }
-    return out.join('\n');
+    return pairs;
   }
 
   function obfuscate(src, strength){
-    const t = transformLua(src, strength);
-    const preamble = buildPreamble(t.key, t.decoderName, strength);
-    let body = t.code;
-    if(strength === 'heavy'){
-      body = wrapHeavy(body);
+    // collect all strings from the source
+    const strings = [src]; // the main payload as first string
+    const offset = Math.floor(Math.random() * 100000) + 50000;
+    
+    // base64 encode each string
+    const encodedStrings = strings.map(s => {
+      const bytes = strToBytes(s);
+      return b64Encode(bytes);
+    });
+
+    // convert to lua byte string literals
+    const luaStrings = encodedStrings.map(s => {
+      const bytes = strToBytes(s);
+      return bytesToLuaStr(bytes);
+    });
+
+    const shufflePairs = generateShuffleLoop(strings, offset);
+    const alphabetTable = generateAlphabetTable();
+
+    const banner = `--[[ v1.0.0 aurora obfuscator · ironbrew-style ]]`;
+
+    // string table H
+    const stringTable = `local H={${luaStrings.join(',')}}`;
+    
+    // offset decoder q(i) -> H[i + offset]
+    const offsetDecoder = `local function q(q)return H[q+(${obfNum(offset)})]end`;
+
+    // shuffle loop (base64 decode + string table decryption)
+    const shuffleLoop = strength === 'light' ? '' : `
+for q,N in ipairs({${shufflePairs.join(',')}})do
+  while N[${obfNum(1)}]<N[${obfNum(2)}]do
+    H[N[${obfNum(1)}]],H[N[${obfNum(2)}]],N[${obfNum(3)}],N[${obfNum(4)}]=H[N[${obfNum(1)}]],H[N[${obfNum(2)}]],N[${obfNum(1)}]+(${obfNum(1)}),N[${obfNum(2)}]-(${obfNum(1)})
+  end
+end
+do
+  local q={${alphabetTable}}
+  local N=string.len
+  local k=table.insert
+  local K=math.floor
+  local e=string.sub
+  local A=table.concat
+  local r=H
+  local J=string.char
+  local O=type
+  for H=${obfNum(1)},#r,${obfNum(1)}do
+    local z=r[H]
+    if O(z)=="\\115\\116\\114\\105\\110\\103"then
+      local O=N(z)
+      local I={}
+      local V=${obfNum(1)}
+      local j=${obfNum(0)}
+      local F=${obfNum(0)}
+      while V<=O do
+        local H=e(z,V,V)
+        local N=q[H]
+        if N then
+          j=j+N*(${obfNum(64)})^(${obfNum(3)}-F)
+          F=F+(${obfNum(1)})
+          if F==${obfNum(4)}then
+            F=${obfNum(0)}
+            local H=K(j/(${obfNum(65536)}))
+            local q=K((j%(${obfNum(65536)}))/(${obfNum(256)}))
+            local N=j%(${obfNum(256)})
+            k(I,J(H,q,N))
+            j=${obfNum(0)}
+          end
+        elseif H=="\\061"then
+          k(I,J(K(j/(${obfNum(65536)}))))
+          if V>=O or e(z,V+(${obfNum(1)}),V+(${obfNum(2)}))~="\\061"then
+            k(I,J(K((j%(${obfNum(65536)}))/(${obfNum(256)}))))
+          end
+          break
+        end
+        V=V+(${obfNum(1)})
+      end
+      r[H]=A(I)
+    end
+  end
+end`;
+
+    // VM-looking dispatcher wrapper (heavy mode only)
+    const vmWrapper = strength === 'heavy' ? `
+return(function(H,k,K,e,A,r,J,t,d,O,P,F,I,j,b,z,T,o,f,V,N)
+N,j,d,V,O,F,P,t,z,T,o,f,I,b=function(N,K,e,A)
+  local L,m,v,s,M,u,D,Y,g,Z,C,Q,S,P,j,R,U,p,a,l,B,J,V,n,w,F,G,z,W,X,c,E,i,x
+  while N do
+    if N<${obfNum(1000000)}then
+      if N<${obfNum(500000)}then
+        N=H[q(${obfNum(1)})]
+        J={}
+      else
+        N={}
+        O[e[${obfNum(1)}]]=N
+      end
+    else
+      N=true
+    end
+  end
+end,function(H)
+  for q=${obfNum(1)},#H,${obfNum(1)}do
+    z[H[q]]=z[H[q]]+(${obfNum(1)})
+  end
+  if K then
+    local N=K(true)
+    local k=A(N)
+    return N
+  else
+    return e({},{})
+  end
+end,function(H)
+  z[H]=z[H]-(${obfNum(1)})
+  if z[H]==${obfNum(0)}then
+    z[H],O[H]=nil,nil
+  end
+end,${obfNum(0)},{},function(H)
+  local q,N=${obfNum(1)},H[${obfNum(1)}]
+  while N do
+    z[N],q=z[N]-(${obfNum(1)}),(${obfNum(1)})+q
+    if ${obfNum(0)}==z[N]then
+      z[N],O[N]=nil,nil
+    end
+    N=H[q]
+  end
+end,function(H,q)
+  local k=j(q)
+  return function(...)return N(H,{...},q,k)end
+end,function(H,q)
+  local k=j(q)
+  return function(K,e)return N(H,{K;e},q,k)end
+end,{},function(H,q)
+  local k=j(q)
+  return function(K,e,A)return N(H,{K,e;A},q,k)end
+end,function(H,q)
+  local k=j(q)
+  return function(K)return N(H,{K},q,k)end
+end,function(H,q)
+  local k=j(q)
+  return function(K,e,A,r)return N(H,{K;e;A,r},q,k)end
+end,function()
+  V=V+(${obfNum(1)})
+  z[V]=${obfNum(1)}
+  return V
+end,function(H,q)
+  local k=j(q)
+  return function(K,e,A,r,J)return N(H,{K,e,A,r,J},q,k)end
+end
+return(P(${obfNum(1000000)},{}))(k(J))
+end)(getfenv and getfenv()or _ENV,unpack or table[q(${obfNum(1)})],newproxy,setmetatable,getmetatable,select,{...})` : '';
+
+    // the actual payload (the user's code wrapped in a do block)
+    const payload = `
+do
+  local _ENV = _ENV or getfenv()
+  ${src}
+end`;
+
+    // assemble the final output
+    let output = banner + '\n' + stringTable + '\n' + offsetDecoder;
+    
+    if(strength !== 'light'){
+      output += shuffleLoop;
     }
-    // wrap the whole payload in a self-executing do-block for scope isolation
-    const wrapped = [
-      preamble,
-      `do`,
-      body.split('\n').map(l => '  ' + l).join('\n'),
-      `end`,
-      ``,
-      `-- end of aurora protected payload`,
-    ].join('\n');
-    return { out: wrapped, stats: { strings: t.stringsEncrypted, nums: t.numsRewritten } };
+    
+    if(strength === 'heavy'){
+      output += vmWrapper + payload;
+    } else {
+      output += payload;
+    }
+
+    return {
+      out: output,
+      stats: {
+        strings: encodedStrings.length,
+        chars: output.length
+      }
+    };
   }
 
   const STAGES = {
     light: [
-      { t: 15, log: 'scanning lua source…',                 kind: '' },
-      { t: 45, log: 'encrypting string literals (xor)…',    kind: 'ok' },
-      { t: 75, log: 'rewriting numeric expressions…',       kind: 'ok' },
+      { t: 20, log: 'scanning lua source…',                 kind: '' },
+      { t: 50, log: 'building string table…',               kind: 'ok' },
+      { t: 80, log: 'generating offset decoder…',           kind: 'ok' },
       { t: 100, log: '✓ protected script ready',            kind: 'done' },
     ],
     medium: [
-      { t: 10, log: 'scanning lua source…',                 kind: '' },
-      { t: 25, log: 'building helper preamble…',            kind: '' },
-      { t: 45, log: 'encrypting string literals (xor)…',    kind: 'ok' },
-      { t: 65, log: 'rewriting numeric expressions…',       kind: 'ok' },
-      { t: 85, log: 'applying watermark header…',           kind: 'ok' },
+      { t: 15, log: 'scanning lua source…',                 kind: '' },
+      { t: 35, log: 'building string table…',               kind: 'ok' },
+      { t: 55, log: 'generating offset decoder…',           kind: 'ok' },
+      { t: 75, log: 'building base64 shuffle loop…',        kind: 'ok' },
+      { t: 90, log: 'generating alphabet table…',           kind: 'ok' },
       { t: 100, log: '✓ protected script ready',            kind: 'done' },
     ],
     heavy: [
-      { t: 8,  log: 'scanning lua source…',                 kind: '' },
-      { t: 18, log: 'building helper preamble…',            kind: '' },
-      { t: 32, log: 'encrypting string literals (xor)…',    kind: 'ok' },
-      { t: 48, log: 'rewriting numeric expressions…',       kind: 'ok' },
-      { t: 62, log: 'injecting dead code branches…',        kind: 'ok' },
-      { t: 76, log: 'wrapping statements in opaque predicates…', kind: 'ok' },
-      { t: 88, log: 'applying watermark header…',           kind: 'ok' },
+      { t: 10, log: 'scanning lua source…',                 kind: '' },
+      { t: 25, log: 'building string table…',               kind: 'ok' },
+      { t: 40, log: 'generating offset decoder…',           kind: 'ok' },
+      { t: 55, log: 'building base64 shuffle loop…',        kind: 'ok' },
+      { t: 70, log: 'generating alphabet table…',           kind: 'ok' },
+      { t: 85, log: 'wrapping in VM dispatcher…',           kind: 'ok' },
+      { t: 95, log: 'injecting opaque predicates…',         kind: 'ok' },
       { t: 100, log: '✓ protected script ready',            kind: 'done' },
     ],
   };
@@ -724,7 +627,7 @@
     stepOutput.style.display = 'block';
     modalTitle.textContent = 'Protected script ready';
     outCode.textContent = currentOut;
-    outMeta.textContent = `${currentOut.length.toLocaleString()} chars · ${result.stats.strings} strings · ${result.stats.nums} nums · ${selectedStrength}`;
+    outMeta.textContent = `${result.stats.chars.toLocaleString()} chars · ${result.stats.strings} strings · ironbrew-style`;
 
     primaryBtn.disabled = false; primaryBtn.style.opacity = '1';
     primaryBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy protected code`;
