@@ -79,15 +79,18 @@
   .btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 34px rgba(56,189,248,.55);}
   .btn-ghost{color:#e6f1ff;background:rgba(148,197,255,.07);border-color:rgba(148,197,255,.35);}
   .btn-ghost:hover{background:rgba(148,197,255,.14);border-color:rgba(170,210,255,.6);}
+  .btn-violet{color:#fff;background:linear-gradient(135deg,#8b5cf6,#6366f1);box-shadow:0 8px 26px rgba(139,92,246,.35);}
+  .btn-violet:hover{transform:translateY(-2px);box-shadow:0 12px 34px rgba(139,92,246,.5);}
+  .btn-sm{padding:.5rem .9rem;font-size:.82rem;}
   .list{display:flex;flex-direction:column;gap:.8rem;margin-top:1.5rem;}
-  .item{padding:1rem 1.1rem;border-radius:12px;background:var(--panel);border:1px solid var(--border);display:flex;align-items:center;gap:1rem;cursor:pointer;transition:border-color .2s ease, background .2s ease;}
+  .item{padding:1rem 1.1rem;border-radius:12px;background:var(--panel);border:1px solid var(--border);display:flex;align-items:center;gap:1rem;transition:border-color .2s ease, background .2s ease;flex-wrap:wrap;}
   .item:hover{border-color:rgba(148,197,255,.4);background:var(--panel-hi);}
   .item-icon{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#c4b5fd,var(--violet));display:flex;align-items:center;justify-content:center;flex:none;}
   .item-icon svg{width:20px;height:20px;stroke:#0c0820;fill:none;stroke-width:2.2;}
   .item-name{font-family:'Product Sans Medium',var(--sans);font-weight:500;font-size:.95rem;}
   .item-meta{font-size:.76rem;color:var(--ink-dim);margin-top:2px;}
-  .item-copy{margin-left:auto;padding:.45rem .9rem;border-radius:8px;background:rgba(148,197,255,.1);border:1px solid rgba(148,197,255,.25);color:#cfd6e6;font-family:'Product Sans Medium',var(--sans);font-weight:500;font-size:.8rem;cursor:pointer;transition:all .2s ease;}
-  .item-copy:hover{background:rgba(148,197,255,.2);color:#fff;}
+  .item-id{font-family:var(--mono);font-size:.72rem;color:var(--sky);margin-top:2px;}
+  .item-actions{margin-left:auto;display:flex;gap:.5rem;flex-wrap:wrap;}
   .empty{padding:2.2rem;text-align:center;color:var(--ink-dim);background:var(--panel);border:1px dashed var(--border);border-radius:14px;}
   .modal-backdrop{position:fixed;inset:0;z-index:50;background:rgba(2,4,12,.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .25s ease;}
   .modal-backdrop.show{opacity:1;pointer-events:auto;}
@@ -100,6 +103,9 @@
   .modal-body{padding:1.4rem;flex:1;overflow:auto;}
   .modal-footer{padding:1rem 1.4rem;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:.6rem;flex-wrap:wrap;}
   .step-label{font-size:.72rem;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-dim);margin:0 0 .6rem;}
+  input[type="text"].field{width:100%;padding:12px 14px;border-radius:12px;background:rgba(3,5,14,.6);border:1px solid var(--border);color:var(--ink);font-family:var(--sans);font-size:.95rem;outline:none;transition:border-color .2s ease;margin-bottom:1rem;}
+  input[type="text"].field:focus{border-color:rgba(148,197,255,.5);}
+  input[type="text"].field::placeholder{color:#5a6178;}
   textarea{width:100%;min-height:220px;padding:14px;border-radius:12px;background:rgba(3,5,14,.6);border:1px solid var(--border);color:var(--ink);font-family:var(--mono);font-size:.88rem;line-height:1.55;resize:vertical;outline:none;transition:border-color .2s ease;}
   textarea:focus{border-color:rgba(148,197,255,.5);}
   .strength-row{display:flex;gap:.6rem;margin:1.2rem 0;flex-wrap:wrap;}
@@ -123,7 +129,11 @@
   .out-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.7rem;}
   .out-title{font-family:'Product Sans Black',var(--sans);font-weight:900;font-size:1rem;}
   .out-meta{font-size:.76rem;color:var(--ink-dim);font-family:var(--mono);}
-  .output{margin:0;padding:14px;border-radius:12px;background:rgba(3,5,14,.6);border:1px solid var(--border);color:#cfd6e6;font-family:var(--mono);font-size:.82rem;line-height:1.55;max-height:340px;overflow:auto;white-space:pre-wrap;word-break:break-all;}
+  .output{margin:0;padding:14px;border-radius:12px;background:rgba(3,5,14,.6);border:1px solid var(--border);color:#cfd6e6;font-family:var(--mono);font-size:.82rem;line-height:1.55;max-height:240px;overflow:auto;white-space:pre-wrap;word-break:break-all;}
+  .published-card{padding:1rem;border-radius:12px;background:rgba(45,212,191,.06);border:1px solid rgba(45,212,191,.25);margin-top:1rem;}
+  .published-card .pub-label{font-size:.72rem;letter-spacing:.3em;text-transform:uppercase;color:#5eead4;margin:0 0 .5rem;}
+  .published-card .pub-id{font-family:var(--mono);font-size:.88rem;color:var(--sky);margin:0 0 .8rem;word-break:break-all;}
+  .published-card .pub-actions{display:flex;gap:.5rem;flex-wrap:wrap;}
   .spinner{width:16px;height:16px;border:2px solid rgba(4,18,26,.3);border-top-color:#04121a;border-radius:50%;animation:spin .6s linear infinite;}
   @keyframes spin{to{transform:rotate(360deg);}}
   .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);padding:.7rem 1.4rem;border-radius:12px;background:rgba(12,16,30,.92);border:1px solid rgba(148,197,255,.3);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);font-family:'Product Sans Medium',var(--sans);font-weight:500;font-size:.9rem;color:#fff;box-shadow:0 10px 32px rgba(2,4,12,.5);opacity:0;pointer-events:none;transition:opacity .3s ease, transform .3s cubic-bezier(.2,.7,.3,1);z-index:60;}
@@ -171,27 +181,26 @@
         <p class="subline">Protect your work. Make it unstealable.</p>
         <div class="stat">
           <div class="stat-icon"><svg viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5-3.5 9-9 10-5.5-1-9-5-9-10V6l9-4z"/><polyline points="9 12 11 14 15 10"/></svg></div>
-          <div><p class="stat-label">Scripts obfuscated</p><p class="stat-value" id="totalCount">0</p></div>
+          <div><p class="stat-label">Scripts published</p><p class="stat-value" id="totalCount">0</p></div>
         </div>
         <section class="view active" data-view="home">
           <div class="hero-card">
             <h2 class="hero-title">Protect your hard work</h2>
-            <p class="hero-text">Aurora's obfuscator wraps your Lua in encrypted payloads — base64 + XOR with random keys, shuffled chunk tables, and a built-in decoder. Paste your code, pick a strength, hit publish.</p>
+            <p class="hero-text">Paste your Lua, pick a strength, hit publish. Get a public URL that only executors can load — browsers see "Access denied".</p>
             <div style="display:flex;gap:.6rem;flex-wrap:wrap;">
-              <button class="btn btn-primary" id="heroAddBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add script</button>
+              <button class="btn btn-primary" id="heroAddBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>New script</button>
               <a class="btn btn-ghost" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>Back to landing</a>
             </div>
           </div>
-          <h3 style="font-family:'Product Sans Black',var(--sans);font-weight:900;font-size:1.1rem;margin:2rem 0 1rem;">Recent scripts</h3>
-          <div id="recentList" class="list"><div class="empty">No scripts obfuscated yet. Click <strong>Add script</strong> to protect your first one.</div></div>
+          <h3 style="font-family:'Product Sans Black',var(--sans);font-weight:900;font-size:1.1rem;margin:2rem 0 1rem;">Published scripts</h3>
+          <div id="recentList" class="list"><div class="empty">No scripts published yet. Click <strong>New script</strong> to protect your first one.</div></div>
         </section>
         <section class="view" data-view="obfuscation">
           <div class="hero-card">
-            <h2 class="hero-title">Obfuscation</h2>
-            <p class="hero-text">Each strength adds another layer of encryption. Light = base64 + decoder. Medium = + shuffled chunk table. Heavy = + XOR encryption with random key.</p>
-            <button class="btn btn-primary" id="addBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add</button>
+            <h2 class="hero-title">All scripts</h2>
+            <p class="hero-text">Every script you've published. Copy the loader to share it, or open the view page.</p>
+            <button class="btn btn-primary" id="addBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>New script</button>
           </div>
-          <h3 style="font-family:'Product Sans Black',var(--sans);font-weight:900;font-size:1.1rem;margin:2rem 0 1rem;">All scripts</h3>
           <div id="allList" class="list"><div class="empty">No scripts yet.</div></div>
         </section>
       </div>
@@ -201,11 +210,13 @@
   <div class="modal-backdrop" id="modal">
     <div class="modal">
       <div class="modal-header">
-        <h3 class="modal-title" id="modalTitle">Paste your Lua script</h3>
+        <h3 class="modal-title" id="modalTitle">New script</h3>
         <button class="modal-close" id="modalClose" aria-label="Close"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
       </div>
       <div class="modal-body">
         <div id="stepPaste">
+          <p class="step-label">Script name</p>
+          <input type="text" class="field" id="nameInput" placeholder="e.g. MM2 script, aimbot, etc." maxlength="64" />
           <p class="step-label">Lua source</p>
           <textarea id="srcInput" placeholder="-- paste your lua script here&#10;print('hello aurora')"></textarea>
           <p class="step-label" style="margin-top:1.2rem;">Strength</p>
@@ -223,7 +234,7 @@
         <div id="stepProgress" style="display:none;">
           <div class="progress-wrap">
             <div class="progress-head">
-              <div class="progress-title">Obfuscation in progress…</div>
+              <div class="progress-title">Obfuscating…</div>
               <div class="progress-percent" id="progPercent">0%</div>
             </div>
             <div class="bar"><div class="bar-fill" id="progFill"></div></div>
@@ -232,15 +243,30 @@
         </div>
         <div id="stepOutput" style="display:none;">
           <div class="out-head">
-            <div class="out-title">Protected script</div>
-            <div class="out-meta" id="outMeta">0 chars · 0 strings</div>
+            <div class="out-title">Obfuscated code</div>
+            <div class="out-meta" id="outMeta">0 chars</div>
           </div>
           <pre class="output" id="outCode"></pre>
+          <div id="pubSection">
+            <div style="margin-top:1rem;display:flex;gap:.5rem;flex-wrap:wrap;">
+              <button class="btn btn-violet" id="publishBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>Publish to public</button>
+              <button class="btn btn-ghost btn-sm" id="copyRawBtn">Copy raw code</button>
+            </div>
+            <div class="published-card" id="publishedCard" style="display:none;">
+              <p class="pub-label">✓ Published · public ID</p>
+              <p class="pub-id" id="pubId">—</p>
+              <div class="pub-actions">
+                <button class="btn btn-primary btn-sm" id="copyLoaderBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy loader</button>
+                <a class="btn btn-ghost btn-sm" id="viewPageBtn" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>View page</a>
+              </div>
+              <p style="font-size:.72rem;color:var(--ink-dim);margin:.8rem 0 0;line-height:1.5;">Give the loader to anyone — only executors can run it. Browsers see "Access denied".</p>
+            </div>
+          </div>
         </div>
       </div>
       <div class="modal-footer" id="modalFooter">
         <button class="btn btn-ghost" id="cancelBtn">Cancel</button>
-        <button class="btn btn-primary" id="primaryBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Continue</button>
+        <button class="btn btn-primary" id="primaryBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Obfuscate</button>
       </div>
     </div>
   </div>
@@ -281,7 +307,7 @@
   });
 
   const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const STORE_KEY = 'aurora_obf_scripts_v1';
+  const STORE_KEY = 'aurora_obf_scripts_v2';
   let scripts = [];
   try { scripts = JSON.parse(localStorage.getItem(STORE_KEY) || '[]'); } catch(_){ scripts = []; }
   const totalCountEl = document.getElementById('totalCount');
@@ -304,20 +330,36 @@
   const recentList = document.getElementById('recentList');
   const allList = document.getElementById('allList');
   function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
+  function buildLoader(id){
+    return '-- aurora loader · ' + id + '\nloadstring(game:GetService("HttpService"):JSONDecode(request({Url="https://nolklwapllgigshfejyz.supabase.co/rest/v1/scripts?id=eq.' + id + '&select=code",Headers={apikey="' + SUPABASE_ANON_KEY + '",Authorization="Bearer ' + SUPABASE_ANON_KEY + '"}}).Body)[1].code)()';
+  }
   function renderLists(){
     const sorted = [...scripts].sort((a,b)=> b.ts - a.ts);
-    const recent = sorted.slice(0, 3);
     function buildList(container, arr){
       container.innerHTML = '';
-      if(arr.length === 0){ const empty = document.createElement('div'); empty.className = 'empty'; empty.innerHTML = 'No scripts obfuscated yet. Click <strong>Add script</strong> to protect your first one.'; container.appendChild(empty); return; }
+      if(arr.length === 0){ const empty = document.createElement('div'); empty.className = 'empty'; empty.innerHTML = 'No scripts published yet. Click <strong>New script</strong> to protect your first one.'; container.appendChild(empty); return; }
       arr.forEach(s=>{
         const row = document.createElement('div'); row.className = 'item';
-        row.innerHTML = '<div class="item-icon"><svg viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5-3.5 9-9 10-5.5-1-9-5-9-10V6l9-4z"/><polyline points="9 12 11 14 15 10"/></svg></div><div style="min-width:0;"><div class="item-name">' + escapeHtml(s.name) + '</div><div class="item-meta">' + new Date(s.ts).toLocaleString() + ' · ' + s.out.length.toLocaleString() + ' chars · ' + s.strength + '</div></div><button class="item-copy">Copy</button>';
-        row.querySelector('.item-copy').addEventListener('click', (e)=>{ e.stopPropagation(); copyText(s.out); });
+        row.innerHTML = '<div class="item-icon"><svg viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5-3.5 9-9 10-5.5-1-9-5-9-10V6l9-4z"/><polyline points="9 12 11 14 15 10"/></svg></div>' +
+          '<div style="min-width:0;flex:1;"><div class="item-name">' + escapeHtml(s.name) + '</div>' +
+          '<div class="item-meta">' + new Date(s.ts).toLocaleString() + ' · ' + s.strength + ' · ' + (s.out ? s.out.length.toLocaleString() + ' chars' : '') + '</div>' +
+          (s.pubId ? '<div class="item-id">id: ' + s.pubId + '</div>' : '') +
+          '</div>' +
+          '<div class="item-actions">' +
+          (s.pubId ? '<button class="btn btn-ghost btn-sm copy-loader-btn">Copy loader</button>' : '') +
+          (s.pubId ? '<a class="btn btn-ghost btn-sm view-page-btn" target="_blank" rel="noopener" href="view.html?id=' + s.pubId + '">View page</a>' : '') +
+          (s.out ? '<button class="btn btn-ghost btn-sm copy-raw-btn">Copy raw</button>' : '') +
+          '</div>';
         container.appendChild(row);
       });
+      container.querySelectorAll('.copy-loader-btn').forEach((btn, i) => {
+        btn.addEventListener('click', (e) => { e.stopPropagation(); copyText(buildLoader(sorted[i].pubId)); });
+      });
+      container.querySelectorAll('.copy-raw-btn').forEach((btn, i) => {
+        btn.addEventListener('click', (e) => { e.stopPropagation(); copyText(sorted[i].out); });
+      });
     }
-    buildList(recentList, recent);
+    buildList(recentList, sorted);
     buildList(allList, sorted);
   }
   renderLists();
@@ -333,6 +375,7 @@
   const stepPaste = document.getElementById('stepPaste');
   const stepProgress = document.getElementById('stepProgress');
   const stepOutput = document.getElementById('stepOutput');
+  const nameInput = document.getElementById('nameInput');
   const srcInput = document.getElementById('srcInput');
   const progFill = document.getElementById('progFill');
   const progPercent = document.getElementById('progPercent');
@@ -342,18 +385,31 @@
   const primaryBtn = document.getElementById('primaryBtn');
   const cancelBtn = document.getElementById('cancelBtn');
   const modalClose = document.getElementById('modalClose');
+  const publishBtn = document.getElementById('publishBtn');
+  const copyRawBtn = document.getElementById('copyRawBtn');
+  const copyLoaderBtn = document.getElementById('copyLoaderBtn');
+  const viewPageBtn = document.getElementById('viewPageBtn');
+  const publishedCard = document.getElementById('publishedCard');
+  const pubIdEl = document.getElementById('pubId');
   let currentSrc = '';
   let currentOut = '';
+  let currentName = '';
+  let currentPubId = '';
+  let published = false;
 
   function openModal(){
+    nameInput.value = '';
     srcInput.value = '';
+    nameInput.style.borderColor = '';
     stepPaste.style.display = 'block'; stepProgress.style.display = 'none'; stepOutput.style.display = 'none';
-    modalTitle.textContent = 'Paste your Lua script';
-    primaryBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Continue';
+    publishedCard.style.display = 'none';
+    modalTitle.textContent = 'New script';
+    primaryBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Obfuscate';
     primaryBtn.disabled = false; primaryBtn.style.opacity = '1';
-    cancelBtn.textContent = 'Cancel'; cancelBtn.onclick = closeModal;
+    cancelBtn.textContent = 'Cancel';
+    currentSrc = ''; currentOut = ''; currentName = ''; currentPubId = ''; published = false;
     modal.classList.add('show');
-    setTimeout(()=> srcInput.focus(), 250);
+    setTimeout(()=> nameInput.focus(), 250);
   }
   function closeModal(){ modal.classList.remove('show'); }
   cancelBtn.addEventListener('click', closeModal);
@@ -363,16 +419,14 @@
   document.getElementById('addBtn').addEventListener('click', openModal);
   primaryBtn.addEventListener('click', ()=>{
     if(stepPaste.style.display !== 'none'){
+      const name = nameInput.value.trim();
       const src = srcInput.value.trim();
+      if(!name){ nameInput.focus(); nameInput.style.borderColor = 'rgba(239,68,68,.6)'; setTimeout(()=> nameInput.style.borderColor='', 1200); return; }
       if(!src){ srcInput.focus(); srcInput.style.borderColor = 'rgba(239,68,68,.6)'; setTimeout(()=> srcInput.style.borderColor='', 1200); return; }
-      currentSrc = src;
+      currentSrc = src; currentName = name;
       runObfuscation();
-    } else if(stepOutput.style.display !== 'none'){
-      copyText(currentOut);
     }
   });
-
-  // === OBFUSCATION ENGINE (rewritten) ===
 
   function b64Encode(bytes){
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
@@ -384,7 +438,6 @@
     }
     return out;
   }
-
   function strToBytes(s){
     const bytes = [];
     for(let i=0; i<s.length; i++){
@@ -395,25 +448,10 @@
     }
     return bytes;
   }
-
-  function escLua(s){
-    return s.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n').replace(/\r/g, '\\r').replace(/\t/g, '\\t').replace(/\0/g, '\\0');
-  }
-
+  function escLua(s){ return s.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n').replace(/\r/g, '\\r').replace(/\t/g, '\\t').replace(/\0/g, '\\0'); }
   let _vc = 0;
-  function rv(){
-    const c = 'abcdefghijklmnopqrstuvwxyz';
-    let n;
-    do { n = '_L' + _vc + '_' + Array.from({length:6}, ()=> c[Math.floor(Math.random()*c.length)]).join(''); _vc++; } while(false);
-    return n;
-  }
-
-  function on(n){
-    const a = Math.floor(Math.random() * 100000) + 1000;
-    return '(' + a + '+' + (n - a) + ')';
-  }
-
-  // Shared Lua base64 decoder
+  function rv(){ const c='abcdefghijklmnopqrstuvwxyz'; let n; do { n='_L'+_vc+'_'+Array.from({length:6},()=>c[Math.floor(Math.random()*c.length)]).join(''); _vc++; } while(false); return n; }
+  function on(n){ const a=Math.floor(Math.random()*100000)+1000; return '('+a+'+'+(n-a)+')'; }
   const LUA_B64_DECODER = (b, d, s) => `local function ${d}(${s})
     ${s}=string.gsub(${s},'[^'..${b}..'=]','')
     return(${s}:gsub('.',function(x)
@@ -428,157 +466,132 @@
         return string.char(c)
     end))
 end`;
-
   function obfuscate(src, strength){
-    const banner = '--[[ aurora obfuscator v1.0.0 · ' + strength + ' ]]';
+    const banner = '--[[ aurora obfuscator v1.1.0 · ' + strength + ' ]]';
     const b64 = b64Encode(strToBytes(src));
-
     if(strength === 'light'){
-      const b = rv(), d = rv(), s = rv(), r = rv(), f = rv(), e = rv();
-      const out = banner + '\n' +
-        'local ' + b + '="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"\n' +
-        LUA_B64_DECODER(b, d, s) + '\n' +
-        'local ' + r + '=' + d + '("' + escLua(b64) + '")\n' +
-        'local ' + f + ',' + e + '=loadstring(' + r + ')\n' +
-        'if ' + f + ' then ' + f + '() else error(' + e + ') end';
-      return { out: out, stats: { strings: 1, chars: out.length } };
+      const b=rv(),d=rv(),s=rv(),r=rv(),f=rv(),e=rv();
+      const out=banner+'\nlocal '+b+'="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"\n'+LUA_B64_DECODER(b,d,s)+'\nlocal '+r+'='+d+'("'+escLua(b64)+'")\nlocal '+f+','+e+'=loadstring('+r+')\nif '+f+' then '+f+'() else error('+e+') end';
+      return { out, stats:{ strings:1, chars:out.length } };
     }
-
     if(strength === 'medium'){
-      const chunkSize = Math.max(40, Math.floor(b64.length / 5));
-      const chunks = [];
-      for(let i = 0; i < b64.length; i += chunkSize) chunks.push(b64.slice(i, i + chunkSize));
-      const indices = chunks.map((_, i) => i);
-      for(let i = indices.length - 1; i > 0; i--){
-        const j = Math.floor(Math.random() * (i + 1));
-        [indices[i], indices[j]] = [indices[j], indices[i]];
-      }
-      const tbl = rv(), map = rv(), i = rv(), res = rv(), b = rv(), d = rv(), s = rv(), fn = rv(), err = rv();
-      const entries = [];
-      for(let pos = 0; pos < indices.length; pos++) entries.push('[' + on(pos) + ']="' + escLua(chunks[indices[pos]]) + '"');
-      const reverseMap = new Array(chunks.length);
-      for(let pos = 0; pos < indices.length; pos++) reverseMap[indices[pos]] = pos;
-      const mapEntries = reverseMap.map((pos, origIdx) => '[' + on(origIdx) + ']=' + on(pos)).join(',');
-      const out = banner + '\n' +
-        'local ' + tbl + '={' + entries.join(',') + '}\n' +
-        'local ' + map + '={' + mapEntries + '}\n' +
-        'local ' + res + '=""\n' +
-        'for ' + i + '=' + on(0) + ',' + on(chunks.length - 1) + ' do\n' +
-        '    ' + res + '=' + res + '..' + tbl + '[' + map + '[' + i + ']]\n' +
-        'end\n' +
-        'local ' + b + '="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"\n' +
-        LUA_B64_DECODER(b, d, s) + '\n' +
-        'local ' + fn + ',' + err + '=loadstring(' + d + '(' + res + '))\n' +
-        'if ' + fn + ' then ' + fn + '() else error(' + err + ') end';
-      return { out: out, stats: { strings: chunks.length, chars: out.length } };
+      const chunkSize=Math.max(40,Math.floor(b64.length/5)); const chunks=[];
+      for(let i=0;i<b64.length;i+=chunkSize) chunks.push(b64.slice(i,i+chunkSize));
+      const indices=chunks.map((_,i)=>i);
+      for(let i=indices.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [indices[i],indices[j]]=[indices[j],indices[i]]; }
+      const tbl=rv(),map=rv(),i=rv(),res=rv(),b=rv(),d=rv(),s=rv(),fn=rv(),err=rv();
+      const entries=[]; for(let pos=0;pos<indices.length;pos++) entries.push('['+on(pos)+']="'+escLua(chunks[indices[pos]])+'"');
+      const reverseMap=new Array(chunks.length); for(let pos=0;pos<indices.length;pos++) reverseMap[indices[pos]]=pos;
+      const mapEntries=reverseMap.map((pos,origIdx)=>'['+on(origIdx)+']='+on(pos)).join(',');
+      const out=banner+'\nlocal '+tbl+'={'+entries.join(',')+'}\nlocal '+map+'={'+mapEntries+'}\nlocal '+res+'=""\nfor '+i+'='+on(0)+','+on(chunks.length-1)+' do\n    '+res+'='+res+'..'+tbl+'['+map+'['+i+']]\nend\nlocal '+b+'="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"\n'+LUA_B64_DECODER(b,d,s)+'\nlocal '+fn+','+err+'=loadstring('+d+'('+res+'))\nif '+fn+' then '+fn+'() else error('+err+') end';
+      return { out, stats:{ strings:chunks.length, chars:out.length } };
     }
-
     if(strength === 'heavy'){
-      const keyLen = 16;
-      const keyBytes = Array.from({length: keyLen}, () => Math.floor(Math.random() * 256));
-      const srcBytes = strToBytes(src);
-      const xored = [];
-      for(let i = 0; i < srcBytes.length; i++) xored.push(srcBytes[i] ^ keyBytes[i % keyLen]);
-      const encB64 = b64Encode(xored);
-      const tbl = rv(), k = rv(), b = rv(), d = rv(), s = rv(), dec = rv(), res = rv(), ii = rv(), cb = rv(), kb = rv(), p = rv(), a = rv(), b2 = rv(), x = rv(), fn = rv(), err = rv();
-      const keyTable = keyBytes.map(n => on(n)).join(',');
-      const out = banner + '\n' +
-        'local ' + tbl + '={"' + escLua(encB64) + '"}\n' +
-        'local ' + k + '={' + keyTable + '}\n' +
-        'local ' + b + '="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"\n' +
-        LUA_B64_DECODER(b, d, s) + '\n' +
-        'local ' + dec + '=' + d + '(' + tbl + '[' + on(1) + '])\n' +
-        'local ' + res + '=""\n' +
-        'for ' + ii + '=' + on(1) + ',#' + dec + ' do\n' +
-        '    local ' + cb + '=string.byte(' + dec + ',' + ii + ')\n' +
-        '    local ' + kb + '=' + k + '[(' + ii + '-' + on(1) + ')%#' + k + '+' + on(1) + ']\n' +
-        '    local ' + x + '=0\n' +
-        '    for ' + p + '=' + on(0) + ',' + on(7) + ' do\n' +
-        '        local ' + a + '=math.floor(' + cb + '/2^' + p + ')%2\n' +
-        '        local ' + b2 + '=math.floor(' + kb + '/2^' + p + ')%2\n' +
-        '        if ' + a + '~=' + b2 + ' then ' + x + '=' + x + '+2^' + p + ' end\n' +
-        '    end\n' +
-        '    ' + res + '=' + res + '..string.char(' + x + ')\n' +
-        'end\n' +
-        'local ' + fn + ',' + err + '=loadstring(' + res + ')\n' +
-        'if ' + fn + ' then ' + fn + '() else error(' + err + ') end';
-      return { out: out, stats: { strings: 1, chars: out.length } };
+      const keyLen=16; const keyBytes=Array.from({length:keyLen},()=>Math.floor(Math.random()*256));
+      const srcBytes=strToBytes(src); const xored=[];
+      for(let i=0;i<srcBytes.length;i++) xored.push(srcBytes[i]^keyBytes[i%keyLen]);
+      const encB64=b64Encode(xored);
+      const tbl=rv(),k=rv(),b=rv(),d=rv(),s=rv(),dec=rv(),res=rv(),ii=rv(),cb=rv(),kb=rv(),p=rv(),a=rv(),b2=rv(),x=rv(),fn=rv(),err=rv();
+      const keyTable=keyBytes.map(n=>on(n)).join(',');
+      const out=banner+'\nlocal '+tbl+'={"'+escLua(encB64)+'"}\nlocal '+k+'={'+keyTable+'}\nlocal '+b+'="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"\n'+LUA_B64_DECODER(b,d,s)+'\nlocal '+dec+'='+d+'('+tbl+'['+on(1)+'])\nlocal '+res+'=""\nfor '+ii+'='+on(1)+',#'+dec+' do\n    local '+cb+'=string.byte('+dec+','+ii+')\n    local '+kb+'='+k+'[('+ii+'-'+on(1)+')%#'+k+'+'+on(1)+']\n    local '+x+'=0\n    for '+p+'='+on(0)+','+on(7)+' do\n        local '+a+'=math.floor('+cb+'/2^'+p+')%2\n        local '+b2+'=math.floor('+kb+'/2^'+p+')%2\n        if '+a+'~='+b2+' then '+x+'='+x+'+2^'+p+' end\n    end\n    '+res+'='+res+'..string.char('+x+')\nend\nlocal '+fn+','+err+'=loadstring('+res+')\nif '+fn+' then '+fn+'() else error('+err+') end';
+      return { out, stats:{ strings:1, chars:out.length } };
     }
   }
 
-  // === END OBFUSCATION ENGINE ===
-
   const STAGES = {
-    light: [{ t: 20, log: 'scanning lua source…', kind: '' }, { t: 50, log: 'building base64 payload…', kind: 'ok' }, { t: 80, log: 'injecting decoder…', kind: 'ok' }, { t: 100, log: '✓ protected script ready', kind: 'done' }],
-    medium: [{ t: 15, log: 'scanning lua source…', kind: '' }, { t: 35, log: 'building base64 payload…', kind: 'ok' }, { t: 55, log: 'splitting into chunks…', kind: 'ok' }, { t: 75, log: 'shuffling chunk table…', kind: 'ok' }, { t: 90, log: 'injecting decoder + reassembler…', kind: 'ok' }, { t: 100, log: '✓ protected script ready', kind: 'done' }],
-    heavy: [{ t: 10, log: 'scanning lua source…', kind: '' }, { t: 25, log: 'generating XOR key…', kind: 'ok' }, { t: 40, log: 'encrypting source bytes…', kind: 'ok' }, { t: 55, log: 'building base64 payload…', kind: 'ok' }, { t: 70, log: 'injecting key table…', kind: 'ok' }, { t: 85, log: 'building XOR reversal loop…', kind: 'ok' }, { t: 95, log: 'injecting decoder + loader…', kind: 'ok' }, { t: 100, log: '✓ protected script ready', kind: 'done' }],
+    light:[{t:20,log:'scanning lua source…',kind:''},{t:50,log:'building base64 payload…',kind:'ok'},{t:80,log:'injecting decoder…',kind:'ok'},{t:100,log:'✓ obfuscated',kind:'done'}],
+    medium:[{t:15,log:'scanning lua source…',kind:''},{t:35,log:'building base64 payload…',kind:'ok'},{t:55,log:'splitting into chunks…',kind:'ok'},{t:75,log:'shuffling chunk table…',kind:'ok'},{t:90,log:'injecting decoder + reassembler…',kind:'ok'},{t:100,log:'✓ obfuscated',kind:'done'}],
+    heavy:[{t:10,log:'scanning lua source…',kind:''},{t:25,log:'generating XOR key…',kind:'ok'},{t:40,log:'encrypting source bytes…',kind:'ok'},{t:55,log:'building base64 payload…',kind:'ok'},{t:70,log:'injecting key table…',kind:'ok'},{t:85,log:'building XOR reversal loop…',kind:'ok'},{t:95,log:'injecting decoder + loader…',kind:'ok'},{t:100,log:'✓ obfuscated',kind:'done'}],
   };
-
   function sleep(ms){ return new Promise(r=> setTimeout(r, REDUCED ? 10 : ms)); }
   function addLog(text, kind){
-    const l = document.createElement('div');
-    l.className = 'log-line' + (kind ? ' log-' + kind : '');
-    l.textContent = '> ' + text;
-    progLog.appendChild(l);
-    progLog.scrollTop = progLog.scrollHeight;
+    const l=document.createElement('div'); l.className='log-line'+(kind?' log-'+kind:''); l.textContent='> '+text;
+    progLog.appendChild(l); progLog.scrollTop=progLog.scrollHeight;
   }
 
   async function runObfuscation(){
-    stepPaste.style.display = 'none';
-    stepProgress.style.display = 'block';
-    progLog.innerHTML = '';
-    progFill.style.width = '0%';
-    progPercent.textContent = '0%';
-    primaryBtn.disabled = true; primaryBtn.style.opacity = '.5';
-    primaryBtn.innerHTML = '<div class="spinner"></div> Obfuscating…';
-    const stages = STAGES[selectedStrength];
+    stepPaste.style.display='none'; stepProgress.style.display='block'; stepOutput.style.display='none';
+    progLog.innerHTML=''; progFill.style.width='0%'; progPercent.textContent='0%';
+    primaryBtn.disabled=true; primaryBtn.style.opacity='.5';
+    primaryBtn.innerHTML='<div class="spinner"></div> Obfuscating…';
+    modalTitle.textContent='Obfuscating…';
+    const stages=STAGES[selectedStrength];
     for(const stage of stages){
-      await sleep(280 + Math.random()*220);
-      progFill.style.width = stage.t + '%';
-      progPercent.textContent = stage.t + '%';
-      addLog(stage.log, stage.kind);
+      await sleep(280+Math.random()*220);
+      progFill.style.width=stage.t+'%'; progPercent.textContent=stage.t+'%'; addLog(stage.log, stage.kind);
     }
     await sleep(220);
-    const result = obfuscate(currentSrc, selectedStrength);
-    currentOut = result.out;
-    stepProgress.style.display = 'none';
-    stepOutput.style.display = 'block';
-    modalTitle.textContent = 'Protected script ready';
-    outCode.textContent = currentOut;
-    outMeta.textContent = result.stats.chars.toLocaleString() + ' chars · ' + result.stats.strings + ' strings · ' + selectedStrength;
-    primaryBtn.disabled = false; primaryBtn.style.opacity = '1';
-    primaryBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy protected code';
-    cancelBtn.textContent = 'Publish';
-    cancelBtn.onclick = null;
-    cancelBtn.addEventListener('click', publishOnce, { once: true });
+    const result=obfuscate(currentSrc, selectedStrength);
+    currentOut=result.out;
+    stepProgress.style.display='none'; stepOutput.style.display='block';
+    modalTitle.textContent='Obfuscated: ' + currentName;
+    outCode.textContent=currentOut;
+    outMeta.textContent=result.stats.chars.toLocaleString()+' chars · '+result.stats.strings+' strings · '+selectedStrength;
+    primaryBtn.disabled=true; primaryBtn.style.display='none';
+    cancelBtn.textContent='Close'; cancelBtn.onclick=closeModal;
+    publishBtn.disabled=false; publishBtn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg> Publish to public';
+    publishedCard.style.display='none';
+    published=false;
   }
 
-  function publishOnce(){
-    if(!currentOut) return;
-    const firstCodeLine = currentSrc.split('\n').find(l=> l.trim() && !l.trim().startsWith('--')) || 'untitled.lua';
-    const cleanName = firstCodeLine.replace(/^--\s*/,'').slice(0, 48).trim() || 'untitled.lua';
-    scripts.unshift({ name: cleanName, src: currentSrc, out: currentOut, ts: Date.now(), strength: selectedStrength });
-    bump();
-    renderLists();
-    showToast('✓ Published to your library');
-    closeModal();
+  function genId(){
+    const chars='abcdefghijklmnopqrstuvwxyz0123456789';
+    let id=''; for(let i=0;i<8;i++) id+=chars[Math.floor(Math.random()*chars.length)];
+    return id;
   }
+
+  async function publishScript(){
+    publishBtn.disabled=true;
+    publishBtn.innerHTML='<div class="spinner"></div> Publishing…';
+    const id = genId();
+    try {
+      const { error } = await db.from('scripts').insert({
+        id: id,
+        name: currentName,
+        code: currentOut,
+        strength: selectedStrength,
+      });
+      if(error) throw error;
+      currentPubId = id;
+      published = true;
+      scripts.unshift({
+        name: currentName,
+        src: currentSrc,
+        out: currentOut,
+        ts: Date.now(),
+        strength: selectedStrength,
+        pubId: id,
+      });
+      bump();
+      renderLists();
+      pubIdEl.textContent = id;
+      viewPageBtn.href = 'view.html?id=' + id;
+      publishedCard.style.display = 'block';
+      publishBtn.innerHTML = '✓ Published';
+      publishBtn.disabled = true;
+      showToast('✓ Published · id: ' + id);
+    } catch(err) {
+      publishBtn.disabled = false;
+      publishBtn.innerHTML = '⚠ Failed — try again';
+      showToast('Publish failed: ' + (err.message || err));
+      console.error('Publish error:', err);
+    }
+  }
+
+  publishBtn.addEventListener('click', publishScript);
+  copyRawBtn.addEventListener('click', ()=> copyText(currentOut));
+  copyLoaderBtn.addEventListener('click', ()=> copyText(buildLoader(currentPubId)));
 
   const toast = document.getElementById('toast');
   let toastTimer;
-  function showToast(msg){
-    toast.textContent = msg;
-    toast.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(()=> toast.classList.remove('show'), 2200);
-  }
+  function showToast(msg){ toast.textContent=msg; toast.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>toast.classList.remove('show'),2200); }
   function copyText(t){
     if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(t).then(()=> showToast('Copied to clipboard')).catch(()=> fallbackCopy(t));
+      navigator.clipboard.writeText(t).then(()=>showToast('Copied to clipboard')).catch(()=>fallbackCopy(t));
     } else fallbackCopy(t);
   }
   function fallbackCopy(t){
-    const ta = document.createElement('textarea'); ta.value = t; ta.style.position='fixed'; ta.style.left='-9999px';
+    const ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.left='-9999px';
     document.body.appendChild(ta); ta.select();
     try{ document.execCommand('copy'); showToast('Copied to clipboard'); } catch(_){ showToast('Copy failed'); }
     document.body.removeChild(ta);
