@@ -20,8 +20,6 @@
   @keyframes d3{from{transform:translate3d(0,0,0) rotate(7deg);}to{transform:translate3d(-6vw,4vh,0) rotate(-5deg);}}
   .noise{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.05;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
   .vignette{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(120% 120% at 50% 40%, transparent 55%, rgba(2,4,12,.6) 100%);}
-  
-  /* Login screen - highest z-index, covers everything */
   .login-screen{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;gap:1.5rem;background:radial-gradient(120% 90% at 50% 110%, rgba(45,212,191,.14), transparent 60%),linear-gradient(180deg, var(--bg0) 0%, var(--bg1) 55%, #0a1128 100%);}
   .login-screen.hidden{display:none;}
   .login-title{font-family:'Product Sans Black',var(--sans);font-weight:900;font-size:clamp(2rem,5vw,3rem);margin:0;color:#fff;}
@@ -31,11 +29,8 @@
   .btn-discord svg{width:1.3rem;height:1.3rem;flex:none;}
   .login-back{color:var(--ink-dim);text-decoration:none;font-size:.9rem;margin-top:1rem;}
   .login-back:hover{color:var(--sky);}
-
-  /* Main app container */
   .app-container{position:relative;z-index:5;min-height:100vh;}
   .app-container.hidden{display:none;}
-
   .shell{display:flex;min-height:100vh;}
   .main{flex:1;padding:2.2rem 2.5rem 3rem;max-width:100%;}
   @media (max-width:720px){.main{padding:1.5rem 1.2rem 2rem;}}
@@ -108,30 +103,30 @@
   textarea{width:100%;min-height:220px;padding:14px;border-radius:12px;background:rgba(3,5,14,.6);border:1px solid var(--border);color:var(--ink);font-family:var(--mono);font-size:.88rem;line-height:1.55;resize:vertical;outline:none;transition:border-color .2s ease;}
   textarea:focus{border-color:rgba(148,197,255,.5);}
   .strength-row{display:flex;gap:.6rem;margin:1.2rem 0;flex-wrap:wrap;}
-  .strength-row label{display:inline-flex;align-items:center;gap:.5rem;padding:.5rem .9rem;border-radius:10px;background:rgba(148,197,255,.06);border:1px solid var(--border);color:var(--ink-dim);font-family:'Product Sans Medium',var(--sans);font-weight:500;font-size:.82rem;cursor:pointer;transition:all .2s ease;}
-  .strength-row label:hover{background:rgba(148,197,255,.1);color:#fff;}
-  .strength-row input[type="radio"]{appearance:none;width:14px;height:14px;border-radius:50%;border:1.5px solid var(--border);background:transparent;cursor:pointer;position:relative;}
-  .strength-row input[type="radio"]:checked{border-color:var(--sky);background:var(--sky);box-shadow:inset 0 0 0 3px rgba(12,16,30,.92);}
-  .strength-row label.selected{background:rgba(56,189,248,.12);border-color:rgba(148,197,255,.4);color:#fff;}
-  .progress-wrap{padding:1rem 0;}
-  .progress-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.8rem;}
-  .progress-title{font-family:'Product Sans Medium',var(--sans);font-weight:500;font-size:1.05rem;}
-  .progress-percent{font-family:var(--mono);font-size:.9rem;color:var(--sky);}
-  .bar{height:10px;border-radius:100px;background:rgba(148,197,255,.1);overflow:hidden;position:relative;}
-  .bar-fill{height:100%;width:0;border-radius:100px;background:linear-gradient(90deg,#5eead4,var(--sky) 50%,#818cf8);transition:width .2s linear;position:relative;box-shadow:0 0 18px rgba(56,189,248,.45);}
-  .bar-fill::after{content:"";position:absolute;top:0;right:0;bottom:0;width:50px;background:linear-gradient(90deg, transparent, rgba(255,255,255,.4));animation:shine 1.4s linear infinite;}
-  @keyframes shine{from{transform:translateX(-100%);}to{transform:translateX(200%);}}
-  .progress-log{margin-top:1rem;padding:12px;border-radius:10px;background:rgba(3,5,14,.55);font-family:var(--mono);font-size:.82rem;line-height:1.6;color:#a8b3c7;min-height:140px;max-height:200px;overflow:auto;}
-  .log-line{opacity:0;animation:logIn .25s ease forwards;}
-  @keyframes logIn{to{opacity:1;}}
-  .log-ok{color:#5eead4;}.log-warn{color:#fbbf24;}.log-done{color:#9fd4ff;font-weight:600;}
-  .spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;}
+  .strength-row label{padding:.65rem 1rem;border-radius:10px;background:rgba(148,197,255,.07);border:1px solid var(--border);cursor:pointer;font-family:'Product Sans Medium',var(--sans);font-weight:500;font-size:.88rem;color:#cfd6e6;transition:all .2s ease;user-select:none;}
+  .strength-row label:hover{background:rgba(148,197,255,.12);border-color:rgba(148,197,255,.35);}
+  .strength-row label.selected{background:linear-gradient(135deg, rgba(56,189,248,.18), rgba(139,92,246,.15));border-color:rgba(148,197,255,.5);color:#fff;}
+  .strength-row input{display:none;}
+  .progress-wrap{padding:.6rem 0;}
+  .progress-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.7rem;}
+  .progress-title{font-family:'Product Sans Black',var(--sans);font-weight:900;font-size:1rem;}
+  .progress-percent{font-family:'JetBrains Mono',var(--mono);font-size:.88rem;color:var(--sky);}
+  .bar{height:6px;border-radius:999px;background:rgba(148,197,255,.12);overflow:hidden;position:relative;}
+  .bar-fill{height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,#5eead4,var(--sky),#818cf8);transition:width .4s cubic-bezier(.2,.7,.3,1);position:relative;}
+  .bar-fill::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);animation:barShine 1.6s ease-in-out infinite;}
+  @keyframes barShine{from{transform:translateX(-100%);}to{transform:translateX(100%);}}
+  .progress-log{margin-top:1rem;max-height:200px;overflow-y:auto;font-family:var(--mono);font-size:.78rem;line-height:1.7;padding:12px;background:rgba(3,5,14,.5);border-radius:10px;border:1px solid var(--border);}
+  .log-line{animation:logIn .25s ease;opacity:0;transform:translateX(-8px);color:var(--ink-dim);}
+  .log-line.log-ok{color:#5eead4;}
+  .log-line.log-done{color:var(--sky);font-family:'Product Sans Medium',var(--sans);font-weight:500;}
+  @keyframes logIn{to{opacity:1;transform:translateX(0);}}
+  .out-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.7rem;}
+  .out-title{font-family:'Product Sans Black',var(--sans);font-weight:900;font-size:1rem;}
+  .out-meta{font-size:.76rem;color:var(--ink-dim);font-family:var(--mono);}
+  .output{margin:0;padding:14px;border-radius:12px;background:rgba(3,5,14,.6);border:1px solid var(--border);color:#cfd6e6;font-family:var(--mono);font-size:.82rem;line-height:1.55;max-height:340px;overflow:auto;white-space:pre-wrap;word-break:break-all;}
+  .spinner{width:16px;height:16px;border:2px solid rgba(4,18,26,.3);border-top-color:#04121a;border-radius:50%;animation:spin .6s linear infinite;}
   @keyframes spin{to{transform:rotate(360deg);}}
-  .output{width:100%;min-height:240px;max-height:60vh;padding:14px;border-radius:12px;background:rgba(3,5,14,.6);border:1px solid var(--border);color:#a8b3c7;font-family:var(--mono);font-size:.82rem;line-height:1.55;overflow:auto;white-space:pre-wrap;word-break:break-all;}
-  .out-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem;flex-wrap:wrap;gap:.6rem;}
-  .out-title{font-family:'Product Sans Medium',var(--sans);font-weight:500;font-size:1.05rem;}
-  .out-meta{font-size:.76rem;color:var(--ink-dim);letter-spacing:.15em;text-transform:uppercase;}
-  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);z-index:100;padding:.8rem 1.3rem;border-radius:12px;background:rgba(12,16,30,.92);border:1px solid rgba(148,197,255,.35);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font-family:'Product Sans Medium',var(--sans);font-weight:500;font-size:.9rem;opacity:0;pointer-events:none;transition:opacity .25s ease, transform .3s cubic-bezier(.2,.7,.3,1);}
+  .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);padding:.7rem 1.4rem;border-radius:12px;background:rgba(12,16,30,.92);border:1px solid rgba(148,197,255,.3);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);font-family:'Product Sans Medium',var(--sans);font-weight:500;font-size:.9rem;color:#fff;box-shadow:0 10px 32px rgba(2,4,12,.5);opacity:0;pointer-events:none;transition:opacity .3s ease, transform .3s cubic-bezier(.2,.7,.3,1);z-index:60;}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
   @media (prefers-reduced-motion: reduce){.ribbon,.bar-fill::after{animation:none !important;}.log-line{animation:none !important;opacity:1;}}
 </style>
@@ -140,7 +135,6 @@
   <div class="aurora"><div class="ribbon r1"></div><div class="ribbon r2"></div><div class="ribbon r3"></div></div>
   <div class="vignette"></div>
 
-  <!-- LOGIN SCREEN -->
   <div class="login-screen" id="loginScreen">
     <h1 class="login-title">aurora obfuscator</h1>
     <p class="login-sub">Protect your Lua scripts from skidders</p>
@@ -151,7 +145,6 @@
     <a href="index.html" class="login-back">← Back to home</a>
   </div>
 
-  <!-- MAIN APP -->
   <div class="app-container hidden" id="appContainer">
     <button class="burger" id="burger" aria-label="Toggle menu">
       <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
@@ -183,7 +176,7 @@
         <section class="view active" data-view="home">
           <div class="hero-card">
             <h2 class="hero-title">Protect your hard work</h2>
-            <p class="hero-text">Aurora's obfuscator wraps your Lua in an IronBrew-style VM payload — base64-encoded string table, offset decoder, shuffled decode loop, and a giant opaque-predicate dispatcher. Paste your code, pick a strength, hit publish.</p>
+            <p class="hero-text">Aurora's obfuscator wraps your Lua in encrypted payloads — base64 + XOR with random keys, shuffled chunk tables, and a built-in decoder. Paste your code, pick a strength, hit publish.</p>
             <div style="display:flex;gap:.6rem;flex-wrap:wrap;">
               <button class="btn btn-primary" id="heroAddBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add script</button>
               <a class="btn btn-ghost" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>Back to landing</a>
@@ -195,7 +188,7 @@
         <section class="view" data-view="obfuscation">
           <div class="hero-card">
             <h2 class="hero-title">Obfuscation</h2>
-            <p class="hero-text">Each pass wraps your script in an IronBrew-style VM payload. Light = string table + decoder. Medium = + base64 shuffle loop + alphabet table. Heavy = + opaque-predicate dispatcher wrapper.</p>
+            <p class="hero-text">Each strength adds another layer of encryption. Light = base64 + decoder. Medium = + shuffled chunk table. Heavy = + XOR encryption with random key.</p>
             <button class="btn btn-primary" id="addBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add</button>
           </div>
           <h3 style="font-family:'Product Sans Black',var(--sans);font-weight:900;font-size:1.1rem;margin:2rem 0 1rem;">All scripts</h3>
@@ -205,7 +198,6 @@
     </div>
   </div>
 
-  <!-- MODAL -->
   <div class="modal-backdrop" id="modal">
     <div class="modal">
       <div class="modal-header">
@@ -223,9 +215,9 @@
             <label data-strength="heavy"><input type="radio" name="strength" value="heavy" /> Heavy</label>
           </div>
           <p style="font-size:.78rem;color:var(--ink-dim);margin:.3rem 0 0;line-height:1.5;">
-            <b style="color:#9fd4ff">Light:</b> string table + offset decoder · 
-            <b style="color:#9fd4ff">Medium:</b> + base64 shuffle + alphabet table · 
-            <b style="color:#9fd4ff">Heavy:</b> + opaque-predicate VM wrapper
+            <b style="color:#9fd4ff">Light:</b> base64 + decoder · 
+            <b style="color:#9fd4ff">Medium:</b> + shuffled chunk table · 
+            <b style="color:#9fd4ff">Heavy:</b> + XOR encryption with random key
           </p>
         </div>
         <div id="stepProgress" style="display:none;">
@@ -241,7 +233,7 @@
         <div id="stepOutput" style="display:none;">
           <div class="out-head">
             <div class="out-title">Protected script</div>
-            <div class="out-meta" id="outMeta">0 chars · 0 strings · ironbrew-style</div>
+            <div class="out-meta" id="outMeta">0 chars · 0 strings</div>
           </div>
           <pre class="output" id="outCode"></pre>
         </div>
@@ -256,7 +248,6 @@
   <div class="noise"></div>
 
 <script>
-  // Supabase Auth
   const SUPABASE_URL = 'https://nolklwapllgigshfejyz.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5vbGtsd2FwbGxnaWdzaGZlanl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1NDM0NDYsImV4cCI6MjEwMjExOTQ0Nn0.5xaz7W25NMF3icxUwGVmO6QlnZKsyKJ9_6AlPmJZdrk';
   const { createClient } = supabase;
@@ -269,45 +260,26 @@
   const greeting = document.getElementById('greeting');
   const usernameHeading = document.getElementById('usernameHeading');
 
-  function showLoginUI(){
-    loginScreen.classList.remove('hidden');
-    appContainer.classList.add('hidden');
-  }
-
+  function showLoginUI(){ loginScreen.classList.remove('hidden'); appContainer.classList.add('hidden'); }
   function showAppUI(userMeta){
-    loginScreen.classList.add('hidden');
-    appContainer.classList.remove('hidden');
+    loginScreen.classList.add('hidden'); appContainer.classList.remove('hidden');
     const name = userMeta.full_name || userMeta.name || userMeta.user_name || 'Admin';
-    usernameHeading.innerHTML = `${name} <span>·</span>`;
+    usernameHeading.innerHTML = name + ' <span>·</span>';
     const h = new Date().getHours();
     greeting.textContent = (h < 12 ? 'Good Morning,' : h < 18 ? 'Good Afternoon,' : 'Good Evening,');
   }
 
-    loginBtn.addEventListener('click', async () => {
-    const { error } = await db.auth.signInWithOAuth({
-      provider: 'discord',
-      options: { redirectTo: window.location.href }
-    });
+  loginBtn.addEventListener('click', async () => {
+    const { error } = await db.auth.signInWithOAuth({ provider: 'discord', options: { redirectTo: window.location.href } });
     if (error) alert("OAUTH ERROR: " + error.message);
   });
-
-
-  logoutBtn.addEventListener('click', async () => {
-    await db.auth.signOut();
-    showLoginUI();
-  });
-
-  db.auth.getSession().then(({ data }) => {
-    if (data.session) showAppUI(data.session.user.user_metadata);
-    else showLoginUI();
-  });
-
+  logoutBtn.addEventListener('click', async () => { await db.auth.signOut(); showLoginUI(); });
+  db.auth.getSession().then(({ data }) => { if (data.session) showAppUI(data.session.user.user_metadata); else showLoginUI(); });
   db.auth.onAuthStateChange((event, session) => {
     if (event === 'SIGNED_IN' && session) showAppUI(session.user.user_metadata);
     else if (event === 'SIGNED_OUT') showLoginUI();
   });
 
-  // App Logic
   const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const STORE_KEY = 'aurora_obf_scripts_v1';
   let scripts = [];
@@ -315,7 +287,7 @@
   const totalCountEl = document.getElementById('totalCount');
   function bump(){ totalCountEl.textContent = scripts.length; localStorage.setItem(STORE_KEY, JSON.stringify(scripts)); }
   bump();
-  
+
   const burger = document.getElementById('burger');
   const sidebar = document.getElementById('sidebar');
   const backdrop = document.getElementById('backdrop');
@@ -323,12 +295,12 @@
   function closeSidebar(){ sidebar.classList.remove('open'); backdrop.classList.remove('show'); }
   burger.addEventListener('click', ()=> sidebar.classList.contains('open') ? closeSidebar() : openSidebar());
   backdrop.addEventListener('click', closeSidebar);
-  
+
   const views = document.querySelectorAll('.view');
   const navItems = document.querySelectorAll('.nav-item[data-view]');
   function switchView(name){ views.forEach(v=> v.classList.toggle('active', v.dataset.view === name)); navItems.forEach(n=> n.classList.toggle('active', n.dataset.view === name)); closeSidebar(); }
   navItems.forEach(n=> n.addEventListener('click', ()=> switchView(n.dataset.view)));
-  
+
   const recentList = document.getElementById('recentList');
   const allList = document.getElementById('allList');
   function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
@@ -340,7 +312,7 @@
       if(arr.length === 0){ const empty = document.createElement('div'); empty.className = 'empty'; empty.innerHTML = 'No scripts obfuscated yet. Click <strong>Add script</strong> to protect your first one.'; container.appendChild(empty); return; }
       arr.forEach(s=>{
         const row = document.createElement('div'); row.className = 'item';
-        row.innerHTML = `<div class="item-icon"><svg viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5-3.5 9-9 10-5.5-1-9-5-9-10V6l9-4z"/><polyline points="9 12 11 14 15 10"/></svg></div><div style="min-width:0;"><div class="item-name">${escapeHtml(s.name)}</div><div class="item-meta">${new Date(s.ts).toLocaleString()} · ${s.out.length.toLocaleString()} chars · ${s.strength}</div></div><button class="item-copy">Copy</button>`;
+        row.innerHTML = '<div class="item-icon"><svg viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5-3.5 9-9 10-5.5-1-9-5-9-10V6l9-4z"/><polyline points="9 12 11 14 15 10"/></svg></div><div style="min-width:0;"><div class="item-name">' + escapeHtml(s.name) + '</div><div class="item-meta">' + new Date(s.ts).toLocaleString() + ' · ' + s.out.length.toLocaleString() + ' chars · ' + s.strength + '</div></div><button class="item-copy">Copy</button>';
         row.querySelector('.item-copy').addEventListener('click', (e)=>{ e.stopPropagation(); copyText(s.out); });
         container.appendChild(row);
       });
@@ -349,13 +321,13 @@
     buildList(allList, sorted);
   }
   renderLists();
-  
+
   const strengthRow = document.getElementById('strengthRow');
   let selectedStrength = 'medium';
   strengthRow.querySelectorAll('label').forEach(lbl => {
     lbl.addEventListener('click', ()=>{ strengthRow.querySelectorAll('label').forEach(l=> l.classList.remove('selected')); lbl.classList.add('selected'); selectedStrength = lbl.dataset.strength; lbl.querySelector('input').checked = true; });
   });
-  
+
   const modal = document.getElementById('modal');
   const modalTitle = document.getElementById('modalTitle');
   const stepPaste = document.getElementById('stepPaste');
@@ -372,15 +344,14 @@
   const modalClose = document.getElementById('modalClose');
   let currentSrc = '';
   let currentOut = '';
-  
+
   function openModal(){
     srcInput.value = '';
-    stepPaste.style.display = 'block';
-    stepProgress.style.display = 'none';
-    stepOutput.style.display = 'none';
+    stepPaste.style.display = 'block'; stepProgress.style.display = 'none'; stepOutput.style.display = 'none';
     modalTitle.textContent = 'Paste your Lua script';
-    primaryBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Continue`;
+    primaryBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Continue';
     primaryBtn.disabled = false; primaryBtn.style.opacity = '1';
+    cancelBtn.textContent = 'Cancel'; cancelBtn.onclick = closeModal;
     modal.classList.add('show');
     setTimeout(()=> srcInput.focus(), 250);
   }
@@ -400,6 +371,8 @@
       copyText(currentOut);
     }
   });
+
+  // === OBFUSCATION ENGINE (rewritten) ===
 
   function b64Encode(bytes){
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
@@ -423,173 +396,122 @@
     return bytes;
   }
 
-  function bytesToLuaStr(bytes){ return '"' + bytes.map(b => '\\' + String(b).padStart(3, '0')).join('') + '"'; }
-  function obfNum(n){ const a = Math.floor(Math.random() * 1000000); return `(${a}+${n - a})`; }
-
-  function generateAlphabetTable(){
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const entries = [];
-    for(let i=0; i<chars.length; i++){
-      const c = chars.charCodeAt(i), key = chars[i];
-      const obfKey = key.match(/[0-9]/) ? `["\\${String(key).padStart(3,'0')}"]` : key;
-      entries.push(`${obfKey}=${obfNum(c)}`);
-    }
-    return entries.join(',');
+  function escLua(s){
+    return s.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n').replace(/\r/g, '\\r').replace(/\t/g, '\\t').replace(/\0/g, '\\0');
   }
 
-  function generateShuffleLoop(strings, offset){
-    const pairs = [];
-    for(let i=0; i<strings.length; i++){
-      const start = i + offset, end = i + offset + 1;
-      pairs.push(`{${obfNum(start)};${obfNum(end)}}`);
-    }
-    return pairs;
+  let _vc = 0;
+  function rv(){
+    const c = 'abcdefghijklmnopqrstuvwxyz';
+    let n;
+    do { n = '_L' + _vc + '_' + Array.from({length:6}, ()=> c[Math.floor(Math.random()*c.length)]).join(''); _vc++; } while(false);
+    return n;
   }
+
+  function on(n){
+    const a = Math.floor(Math.random() * 100000) + 1000;
+    return '(' + a + '+' + (n - a) + ')';
+  }
+
+  // Shared Lua base64 decoder
+  const LUA_B64_DECODER = (b, d, s) => `local function ${d}(${s})
+    ${s}=string.gsub(${s},'[^'..${b}..'=]','')
+    return(${s}:gsub('.',function(x)
+        if(x=='=')then return''end
+        local r,f='',(${b}:find(x)-1)
+        for i=6,1,-1 do r=r..(f%2^i-f%2^(i-1)>0 and'1'or'0')end
+        return r
+    end):gsub('%d%d%d?%d?%d?%d?%d?%d?',function(x)
+        if(#x~=8)then return''end
+        local c=0
+        for i=1,8 do c=c+(x:sub(i,i)=='1'and 2^(8-i)or 0)end
+        return string.char(c)
+    end))
+end`;
 
   function obfuscate(src, strength){
-    const strings = [src];
-    const offset = Math.floor(Math.random() * 100000) + 50000;
-    const encodedStrings = strings.map(s => b64Encode(strToBytes(s)));
-    const luaStrings = encodedStrings.map(s => bytesToLuaStr(strToBytes(s)));
-    const shufflePairs = generateShuffleLoop(strings, offset);
-    const alphabetTable = generateAlphabetTable();
-    const banner = `--[[ v1.0.0 aurora obfuscator · ironbrew-style ]]`;
-    const stringTable = `local H={${luaStrings.join(',')}}`;
-    const offsetDecoder = `local function q(q)return H[q+(${obfNum(offset)})]end`;
-    const shuffleLoop = strength === 'light' ? '' : `
-for q,N in ipairs({${shufflePairs.join(',')}})do
-  while N[${obfNum(1)}]<N[${obfNum(2)}]do
-    H[N[${obfNum(1)}]],H[N[${obfNum(2)}]],N[${obfNum(3)}],N[${obfNum(4)}]=H[N[${obfNum(1)}]],H[N[${obfNum(2)}]],N[${obfNum(1)}]+(${obfNum(1)}),N[${obfNum(2)}]-(${obfNum(1)})
-  end
-end
-do
-  local q={${alphabetTable}}
-  local N=string.len
-  local k=table.insert
-  local K=math.floor
-  local e=string.sub
-  local A=table.concat
-  local r=H
-  local J=string.char
-  local O=type
-  for H=${obfNum(1)},#r,${obfNum(1)}do
-    local z=r[H]
-    if O(z)=="\\115\\116\\114\\105\\110\\103"then
-      local O=N(z)
-      local I={}
-      local V=${obfNum(1)}
-      local j=${obfNum(0)}
-      local F=${obfNum(0)}
-      while V<=O do
-        local H=e(z,V,V)
-        local N=q[H]
-        if N then
-          j=j+N*(${obfNum(64)})^(${obfNum(3)}-F)
-          F=F+(${obfNum(1)})
-          if F==${obfNum(4)}then
-            F=${obfNum(0)}
-            local H=K(j/(${obfNum(65536)}))
-            local q=K((j%(${obfNum(65536)}))/(${obfNum(256)}))
-            local N=j%(${obfNum(256)})
-            k(I,J(H,q,N))
-            j=${obfNum(0)}
-          end
-        elseif H=="\\061"then
-          k(I,J(K(j/(${obfNum(65536)}))))
-          if V>=O or e(z,V+(${obfNum(1)}),V+(${obfNum(2)}))~="\\061"then
-            k(I,J(K((j%(${obfNum(65536)}))/(${obfNum(256)}))))
-          end
-          break
-        end
-        V=V+(${obfNum(1)})
-      end
-      r[H]=A(I)
-    end
-  end
-end`;
-    const vmWrapper = strength === 'heavy' ? `
-return(function(H,k,K,e,A,r,J,t,d,O,P,F,I,j,b,z,T,o,f,V,N)
-N,j,d,V,O,F,P,t,z,T,o,f,I,b=function(N,K,e,A)
-  local L,m,v,s,M,u,D,Y,g,Z,C,Q,S,P,j,R,U,p,a,l,B,J,V,n,w,F,G,z,W,X,c,E,i,x
-  while N do
-    if N<${obfNum(1000000)}then
-      if N<${obfNum(500000)}then
-        N=H[q(${obfNum(1)})]
-        J={}
-      else
-        N={}
-        O[e[${obfNum(1)}]]=N
-      end
-    else
-      N=true
-    end
-  end
-end,function(H)
-  for q=${obfNum(1)},#H,${obfNum(1)}do
-    z[H[q]]=z[H[q]]+(${obfNum(1)})
-  end
-  if K then
-    local N=K(true)
-    local k=A(N)
-    return N
-  else
-    return e({},{})
-  end
-end,function(H)
-  z[H]=z[H]-(${obfNum(1)})
-  if z[H]==${obfNum(0)}then
-    z[H],O[H]=nil,nil
-  end
-end,${obfNum(0)},{},function(H)
-  local q,N=${obfNum(1)},H[${obfNum(1)}]
-  while N do
-    z[N],q=z[N]-(${obfNum(1)}),(${obfNum(1)})+q
-    if ${obfNum(0)}==z[N]then
-      z[N],O[N]=nil,nil
-    end
-    N=H[q]
-  end
-end,function(H,q)
-  local k=j(q)
-  return function(...)return N(H,{...},q,k)end
-end,function(H,q)
-  local k=j(q)
-  return function(K,e)return N(H,{K;e},q,k)end
-end,{},function(H,q)
-  local k=j(q)
-  return function(K,e,A)return N(H,{K,e;A},q,k)end
-end,function(H,q)
-  local k=j(q)
-  return function(K)return N(H,{K},q,k)end
-end,function(H,q)
-  local k=j(q)
-  return function(K,e,A,r)return N(H,{K;e;A,r},q,k)end
-end,function()
-  V=V+(${obfNum(1)})
-  z[V]=${obfNum(1)}
-  return V
-end,function(H,q)
-  local k=j(q)
-  return function(K,e,A,r,J)return N(H,{K,e,A,r,J},q,k)end
-end
-return(P(${obfNum(1000000)},{}))(k(J))
-end)(getfenv and getfenv()or _ENV,unpack or table[q(${obfNum(1)})],newproxy,setmetatable,getmetatable,select,{...})` : '';
-    const payload = `
-do
-  local _ENV = _ENV or getfenv()
-  ${src}
-end`;
-    let output = banner + '\n' + stringTable + '\n' + offsetDecoder;
-    if(strength !== 'light') output += shuffleLoop;
-    if(strength === 'heavy') output += vmWrapper + payload;
-    else output += payload;
-    return { out: output, stats: { strings: encodedStrings.length, chars: output.length } };
+    const banner = '--[[ aurora obfuscator v1.0.0 · ' + strength + ' ]]';
+    const b64 = b64Encode(strToBytes(src));
+
+    if(strength === 'light'){
+      const b = rv(), d = rv(), s = rv(), r = rv(), f = rv(), e = rv();
+      const out = banner + '\n' +
+        'local ' + b + '="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"\n' +
+        LUA_B64_DECODER(b, d, s) + '\n' +
+        'local ' + r + '=' + d + '("' + escLua(b64) + '")\n' +
+        'local ' + f + ',' + e + '=loadstring(' + r + ')\n' +
+        'if ' + f + ' then ' + f + '() else error(' + e + ') end';
+      return { out: out, stats: { strings: 1, chars: out.length } };
+    }
+
+    if(strength === 'medium'){
+      const chunkSize = Math.max(40, Math.floor(b64.length / 5));
+      const chunks = [];
+      for(let i = 0; i < b64.length; i += chunkSize) chunks.push(b64.slice(i, i + chunkSize));
+      const indices = chunks.map((_, i) => i);
+      for(let i = indices.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [indices[i], indices[j]] = [indices[j], indices[i]];
+      }
+      const tbl = rv(), map = rv(), i = rv(), res = rv(), b = rv(), d = rv(), s = rv(), fn = rv(), err = rv();
+      const entries = [];
+      for(let pos = 0; pos < indices.length; pos++) entries.push('[' + on(pos) + ']="' + escLua(chunks[indices[pos]]) + '"');
+      const reverseMap = new Array(chunks.length);
+      for(let pos = 0; pos < indices.length; pos++) reverseMap[indices[pos]] = pos;
+      const mapEntries = reverseMap.map((pos, origIdx) => '[' + on(origIdx) + ']=' + on(pos)).join(',');
+      const out = banner + '\n' +
+        'local ' + tbl + '={' + entries.join(',') + '}\n' +
+        'local ' + map + '={' + mapEntries + '}\n' +
+        'local ' + res + '=""\n' +
+        'for ' + i + '=' + on(0) + ',' + on(chunks.length - 1) + ' do\n' +
+        '    ' + res + '=' + res + '..' + tbl + '[' + map + '[' + i + ']]\n' +
+        'end\n' +
+        'local ' + b + '="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"\n' +
+        LUA_B64_DECODER(b, d, s) + '\n' +
+        'local ' + fn + ',' + err + '=loadstring(' + d + '(' + res + '))\n' +
+        'if ' + fn + ' then ' + fn + '() else error(' + err + ') end';
+      return { out: out, stats: { strings: chunks.length, chars: out.length } };
+    }
+
+    if(strength === 'heavy'){
+      const keyLen = 16;
+      const keyBytes = Array.from({length: keyLen}, () => Math.floor(Math.random() * 256));
+      const srcBytes = strToBytes(src);
+      const xored = [];
+      for(let i = 0; i < srcBytes.length; i++) xored.push(srcBytes[i] ^ keyBytes[i % keyLen]);
+      const encB64 = b64Encode(xored);
+      const tbl = rv(), k = rv(), b = rv(), d = rv(), s = rv(), dec = rv(), res = rv(), ii = rv(), cb = rv(), kb = rv(), p = rv(), a = rv(), b2 = rv(), x = rv(), fn = rv(), err = rv();
+      const keyTable = keyBytes.map(n => on(n)).join(',');
+      const out = banner + '\n' +
+        'local ' + tbl + '={"' + escLua(encB64) + '"}\n' +
+        'local ' + k + '={' + keyTable + '}\n' +
+        'local ' + b + '="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"\n' +
+        LUA_B64_DECODER(b, d, s) + '\n' +
+        'local ' + dec + '=' + d + '(' + tbl + '[' + on(1) + '])\n' +
+        'local ' + res + '=""\n' +
+        'for ' + ii + '=' + on(1) + ',#' + dec + ' do\n' +
+        '    local ' + cb + '=string.byte(' + dec + ',' + ii + ')\n' +
+        '    local ' + kb + '=' + k + '[(' + ii + '-' + on(1) + ')%#' + k + '+' + on(1) + ']\n' +
+        '    local ' + x + '=0\n' +
+        '    for ' + p + '=' + on(0) + ',' + on(7) + ' do\n' +
+        '        local ' + a + '=math.floor(' + cb + '/2^' + p + ')%2\n' +
+        '        local ' + b2 + '=math.floor(' + kb + '/2^' + p + ')%2\n' +
+        '        if ' + a + '~=' + b2 + ' then ' + x + '=' + x + '+2^' + p + ' end\n' +
+        '    end\n' +
+        '    ' + res + '=' + res + '..string.char(' + x + ')\n' +
+        'end\n' +
+        'local ' + fn + ',' + err + '=loadstring(' + res + ')\n' +
+        'if ' + fn + ' then ' + fn + '() else error(' + err + ') end';
+      return { out: out, stats: { strings: 1, chars: out.length } };
+    }
   }
 
+  // === END OBFUSCATION ENGINE ===
+
   const STAGES = {
-    light: [{ t: 20, log: 'scanning lua source…', kind: '' }, { t: 50, log: 'building string table…', kind: 'ok' }, { t: 80, log: 'generating offset decoder…', kind: 'ok' }, { t: 100, log: '✓ protected script ready', kind: 'done' }],
-    medium: [{ t: 15, log: 'scanning lua source…', kind: '' }, { t: 35, log: 'building string table…', kind: 'ok' }, { t: 55, log: 'generating offset decoder…', kind: 'ok' }, { t: 75, log: 'building base64 shuffle loop…', kind: 'ok' }, { t: 90, log: 'generating alphabet table…', kind: 'ok' }, { t: 100, log: '✓ protected script ready', kind: 'done' }],
-    heavy: [{ t: 10, log: 'scanning lua source…', kind: '' }, { t: 25, log: 'building string table…', kind: 'ok' }, { t: 40, log: 'generating offset decoder…', kind: 'ok' }, { t: 55, log: 'building base64 shuffle loop…', kind: 'ok' }, { t: 70, log: 'generating alphabet table…', kind: 'ok' }, { t: 85, log: 'wrapping in VM dispatcher…', kind: 'ok' }, { t: 95, log: 'injecting opaque predicates…', kind: 'ok' }, { t: 100, log: '✓ protected script ready', kind: 'done' }],
+    light: [{ t: 20, log: 'scanning lua source…', kind: '' }, { t: 50, log: 'building base64 payload…', kind: 'ok' }, { t: 80, log: 'injecting decoder…', kind: 'ok' }, { t: 100, log: '✓ protected script ready', kind: 'done' }],
+    medium: [{ t: 15, log: 'scanning lua source…', kind: '' }, { t: 35, log: 'building base64 payload…', kind: 'ok' }, { t: 55, log: 'splitting into chunks…', kind: 'ok' }, { t: 75, log: 'shuffling chunk table…', kind: 'ok' }, { t: 90, log: 'injecting decoder + reassembler…', kind: 'ok' }, { t: 100, log: '✓ protected script ready', kind: 'done' }],
+    heavy: [{ t: 10, log: 'scanning lua source…', kind: '' }, { t: 25, log: 'generating XOR key…', kind: 'ok' }, { t: 40, log: 'encrypting source bytes…', kind: 'ok' }, { t: 55, log: 'building base64 payload…', kind: 'ok' }, { t: 70, log: 'injecting key table…', kind: 'ok' }, { t: 85, log: 'building XOR reversal loop…', kind: 'ok' }, { t: 95, log: 'injecting decoder + loader…', kind: 'ok' }, { t: 100, log: '✓ protected script ready', kind: 'done' }],
   };
 
   function sleep(ms){ return new Promise(r=> setTimeout(r, REDUCED ? 10 : ms)); }
@@ -623,9 +545,9 @@ end`;
     stepOutput.style.display = 'block';
     modalTitle.textContent = 'Protected script ready';
     outCode.textContent = currentOut;
-    outMeta.textContent = `${result.stats.chars.toLocaleString()} chars · ${result.stats.strings} strings · ironbrew-style`;
+    outMeta.textContent = result.stats.chars.toLocaleString() + ' chars · ' + result.stats.strings + ' strings · ' + selectedStrength;
     primaryBtn.disabled = false; primaryBtn.style.opacity = '1';
-    primaryBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy protected code`;
+    primaryBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy protected code';
     cancelBtn.textContent = 'Publish';
     cancelBtn.onclick = null;
     cancelBtn.addEventListener('click', publishOnce, { once: true });
