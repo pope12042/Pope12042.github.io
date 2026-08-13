@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>aurora · public script</title>
+<link href="https://fonts.cdnfonts.com/css/google-sans" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{--bg0:#03040c;--bg1:#070b1c;--ink:#f4f7ff;--ink-dim:#9aa3b8;--blue:#6fc2ff;--teal:#2dd4bf;--violet:#8b5cf6;--sky:#38bdf8;--panel:rgba(14,18,34,.62);--border:rgba(148,197,255,.18);--fallback:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;--sans:'Product Sans','Google Sans',var(--fallback);--mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;}
+  *{box-sizing:border-box;}html,body{height:100%;}
+  body{margin:0;font-family:var(--sans);color:var(--ink);background:radial-gradient(120% 90% at 50% 110%, rgba(45,212,191,.14), transparent 60%),linear-gradient(180deg, var(--bg0) 0%, var(--bg1) 55%, #0a1128 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;-webkit-font-smoothing:antialiased;}
+  .aurora{position:fixed;inset:-10% -10% auto -10%;height:80%;z-index:0;pointer-events:none;}
+  .ribbon{position:absolute;border-radius:50%;filter:blur(72px);mix-blend-mode:screen;opacity:.45;}
+  .r1{width:55vw;height:46vh;left:4%;top:-6%;background:radial-gradient(ellipse at center, rgba(45,212,191,.7), transparent 62%);animation:d1 26s ease-in-out infinite alternate;}
+  .r2{width:46vw;height:40vh;left:34%;top:-14%;background:radial-gradient(ellipse at center, rgba(52,211,153,.6), transparent 60%);animation:d2 34s ease-in-out infinite alternate;}
+  .r3{width:50vw;height:42vh;right:2%;top:-8%;background:radial-gradient(ellipse at center, rgba(139,92,246,.55), transparent 60%);animation:d3 30s ease-in-out infinite alternate;}
+  @keyframes d1{from{transform:translate3d(0,0,0) rotate(-8deg);}to{transform:translate3d(6vw,5vh,0) rotate(6deg);}}
+  @keyframes d2{from{transform:translate3d(0,0,0) rotate(5deg);}to{transform:translate3d(-5vw,6vh,0) rotate(-6deg);}}
+  @keyframes d3{from{transform:translate3d(0,0,0) rotate(7deg);}to{transform:translate3d(-6vw,4vh,0) rotate(-5deg);}}
+  .vignette{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(120% 120% at 50% 40%, transparent 55%, rgba(2,4,12,.6) 100%);}
+  .noise{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.05;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+  .card{position:relative;z-index:5;max-width:520px;width:100%;padding:2.5rem;border-radius:20px;background:var(--panel);border:1px solid var(--border);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);text-align:center;}
+  .lock-icon{width:64px;height:64px;margin:0 auto 1.5rem;border-radius:50%;background:linear-gradient(135deg, rgba(239,68,68,.15), rgba(239,68,68,.05));border:1px solid rgba(239,68,68,.25);display:flex;align-items:center;justify-content:center;}
+  .lock-icon svg{width:28px;height:28px;stroke:#f87171;fill:none;stroke-width:2;}
+  .card-title{font-family:'Product Sans Black',var(--sans);font-weight:900;font-size:clamp(1.5rem,4vw,2rem);margin:0 0 .5rem;color:#fff;}
+  .card-text{color:var(--ink-dim);font-size:1rem;line-height:1.6;margin:0 0 1.5rem;}
+  .card-id{font-family:var(--mono);font-size:.82rem;color:var(--sky);margin:0 0 2rem;word-break:break-all;opacity:.7;}
+  .card-back{display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.5rem;border-radius:12px;color:#e6f1ff;background:rgba(148,197,255,.07);border:1px solid rgba(148,197,255,.35);text-decoration:none;font-family:'Product Sans Medium',var(--sans);font-weight:500;font-size:.92rem;transition:all .2s ease;}
+  .card-back:hover{background:rgba(148,197,255,.14);border-color:rgba(170,210,255,.6);}
+  .card-back svg{width:1rem;height:1rem;stroke:currentColor;fill:none;stroke-width:2;}
+  .card-owner{margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border);}
+  .card-owner-label{font-size:.72rem;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-dim);margin:0 0 .5rem;}
+  .card-owner-name{font-family:'Product Sans Medium',var(--sans);font-size:1.05rem;color:var(--ink);margin:0 0 .2rem;}
+  .card-owner-meta{font-size:.78rem;color:var(--ink-dim);margin:0;}
+  .loading{display:flex;align-items:center;justify-content:center;gap:.6rem;color:var(--ink-dim);font-size:.92rem;}
+  .spinner{width:16px;height:16px;border:2px solid rgba(148,197,255,.2);border-top-color:var(--sky);border-radius:50%;animation:spin .6s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .error-text{color:#f87171;font-size:.92rem;}
+</style>
+</head>
+<body>
+  <div class="aurora"><div class="ribbon r1"></div><div class="ribbon r2"></div><div class="ribbon r3"></div></div>
+  <div class="vignette"></div>
+  <div class="card" id="card">
+    <div class="loading"><div class="spinner"></div> Loading script info…</div>
+  </div>
+  <div class="noise"></div>
+
+<script>
+  const SUPABASE_URL = 'https://nolklwapllgigshfejyz.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5vbGtsd2FwbGxnaWdzaGZlanl6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1NDM0NDYsImV4cCI6MjEwMjExOTQ0Nn0.5xaz7W25NMF3icxUwGVmO6QlnZKsyKJ9_6AlPmJZdrk';
+  const { createClient } = supabase;
+  const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const card = document.getElementById('card');
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+
+  if(!id){
+    card.innerHTML = '<div class="lock-icon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><h1 class="card-title">No script ID</h1><p class="card-text">This page requires a script ID to load.</p><a class="card-back" href="obf.html"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Go to obfuscator</a>';
+  } else {
+    db.from('scripts').select('id, name, strength, created_at').eq('id', id).maybeSingle().then(async ({ data, error }) => {
+      if(error || !data){
+        card.innerHTML = '<div class="lock-icon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><h1 class="card-title">Script not found</h1><p class="card-text">No script exists with that ID.</p><p class="card-id">id: ' + id + '</p><a class="card-back" href="obf.html"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Go to obfuscator</a>';
+        return;
+      }
+
+      const { data: { session } } = await db.auth.getSession();
+      const isLoggedIn = !!session;
+
+      card.innerHTML = '<div class="lock-icon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>' +
+        '<h1 class="card-title">Access denied.</h1>' +
+        '<p class="card-text">Please use the script properly.<br />This script can only be loaded by a Roblox executor.</p>' +
+        '<p class="card-id">id: ' + data.id + '</p>' +
+        (isLoggedIn ? '<div class="card-owner"><p class="card-owner-label">Your published script</p><p class="card-owner-name">' + (data.name || 'Untitled') + '</p><p class="card-owner-meta">' + data.strength + ' · ' + new Date(data.created_at).toLocaleString() + '</p></div>' : '') +
+        '<div style="margin-top:1.5rem;"><a class="card-back" href="obf.html"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>Back to obfuscator</a></div>';
+    });
+  }
+</script>
+</body>
+</html>
