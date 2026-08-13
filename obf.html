@@ -331,8 +331,8 @@
   const allList = document.getElementById('allList');
   function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
   function buildLoader(id){
-    return '-- aurora loader · ' + id + '\nloadstring(game:GetService("HttpService"):JSONDecode(request({Url="https://nolklwapllgigshfejyz.supabase.co/rest/v1/scripts?id=eq.' + id + '&select=code",Headers={apikey="' + SUPABASE_ANON_KEY + '",Authorization="Bearer ' + SUPABASE_ANON_KEY + '"}}).Body)[1].code)()';
-  }
+    return '-- aurora loader · ' + id + '\nloadstring(game:HttpGet("https://nolklwapllgigshfejyz.supabase.co/functions/v1/get-script?id=' + id + '"))()';
+}
   function renderLists(){
     const sorted = [...scripts].sort((a,b)=> b.ts - a.ts);
     function buildList(container, arr){
