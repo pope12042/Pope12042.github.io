@@ -186,7 +186,7 @@
         <section class="view active" data-view="home">
           <div class="hero-card">
             <h2 class="hero-title">Protect your hard work</h2>
-            <p class="hero-text">Paste your Lua, pick a strength, hit publish. Get a public URL that only executors can load — browsers see "Access denied".</p>
+            <p class="hero-text">Paste your Lua, pick a strength, hit publish. Get a public URL that only executors can load.</p>
             <div style="display:flex;gap:.6rem;flex-wrap:wrap;">
               <button class="btn btn-primary" id="heroAddBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>New script</button>
               <a class="btn btn-ghost" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>Back to landing</a>
@@ -223,12 +223,12 @@
           <div class="strength-row" id="strengthRow">
             <label data-strength="light"><input type="radio" name="strength" value="light" /> Light</label>
             <label data-strength="medium" class="selected"><input type="radio" name="strength" value="medium" checked /> Medium</label>
-            <label data-strength="heavy"><input type="radio" name="strength" value="heavy" /> Heavy</label>
+            <label data-strength="heavy"><input type="radio" name="strength" value="heavy" /> Ultra (5-layer)</label>
           </div>
           <p style="font-size:.78rem;color:var(--ink-dim);margin:.3rem 0 0;line-height:1.5;">
             <b style="color:#9fd4ff">Light:</b> base64 + decoder · 
             <b style="color:#9fd4ff">Medium:</b> + shuffled chunk table · 
-            <b style="color:#9fd4ff">Heavy:</b> + XOR encryption with random key
+            <b style="color:#9fd4ff">Ultra:</b> 5-layer encryption (XOR+base64+reverse+XOR+base64)
           </p>
         </div>
         <div id="stepProgress" style="display:none;">
@@ -332,7 +332,7 @@
   function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
   function buildLoader(id){
     return '-- aurora loader · ' + id + '\nloadstring(game:HttpGet("https://nolklwapllgigshfejyz.supabase.co/functions/v1/get-script?id=' + id + '"))()';
-}
+  }
   function renderLists(){
     const sorted = [...scripts].sort((a,b)=> b.ts - a.ts);
     function buildList(container, arr){
@@ -428,6 +428,7 @@
     }
   });
 
+  // === OBFUSCATION ENGINE ===
   function b64Encode(bytes){
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
     let out = '';
@@ -452,6 +453,9 @@
   let _vc = 0;
   function rv(){ const c='abcdefghijklmnopqrstuvwxyz'; let n; do { n='_L'+_vc+'_'+Array.from({length:6},()=>c[Math.floor(Math.random()*c.length)]).join(''); _vc++; } while(false); return n; }
   function on(n){ const a=Math.floor(Math.random()*100000)+1000; return '('+a+'+'+(n-a)+')'; }
+  function randBytes(n){ return Array.from({length:n},()=>Math.floor(Math.random()*256)); }
+  function xorBytes(a,k){ return a.map((x,i)=> x ^ k[i % k.length]); }
+
   const LUA_B64_DECODER = (b, d, s) => `local function ${d}(${s})
     ${s}=string.gsub(${s},'[^'..${b}..'=]','')
     return(${s}:gsub('.',function(x)
@@ -466,14 +470,17 @@
         return string.char(c)
     end))
 end`;
+
   function obfuscate(src, strength){
-    const banner = '--[[ aurora obfuscator v1.1.0 · ' + strength + ' ]]';
+    const banner = '--[[ aurora obfuscator v2.0 · ' + strength + ' ]]';
     const b64 = b64Encode(strToBytes(src));
+
     if(strength === 'light'){
       const b=rv(),d=rv(),s=rv(),r=rv(),f=rv(),e=rv();
       const out=banner+'\nlocal '+b+'="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"\n'+LUA_B64_DECODER(b,d,s)+'\nlocal '+r+'='+d+'("'+escLua(b64)+'")\nlocal '+f+','+e+'=loadstring('+r+')\nif '+f+' then '+f+'() else error('+e+') end';
       return { out, stats:{ strings:1, chars:out.length } };
     }
+
     if(strength === 'medium'){
       const chunkSize=Math.max(40,Math.floor(b64.length/5)); const chunks=[];
       for(let i=0;i<b64.length;i+=chunkSize) chunks.push(b64.slice(i,i+chunkSize));
@@ -486,22 +493,69 @@ end`;
       const out=banner+'\nlocal '+tbl+'={'+entries.join(',')+'}\nlocal '+map+'={'+mapEntries+'}\nlocal '+res+'=""\nfor '+i+'='+on(0)+','+on(chunks.length-1)+' do\n    '+res+'='+res+'..'+tbl+'['+map+'['+i+']]\nend\nlocal '+b+'="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"\n'+LUA_B64_DECODER(b,d,s)+'\nlocal '+fn+','+err+'=loadstring('+d+'('+res+'))\nif '+fn+' then '+fn+'() else error('+err+') end';
       return { out, stats:{ strings:chunks.length, chars:out.length } };
     }
+
     if(strength === 'heavy'){
-      const keyLen=16; const keyBytes=Array.from({length:keyLen},()=>Math.floor(Math.random()*256));
-      const srcBytes=strToBytes(src); const xored=[];
-      for(let i=0;i<srcBytes.length;i++) xored.push(srcBytes[i]^keyBytes[i%keyLen]);
-      const encB64=b64Encode(xored);
-      const tbl=rv(),k=rv(),b=rv(),d=rv(),s=rv(),dec=rv(),res=rv(),ii=rv(),cb=rv(),kb=rv(),p=rv(),a=rv(),b2=rv(),x=rv(),fn=rv(),err=rv();
-      const keyTable=keyBytes.map(n=>on(n)).join(',');
-      const out=banner+'\nlocal '+tbl+'={"'+escLua(encB64)+'"}\nlocal '+k+'={'+keyTable+'}\nlocal '+b+'="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"\n'+LUA_B64_DECODER(b,d,s)+'\nlocal '+dec+'='+d+'('+tbl+'['+on(1)+'])\nlocal '+res+'=""\nfor '+ii+'='+on(1)+',#'+dec+' do\n    local '+cb+'=string.byte('+dec+','+ii+')\n    local '+kb+'='+k+'[('+ii+'-'+on(1)+')%#'+k+'+'+on(1)+']\n    local '+x+'=0\n    for '+p+'='+on(0)+','+on(7)+' do\n        local '+a+'=math.floor('+cb+'/2^'+p+')%2\n        local '+b2+'=math.floor('+kb+'/2^'+p+')%2\n        if '+a+'~='+b2+' then '+x+'='+x+'+2^'+p+' end\n    end\n    '+res+'='+res+'..string.char('+x+')\nend\nlocal '+fn+','+err+'=loadstring('+res+')\nif '+fn+' then '+fn+'() else error('+err+') end';
-      return { out, stats:{ strings:1, chars:out.length } };
+      const key1 = randBytes(16);
+      const key2 = randBytes(16);
+      let b  = xorBytes(strToBytes(src), key1);
+      const s1 = b64Encode(b);
+      let b2 = strToBytes(s1).reverse();
+      b2 = xorBytes(b2, key2);
+      const payload = b64Encode(b2);
+
+      const A=rv(),K1=rv(),K2=rv(),B=rv(),X=rv(),R=rv(),
+            s=rv(),i=rv(),r=rv(),c=rv(),f=rv(),
+            t1=rv(),t2=rv(),t3=rv(),t4=rv(),t5=rv(),fn=rv(),err=rv();
+
+      const key1Table = key1.map(n=>on(n)).join(',');
+      const key2Table = key2.map(n=>on(n)).join(',');
+      const alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+      const alphaRev = alpha.split('').reverse().join('');
+
+      const out = banner + '\n' +
+`local ${A}=string.reverse("${escLua(alphaRev)}")
+local ${K1}={${key1Table}}
+local ${K2}={${key2Table}}
+local function ${B}(${s})
+  ${s}=${s}:gsub("[^"..${A}.."=]","")
+  return(${s}:gsub(".",function(x)
+    if(x=="=")then return""end
+    local ${r},${f}="",(${A}:find(x,1,true)-1)
+    for ${i}=6,1,-1 do ${r}=${r}..(${f}%2^${i}-${f}%2^(${i}-1)>0 and"1"or"0")end
+    return ${r}
+  end):gsub("%d%d%d?%d?%d?%d?%d?%d?",function(x)
+    if(#x~=8)then return""end
+    local ${c}=0
+    for ${i}=1,8 do ${c}=${c}+(x:sub(${i},${i})=="1"and 2^(8-${i})or 0)end
+    return string.char(${c})
+  end))
+end
+local function ${X}(${s},${K1})
+  local ${r}={}
+  for ${i}=1,#${s} do ${r}[${i}]=string.char(bit32.bxor(string.byte(${s},${i}),${K1}[(${i}-1)%#${K1}+1]))end
+  return table.concat(${r})
+end
+local function ${R}(${s})
+  local ${r}={}
+  for ${i}=#${s},1,-1 do ${r}[#${r}+1]=${s}:sub(${i},${i})end
+  return table.concat(${r})
+end
+local ${t1}=${B}("${escLua(payload)}")
+local ${t2}=${X}(${t1},${K2})
+local ${t3}=${R}(${t2})
+local ${t4}=${B}(${t3})
+local ${t5}=${X}(${t4},${K1})
+local ${fn},${err}=loadstring(${t5})
+if ${fn} then ${fn}() else error(${err}) end`;
+
+      return { out: out, stats: { strings: 1, chars: out.length } };
     }
   }
 
   const STAGES = {
     light:[{t:20,log:'scanning lua source…',kind:''},{t:50,log:'building base64 payload…',kind:'ok'},{t:80,log:'injecting decoder…',kind:'ok'},{t:100,log:'✓ obfuscated',kind:'done'}],
     medium:[{t:15,log:'scanning lua source…',kind:''},{t:35,log:'building base64 payload…',kind:'ok'},{t:55,log:'splitting into chunks…',kind:'ok'},{t:75,log:'shuffling chunk table…',kind:'ok'},{t:90,log:'injecting decoder + reassembler…',kind:'ok'},{t:100,log:'✓ obfuscated',kind:'done'}],
-    heavy:[{t:10,log:'scanning lua source…',kind:''},{t:25,log:'generating XOR key…',kind:'ok'},{t:40,log:'encrypting source bytes…',kind:'ok'},{t:55,log:'building base64 payload…',kind:'ok'},{t:70,log:'injecting key table…',kind:'ok'},{t:85,log:'building XOR reversal loop…',kind:'ok'},{t:95,log:'injecting decoder + loader…',kind:'ok'},{t:100,log:'✓ obfuscated',kind:'done'}],
+    heavy:[{t:10,log:'scanning lua source…',kind:''},{t:25,log:'generating XOR keys…',kind:'ok'},{t:40,log:'layer 1: XOR key1…',kind:'ok'},{t:55,log:'layer 2: base64…',kind:'ok'},{t:65,log:'layer 3: reverse…',kind:'ok'},{t:75,log:'layer 4: XOR key2…',kind:'ok'},{t:85,log:'layer 5: base64…',kind:'ok'},{t:95,log:'building hidden decoder…',kind:'ok'},{t:100,log:'✓ ultra obfuscated',kind:'done'}],
   };
   function sleep(ms){ return new Promise(r=> setTimeout(r, REDUCED ? 10 : ms)); }
   function addLog(text, kind){
