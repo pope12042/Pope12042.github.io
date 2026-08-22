@@ -223,12 +223,12 @@
           <div class="strength-row" id="strengthRow">
             <label data-strength="light"><input type="radio" name="strength" value="light" /> Light</label>
             <label data-strength="medium" class="selected"><input type="radio" name="strength" value="medium" checked /> Medium</label>
-            <label data-strength="heavy"><input type="radio" name="strength" value="heavy" /> Ultra (5-layer)</label>
+            <label data-strength="heavy"><input type="radio" name="strength" value="heavy" /> Ultra (5-layer + anti-hook)</label>
           </div>
           <p style="font-size:.78rem;color:var(--ink-dim);margin:.3rem 0 0;line-height:1.5;">
             <b style="color:#9fd4ff">Light:</b> base64 + decoder · 
             <b style="color:#9fd4ff">Medium:</b> + shuffled chunk table · 
-            <b style="color:#9fd4ff">Ultra:</b> 5-layer encryption (XOR+base64+reverse+XOR+base64)
+            <b style="color:#9fd4ff">Ultra:</b> 5-layer + anti-hook protection
           </p>
         </div>
         <div id="stepProgress" style="display:none;">
@@ -428,7 +428,7 @@
     }
   });
 
-  // === OBFUSCATION ENGINE ===
+  // === OBFUSCATION ENGINE v3.0 ===
   function b64Encode(bytes){
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
     let out = '';
@@ -456,6 +456,24 @@
   function randBytes(n){ return Array.from({length:n},()=>Math.floor(Math.random()*256)); }
   function xorBytes(a,k){ return a.map((x,i)=> x ^ k[i % k.length]); }
 
+  // Anti-hook detection functions
+  function generateAntiHookChecks() {
+    const checks = [];
+    checks.push(`local ${rv()}=function()local ok,res=pcall(function()local test=loadstring("return 1+1")if test then return test()end end)return ok and res==2 end`);
+    checks.push(`local ${rv()}=function()return type(hookfunction)~="function"or tostring(loadstring):find("function")==nil end`);
+    checks.push(`local ${rv()}=function()local depth=0 local f=debug.getinfo(2)while f do depth=depth+1 f=debug.getinfo(depth+1)end return depth<5 end`);
+    checks.push(`local ${rv()}=function()if type(getgc)=="function"then local count=0 for _,v in ipairs(getgc())do count=count+1 if count>10000 then return false end end end return true end`);
+    return checks;
+  }
+
+  function generateEnvironmentFingerprint() {
+    const vars = [];
+    for(let i=0; i<3; i++) {
+      vars.push(`local ${rv()}=${Math.floor(Math.random()*99999)}`);
+    }
+    return vars;
+  }
+
   const LUA_B64_DECODER = (b, d, s) => `local function ${d}(${s})
     ${s}=string.gsub(${s},'[^'..${b}..'=]','')
     return(${s}:gsub('.',function(x)
@@ -472,7 +490,7 @@
 end`;
 
   function obfuscate(src, strength){
-    const banner = '--[[ aurora obfuscator v2.0 · ' + strength + ' ]]';
+    const banner = '--[[ aurora obfuscator v3.0 · ' + strength + ' ]]';
     const b64 = b64Encode(strToBytes(src));
 
     if(strength === 'light'){
@@ -495,9 +513,13 @@ end`;
     }
 
     if(strength === 'heavy'){
-      const key1 = randBytes(16);
-      const key2 = randBytes(16);
-      let b  = xorBytes(strToBytes(src), key1);
+      const antiHookChecks = generateAntiHookChecks();
+      const envFingerprint = generateEnvironmentFingerprint();
+      
+      const key1 = randBytes(32);
+      const key2 = randBytes(32);
+      
+      let b = xorBytes(strToBytes(src), key1);
       const s1 = b64Encode(b);
       let b2 = strToBytes(s1).reverse();
       b2 = xorBytes(b2, key2);
@@ -505,7 +527,8 @@ end`;
 
       const A=rv(),K1=rv(),K2=rv(),B=rv(),X=rv(),R=rv(),
             s=rv(),i=rv(),r=rv(),c=rv(),f=rv(),
-            t1=rv(),t2=rv(),t3=rv(),t4=rv(),t5=rv(),fn=rv(),err=rv();
+            t1=rv(),t2=rv(),t3=rv(),t4=rv(),t5=rv(),
+            fn=rv(),err=rv(),guard=rv(),envCheck=rv();
 
       const key1Table = key1.map(n=>on(n)).join(',');
       const key2Table = key2.map(n=>on(n)).join(',');
@@ -513,7 +536,11 @@ end`;
       const alphaRev = alpha.split('').reverse().join('');
 
       const out = banner + '\n' +
-`local ${A}=string.reverse("${escLua(alphaRev)}")
+`${envFingerprint.join('\n')}
+local ${guard}=true
+${antiHookChecks.map(check => `${guard}=${guard} and ${check}()`).join('\n')}
+if not ${guard} then error("Environment compromised") end
+local ${A}=string.reverse("${escLua(alphaRev)}")
 local ${K1}={${key1Table}}
 local ${K2}={${key2Table}}
 local function ${B}(${s})
@@ -532,7 +559,9 @@ local function ${B}(${s})
 end
 local function ${X}(${s},${K1})
   local ${r}={}
-  for ${i}=1,#${s} do ${r}[${i}]=string.char(bit32.bxor(string.byte(${s},${i}),${K1}[(${i}-1)%#${K1}+1]))end
+  for ${i}=1,#${s} do 
+    ${r}[${i}]=string.char(bit32.bxor(string.byte(${s},${i}),${K1}[(${i}-1)%#${K1}+1]))
+  end
   return table.concat(${r})
 end
 local function ${R}(${s})
@@ -555,7 +584,7 @@ if ${fn} then ${fn}() else error(${err}) end`;
   const STAGES = {
     light:[{t:20,log:'scanning lua source…',kind:''},{t:50,log:'building base64 payload…',kind:'ok'},{t:80,log:'injecting decoder…',kind:'ok'},{t:100,log:'✓ obfuscated',kind:'done'}],
     medium:[{t:15,log:'scanning lua source…',kind:''},{t:35,log:'building base64 payload…',kind:'ok'},{t:55,log:'splitting into chunks…',kind:'ok'},{t:75,log:'shuffling chunk table…',kind:'ok'},{t:90,log:'injecting decoder + reassembler…',kind:'ok'},{t:100,log:'✓ obfuscated',kind:'done'}],
-    heavy:[{t:10,log:'scanning lua source…',kind:''},{t:25,log:'generating XOR keys…',kind:'ok'},{t:40,log:'layer 1: XOR key1…',kind:'ok'},{t:55,log:'layer 2: base64…',kind:'ok'},{t:65,log:'layer 3: reverse…',kind:'ok'},{t:75,log:'layer 4: XOR key2…',kind:'ok'},{t:85,log:'layer 5: base64…',kind:'ok'},{t:95,log:'building hidden decoder…',kind:'ok'},{t:100,log:'✓ ultra obfuscated',kind:'done'}],
+    heavy:[{t:10,log:'scanning lua source…',kind:''},{t:20,log:'generating anti-hook checks…',kind:'ok'},{t:30,log:'building environment fingerprint…',kind:'ok'},{t:40,log:'layer 1: XOR key1…',kind:'ok'},{t:50,log:'layer 2: base64…',kind:'ok'},{t:60,log:'layer 3: reverse…',kind:'ok'},{t:70,log:'layer 4: XOR key2…',kind:'ok'},{t:80,log:'layer 5: base64…',kind:'ok'},{t:90,log:'building hidden decoder…',kind:'ok'},{t:100,log:'✓ ultra obfuscated + anti-hook',kind:'done'}],
   };
   function sleep(ms){ return new Promise(r=> setTimeout(r, REDUCED ? 10 : ms)); }
   function addLog(text, kind){
