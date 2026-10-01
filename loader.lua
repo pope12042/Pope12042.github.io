@@ -226,18 +226,22 @@ end
 
 getgenv().Config = {
     Enabled = false,
-    AimEnabled = false, TeamCheck = false, ShowFOV = false, FOVRadius = 150, AimSpeed = 50, HitPart = "Head",
+    AimEnabled = false, AimbotEnabled = false, TeamCheck = false, ShowFOV = false, FOVRadius = 150, AimSpeed = 50, HitPart = "Head",
     FOVColor1 = Color3.new(1,1,1), FOVColor2 = Color3.fromRGB(80, 170, 255), FOVSpinSpeed = 1,
     SilentFollow = "Follow Target",
+    AimSens = 50,
+    AimWallCheck = true,
     ESPEnabled = false, ESPBoxes = false, ESPNames = false, ESPHealth = false,
     ESPDistance = false, ESPArrows = false, ESPTeams = false, ESPTacers = false,
-    GunChams = false, ArmChams = false, ChamsFillTransparency = 0.45,
+    GunChams = false, ArmChams = false, ChamsFillTransparency = 0.45, ChamsWireframe = false,
     ADSAim = false, ADSAimSpeed = 35,
     ColorCorrection = false, CCBrightness = 0, CCContrast = 0, CCSaturation = 0, CCTint = Color3.new(1,1,1),
     Bloom = false, BloomIntensity = 10, BloomSize = 24, BloomThreshold = 80,
+    Snow = false,
     SkyboxPreset = "None",
     AspectRatio = false, AspectRatioValue = 0.7,
     ShowDamageText = false, DamageTextColor = Color3.fromRGB(255, 60, 60), DamageTextFont = "Code",
+    BulletTracers = false, TracerColor = Color3.fromRGB(80, 170, 255), TracerDuration = 1,
     RageEnabled = false, VoidTime = 0.5, AttackTime = 0.5, FireRate = 0.001, WeaponSlot = "Melee",
     StatusFollow = "Screen",
     NameSpoof = false, YourName = "Andy", EnemyName = "Johnny",
@@ -252,7 +256,8 @@ getgenv().Config = {
     CrosshairLeftColor = Color3.new(1,1,1), CrosshairRightColor = Color3.new(1,1,1),
     CrosshairFollow = "Screen",
     CrosshairOutline = false, CrosshairOutlineColor = Color3.new(0,0,0), CrosshairOutlineThickness = 4,
-    RageHide = false, RageHideVoid = 50, RageStrafe = false,
+    RageHideVoid = 50, VoidType = "Hybrid",
+    RageMiscAutoSwap = false, RageMiscProjectiles = false,
 }
 
 -- // 4. Linoria UI Setup
@@ -288,7 +293,8 @@ local Tabs = {
 }
 
 local AimGroup = Tabs.Main:AddLeftGroupbox("Silent Aim")
-AimGroup:AddToggle("AimEnabled", { Text = "Enable Silent Aim", Default = false })
+AimGroup:AddToggle("AimEnabled", { Text = "Enable Silent Aim", Default = false, Tooltip = "Camera-free bullet redirect: rewrites raycasts and the fire remote's camera data so server look-checks pass." })
+AimGroup:AddToggle("AimbotEnabled", { Text = "Enable Aimbot (visible)", Default = false, Tooltip = "Visible camera assist with sensitivity, jitter and wall check. Separate from Silent Aim." })
 AimGroup:AddToggle("TeamCheck", { Text = "Team Check", Default = false })
 AimGroup:AddToggle("ShowFOV", { Text = "Show FOV Circle", Default = false }):AddColorPicker("FOVColor1", { Default = Color3.new(1,1,1) }):AddColorPicker("FOVColor2", { Default = Color3.fromRGB(80, 170, 255) })
 AimGroup:AddSlider("FOVRadius", { Text = "FOV Radius", Min = 50, Max = 800, Default = 150, Suffix = "px", Rounding = 0 })
@@ -302,6 +308,8 @@ AimGroup:AddDropdown("SilentFollow", {
     Text = "Silent Aim Follows",
     Tooltip = "Follow Gun Tip centers FOV selection and the FOV circle on your smoothed muzzle position.",
 })
+AimGroup:AddSlider("AimSens", { Text = "Aim Sensitivity", Min = 1, Max = 100, Default = 50, Suffix = "%", Rounding = 0 })
+AimGroup:AddToggle("AimWallCheck", { Text = "Wall Check", Default = true, Tooltip = "Skips aimbot snap when a wall blocks the line of sight to the target." })
 
 local MovementGroup = Tabs.Main:AddLeftGroupbox("Movement")
 MovementGroup:AddToggle("InfiniteJump", { Text = "Infinite Jump", Default = false })
@@ -317,6 +325,7 @@ ChamsGroup:AddToggle("ArmChams", { Text = "Arm Chams", Default = false })
     :AddColorPicker("ArmChamsFill", { Default = Color3.fromRGB(60, 180, 255), Title = "Arm Fill Color" })
     :AddColorPicker("ArmChamsOutline", { Default = Color3.new(0, 0, 0), Title = "Arm Outline Color" })
 ChamsGroup:AddSlider("ChamsFillTransparency", { Text = "Fill Transparency", Min = 0, Max = 1, Default = 0.45, Rounding = 2, Compact = true })
+ChamsGroup:AddToggle("ChamsWireframe", { Text = "Wireframe Mode", Default = false, Tooltip = "Renders gun/arm viewmodel parts as forcefield wireframe. Restores originals when off." })
 ChamsGroup:AddDivider()
 ChamsGroup:AddToggle("ADSAim", { Text = "ADS Aim Assist", Default = false, Tooltip = "While holding right mouse, camera eases onto the selected target (camera-controller rotation, Kicia style)." })
 ChamsGroup:AddSlider("ADSAimSpeed", { Text = "ADS Aim Speed", Min = 1, Max = 100, Default = 35, Rounding = 0, Compact = true })
@@ -332,16 +341,28 @@ ExploitGroup:AddToggle("HitNotify", { Text = "Hit Notifications", Default = fals
 
 local RageGroup = Tabs.Main:AddLeftGroupbox("Void Ragebot")
 RageGroup:AddToggle("RageEnabled", { Text = "Enable Ragebot", Default = false })
-RageGroup:AddSlider("VoidTime", { Text = "Void Time", Min = 0, Max = 100, Default = 50, Suffix = "%", Rounding = 0 })
-RageGroup:AddSlider("AttackTime", { Text = "Attack Time", Min = 0, Max = 100, Default = 50, Suffix = "%", Rounding = 0 })
+RageGroup:AddSlider("VoidTime", { Text = "Void Time (hide window)", Min = 0, Max = 100, Default = 50, Suffix = "%", Rounding = 0 })
+RageGroup:AddSlider("AttackTime", { Text = "Attack Time (strafe window)", Min = 0, Max = 100, Default = 50, Suffix = "%", Rounding = 0 })
 RageGroup:AddSlider("FireRate", { Text = "Fire Rate (ms)", Min = 0, Max = 1000, Default = 1, Rounding = 1 })
 RageGroup:AddDropdown("WeaponSlot", { Text = "Weapon Type", Values = {"Primary", "Secondary", "Melee"}, Default = 3 })
 RageGroup:AddDivider()
 RageGroup:AddSlider("RageOrbitSpeed", { Text = "Orbit Speed", Min = 0, Max = 10, Default = 2.5, Rounding = 1, Compact = true, Tooltip = "Gun-mode server orbit around the target (Kicia-style phase clock). Melee keeps the proven close-offset hover." })
 RageGroup:AddToggle("RageLOS", { Text = "LOS Check", Default = true, Tooltip = "Skips orbit positions with blocked line of sight, holds last good position briefly." })
-RageGroup:AddToggle("RageHide", { Text = "Hide in Void (Deflect)", Default = false })
-RageGroup:AddSlider("RageHideVoid", { Text = "Void Depth %", Min = 10, Max = 100, Default = 50, Suffix = "%", Rounding = 0, Compact = true })
-RageGroup:AddToggle("RageStrafe", { Text = "Glitch Strafe Attack", Default = false })
+RageGroup:AddSlider("RageHideVoid", { Text = "Void Depth (1-3m)", Min = 0, Max = 100, Default = 50, Suffix = "%", Rounding = 0, Compact = true })
+RageGroup:AddDropdown("VoidType", {
+    Values = {"Hybrid", "Drift", "Void Y", "Spiral", "Random", "Zigzag", "Infinity"},
+    Default = "Hybrid",
+    Multi = false,
+    Text = "Void Type",
+    Tooltip = "Desync path during the void window. Hybrid mixes spiral + Y + jitter.",
+})
+RageGroup:AddDropdown("RageMisc", {
+    Values = {"Auto Swap Guns", "Projectiles Only"},
+    Default = {},
+    Multi = true,
+    Text = "Ragebot Misc",
+    Tooltip = "Auto Swap Guns: primary empty -> secondary, secondary empty -> primary, both empty -> melee. Projectiles Only: keeps a loaded Slingshot / Bow / Daggers equipped.",
+})
 
 local RageStatusGroup = Tabs.Main:AddRightGroupbox("Status (On Screen)")
 RageStatusGroup:AddDropdown("StatusFont", { Text = "Status Font", Values = FONT_NAMES, Default = 1 })
@@ -408,8 +429,15 @@ WorldGroup:AddToggle("Bloom", { Text = "Bloom Effect", Default = false })
 WorldGroup:AddSlider("BloomIntensity", { Text = "Intensity", Min = 0, Max = 100, Default = 10, Rounding = 0 })
 WorldGroup:AddSlider("BloomSize", { Text = "Size", Min = 0, Max = 100, Default = 24, Rounding = 0 })
 WorldGroup:AddSlider("BloomThreshold", { Text = "Threshold", Min = 0, Max = 100, Default = 80, Rounding = 0 })
+WorldGroup:AddDivider()
+WorldGroup:AddToggle("Snow", { Text = "Snow", Default = false, Tooltip = "Falling particle snow field riding above you." })
 
-local SkyboxGroup = Tabs.Visuals:AddLeftGroupbox("Skybox")
+local BulletTracerGroup = Tabs.Visuals:AddLeftGroupbox("Bullet Tracers")
+BulletTracerGroup:AddToggle("BulletTracers", { Text = "Bullet Tracers", Default = false })
+    :AddColorPicker("TracerColor", { Default = Color3.fromRGB(80, 170, 255), Title = "Tracer Color" })
+BulletTracerGroup:AddSlider("TracerDuration", { Text = "Trace Duration", Min = 0.1, Max = 5, Default = 1, Rounding = 1, Suffix = "s" })
+
+local SkyboxGroup = Tabs.Visuals:AddRightGroupbox("Skybox")
 local SkyPresetOrder = {
     "None", "GreenHaze", "Space2", "PinkMountains", "Valentines", "PurplePlanet", "Blizzard",
     "Winter", "FlamingSunset", "Mountains", "FPSBoost", "AestheticMountains", "BetterNight3",
@@ -486,11 +514,11 @@ local SkyPresets = {
 }
 SkyboxGroup:AddDropdown("SkyboxPreset", { Values = SkyPresetOrder, Default = "None", Multi = false, Text = "Skybox Preset" })
 
-local AspectGroup = Tabs.Visuals:AddRightGroupbox("Aspect Ratio")
+local AspectGroup = Tabs.Visuals:AddLeftGroupbox("Aspect Ratio")
 AspectGroup:AddToggle("AspectRatio", { Text = "Stretched Resolution", Default = false })
 AspectGroup:AddSlider("AspectRatioValue", { Text = "Y Ratio", Min = 0.01, Max = 1, Default = 0.7, Rounding = 2, Compact = true })
 
-local DamageGroup = Tabs.Visuals:AddRightGroupbox("Damage Text (your confirmed hits)")
+local DamageGroup = Tabs.Visuals:AddLeftGroupbox("Damage Text (your confirmed hits)")
 DamageGroup:AddToggle("ShowDamageText", { Text = "Show Damage Text", Default = false })
     :AddColorPicker("DamageTextColor", { Default = Color3.fromRGB(255, 60, 60), Title = "Damage Text Color" })
 DamageGroup:AddDropdown("DamageTextFont", { Values = FONT_NAMES, Default = "Code", Multi = false, Text = "Damage Font" })
@@ -571,7 +599,7 @@ local Hitsounds = {
     ["Bow Hit"] = "rbxassetid://135478009117226",
     TF2 = "rbxassetid://137392628136734",
     Teto = "rbxassetid://137052121415213"
- }
+}
 
 local DamageTextGui = Instance.new("ScreenGui")
 DamageTextGui.Name = "RivalsDamageTextGui"
@@ -617,6 +645,24 @@ local SmoothTargetScreen = Vector2.new(0, 0)
 local LastSilentTargetPart = nil
 local RageTargetHead = nil
 local StatusTargetPart = nil
+
+-- // 5b. Bullet tracer pool
+local TRACER_POOL = 24
+local TracerEvents = {}
+local tracerLines = {}
+for tracerI = 1, TRACER_POOL do
+    local tl = Drawing.new("Line")
+    tl.Thickness = 2
+    tl.Visible = false
+    tracerLines[tracerI] = tl
+end
+local function PushTracer(fromPos, toPos)
+    if not getgenv().Config.BulletTracers then return end
+    table.insert(TracerEvents, { from = fromPos, to = toPos, t = tick() })
+    if #TracerEvents > TRACER_POOL then
+        table.remove(TracerEvents, 1)
+    end
+end
 
 local AdsHeld = false
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
@@ -674,14 +720,15 @@ local function GetGunTipWorld()
     return cam.CFrame.Position + cam.CFrame.LookVector * 3
 end
 
--- // 7. Viewmodel chams reconcile
+-- // 7. Viewmodel chams reconcile (+ wireframe)
 local ChamsCache = {}
+local WireCache = {}
 local function ReconcileChams()
     local vp = workspace:FindFirstChild("ViewModels")
     local fp = vp and vp:FindFirstChild("FirstPerson")
     local seen = {}
+    local targets = {}
     if fp then
-        local targets = {}
         for _, model in ipairs(fp:GetChildren()) do
             if model:IsA("Model") then
                 local isGun = model:FindFirstChild("ItemVisual", true) ~= nil or model:FindFirstChild("Muzzle", true) ~= nil
@@ -721,6 +768,23 @@ local function ReconcileChams()
             end
         end
     end
+    if Toggles.ChamsWireframe and Toggles.ChamsWireframe.Value then
+        for _, entry in ipairs(targets) do
+            for _, part in ipairs(entry.model:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    if WireCache[part] == nil then
+                        WireCache[part] = part.Material
+                    end
+                    part.Material = Enum.Material.ForceField
+                end
+            end
+        end
+    else
+        for part, mat in pairs(WireCache) do
+            pcall(function() part.Material = mat end)
+            WireCache[part] = nil
+        end
+    end
     for model, cached in pairs(ChamsCache) do
         if not seen[model] or not model.Parent then
             pcall(function() cached.h:Destroy() end)
@@ -734,6 +798,35 @@ local cc = Instance.new("ColorCorrectionEffect", Lighting)
 local bloom = Instance.new("BloomEffect", Lighting)
 local spinAngle = 0
 local chamsAccum = 0
+local lastSnapTime = 0
+local currentSnapCF = nil
+local SNAP_INTERVAL = 0.05
+
+-- // 8d. Snow field
+local SnowPart = Instance.new("Part")
+SnowPart.Name = "AuroraSnowField"
+SnowPart.Anchored = true
+SnowPart.CanCollide = false
+SnowPart.CanQuery = false
+SnowPart.CanTouch = false
+SnowPart.CastShadow = false
+SnowPart.Size = Vector3.new(60, 40, 60)
+SnowPart.Transparency = 1
+SnowPart.Parent = workspace
+local SnowEmitter = Instance.new("ParticleEmitter")
+SnowEmitter.Color = ColorSequence.new(Color3.new(1, 1, 1))
+SnowEmitter.Texture = ""
+SnowEmitter.Rate = 140
+SnowEmitter.Lifetime = NumberRange.new(4, 7)
+SnowEmitter.Speed = NumberRange.new(0, 0.4)
+SnowEmitter.SpreadAngle = Vector2.new(0, 0)
+SnowEmitter.Acceleration = Vector3.new(0, -3.5, 0)
+SnowEmitter.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.2), NumberSequenceKeypoint.new(1, 0.35) })
+SnowEmitter.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.15), NumberSequenceKeypoint.new(1, 1) })
+SnowEmitter.RotSpeed = NumberRange.new(-40, 40)
+SnowEmitter.LockedToPart = false
+SnowEmitter.Enabled = false
+SnowEmitter.Parent = SnowPart
 
 RunService.RenderStepped:Connect(function(dt)
     if Library.Unloaded then return end
@@ -741,6 +834,7 @@ RunService.RenderStepped:Connect(function(dt)
 
     getgenv().Config.Enabled = Toggles.RageEnabled.Value
     getgenv().Config.AimEnabled = Toggles.AimEnabled.Value
+    getgenv().Config.AimbotEnabled = Toggles.AimbotEnabled.Value
     getgenv().Config.TeamCheck = Toggles.TeamCheck.Value
     getgenv().Config.ShowFOV = Toggles.ShowFOV.Value
     getgenv().Config.FOVRadius = Options.FOVRadius.Value
@@ -750,6 +844,8 @@ RunService.RenderStepped:Connect(function(dt)
     getgenv().Config.FOVColor2 = Options.FOVColor2.Value
     getgenv().Config.FOVSpinSpeed = Options.FOVSpinSpeed.Value
     getgenv().Config.SilentFollow = Options.SilentFollow.Value
+    getgenv().Config.AimSens = Options.AimSens.Value
+    getgenv().Config.AimWallCheck = Toggles.AimWallCheck.Value
 
     getgenv().Config.ESPEnabled = Toggles.ESPEnabled.Value
     getgenv().Config.ESPBoxes = Toggles.ESPBoxes.Value
@@ -763,6 +859,7 @@ RunService.RenderStepped:Connect(function(dt)
     getgenv().Config.GunChams = Toggles.GunChams.Value
     getgenv().Config.ArmChams = Toggles.ArmChams.Value
     getgenv().Config.ChamsFillTransparency = Options.ChamsFillTransparency.Value
+    getgenv().Config.ChamsWireframe = Toggles.ChamsWireframe.Value
     getgenv().Config.ADSAim = Toggles.ADSAim.Value
     getgenv().Config.ADSAimSpeed = Options.ADSAimSpeed.Value
 
@@ -775,6 +872,7 @@ RunService.RenderStepped:Connect(function(dt)
     getgenv().Config.BloomIntensity = Options.BloomIntensity.Value
     getgenv().Config.BloomSize = Options.BloomSize.Value
     getgenv().Config.BloomThreshold = Options.BloomThreshold.Value
+    getgenv().Config.Snow = Toggles.Snow.Value
 
     getgenv().Config.SkyboxPreset = Options.SkyboxPreset.Value
     getgenv().Config.AspectRatio = Toggles.AspectRatio.Value
@@ -782,6 +880,9 @@ RunService.RenderStepped:Connect(function(dt)
     getgenv().Config.ShowDamageText = Toggles.ShowDamageText.Value
     getgenv().Config.DamageTextColor = Options.DamageTextColor.Value
     getgenv().Config.DamageTextFont = Options.DamageTextFont.Value
+    getgenv().Config.BulletTracers = Toggles.BulletTracers.Value
+    getgenv().Config.TracerColor = Options.TracerColor.Value
+    getgenv().Config.TracerDuration = Options.TracerDuration.Value
 
     getgenv().Config.RageEnabled = Toggles.RageEnabled.Value
     getgenv().Config.VoidTime = Options.VoidTime.Value / 100
@@ -789,6 +890,8 @@ RunService.RenderStepped:Connect(function(dt)
     getgenv().Config.FireRate = Options.FireRate.Value / 1000
     getgenv().Config.WeaponSlot = Options.WeaponSlot.Value
     getgenv().Config.StatusFollow = Options.StatusFollow.Value
+    getgenv().Config.RageHideVoid = Options.RageHideVoid.Value
+    getgenv().Config.VoidType = Options.VoidType.Value
 
     getgenv().Config.NameSpoof = Toggles.NameSpoof.Value
     getgenv().Config.YourName = Options.YourName.Value
@@ -828,9 +931,9 @@ RunService.RenderStepped:Connect(function(dt)
     getgenv().Config.CrosshairOutlineColor = Options.CrosshairOutlineColor.Value
     getgenv().Config.CrosshairOutlineThickness = Options.CrosshairOutlineThickness.Value
 
-    getgenv().Config.RageHide = Toggles.RageHide.Value
-    getgenv().Config.RageHideVoid = Options.RageHideVoid.Value
-    getgenv().Config.RageStrafe = Toggles.RageStrafe.Value
+    local rageMiscSel = Options.RageMisc.Value or {}
+    getgenv().Config.RageMiscAutoSwap = rageMiscSel["Auto Swap Guns"] == true
+    getgenv().Config.RageMiscProjectiles = rageMiscSel["Projectiles Only"] == true
 
     local gp, gon = camNow:WorldToViewportPoint(GetGunTipWorld())
     if gon then
@@ -898,6 +1001,47 @@ RunService.RenderStepped:Connect(function(dt)
         end
     end
 
+    -- Visible aimbot snap (separate from silent aim), with sens + jitter + wall check
+    if getgenv().Config.AimbotEnabled and not (getgenv().Config.ADSAim and AdsHeld) then
+        local now = tick()
+        if now - lastSnapTime >= SNAP_INTERVAL then
+            lastSnapTime = now
+            local snapCenter = (getgenv().Config.SilentFollow == "Follow Gun Tip") and SmoothGunTipScreen or nil
+            local snapTarget = phem9(snapCenter)
+            if snapTarget then
+                local camPos = camNow.CFrame.Position
+                local jitter = Vector3.new(
+                    (math.random() - 0.5) * 0.24,
+                    (math.random() - 0.5) * 0.24,
+                    (math.random() - 0.5) * 0.24
+                )
+                local targetPos = snapTarget.Position + jitter
+                local wallBlocked = false
+                if getgenv().Config.AimWallCheck then
+                    local dir = targetPos - camPos
+                    local wallParams = RaycastParams.new()
+                    wallParams.FilterType = Enum.RaycastFilterType.Exclude
+                    wallParams.FilterDescendantsInstances = { LocalPlayer.Character, snapTarget.Parent }
+                    local wallHit = workspace:Raycast(camPos, dir, wallParams)
+                    if wallHit then wallBlocked = true end
+                end
+                if not wallBlocked then
+                    currentSnapCF = CFrame.lookAt(camPos, targetPos)
+                else
+                    currentSnapCF = nil
+                end
+            else
+                currentSnapCF = nil
+            end
+        end
+        if currentSnapCF then
+            local sens = math.clamp(getgenv().Config.AimSens / 100, 0.05, 1)
+            camNow.CFrame = camNow.CFrame:Lerp(currentSnapCF, sens)
+        end
+    elseif not getgenv().Config.AimbotEnabled then
+        currentSnapCF = nil
+    end
+
     cc.Enabled = getgenv().Config.ColorCorrection
     cc.Brightness = getgenv().Config.CCBrightness / 100
     cc.Contrast = getgenv().Config.CCContrast / 100
@@ -908,6 +1052,15 @@ RunService.RenderStepped:Connect(function(dt)
     bloom.Intensity = getgenv().Config.BloomIntensity / 10
     bloom.Size = getgenv().Config.BloomSize
     bloom.Threshold = getgenv().Config.BloomThreshold / 100
+
+    SnowEmitter.Enabled = getgenv().Config.Snow
+    if getgenv().Config.Snow then
+        local snowChar = LocalPlayer.Character
+        local snowRoot = snowChar and snowChar:FindFirstChild("HumanoidRootPart")
+        if snowRoot then
+            SnowPart.CFrame = snowRoot.CFrame + Vector3.new(0, 12, 0)
+        end
+    end
 
     HitSound.Volume = getgenv().Config.HitsoundVolume
 
@@ -968,10 +1121,11 @@ RunService:BindToRenderStep("RivalsStretch", Enum.RenderPriority.Camera.Value + 
     cam.CFrame = result
 end)
 
--- // 9. Silent Aim Hook
+-- // 9. Silent Aim Hook (module raycast + global raycast + fire-remote camera rewrite)
 local phem2_cs = game:GetService("CollectionService")
 local phem7 = require(ReplicatedStorage.Modules.Utility)
 local phem8 = phem7.Raycast
+local util9 = require(ReplicatedStorage.Modules.Utility)
 
 function phem9(centerVec)
     local phem10 = centerVec or Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
@@ -1008,8 +1162,78 @@ phem7.Raycast = function(self, phem19, phem20, phem21, phem22, phem23, phem24)
         phem28 = phem21
         phem26 = phem19 + (phem27 * phem21)
     end
+    PushTracer(phem19, phem26)
     return { Position = phem26, Distance = phem28, Instance = phem25, Material = phem25.Material, Normal = -phem27 }
 end
+
+-- Global layer: redirect workspace:Raycast bullet traces and rewrite UseItem camera data
+local saOldNamecall = nil
+saOldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
+    if not getgenv().Config.AimEnabled then
+        return saOldNamecall(self, ...)
+    end
+    local method = getnamecallmethod()
+    if method == "Raycast" and self == workspace then
+        local args = table.pack(...)
+        local origin = args[1]
+        local direction = args[2]
+        local params = args[3]
+        if typeof(origin) == "Vector3" and typeof(direction) == "Vector3" and direction.Magnitude >= 100 then
+            local center = (getgenv().Config.SilentFollow == "Follow Gun Tip") and SmoothGunTipScreen or nil
+            local target = phem9(center)
+            if target then
+                local skip = false
+                if params and typeof(params) == "RaycastParams" then
+                    local filt = params.FilterDescendantsInstances
+                    if filt then
+                        for _, inst in ipairs(filt) do
+                            if inst == target.Parent then
+                                skip = true
+                                break
+                            end
+                        end
+                    end
+                end
+                if not skip then
+                    local dir = target.Position - origin
+                    local maxD = direction.Magnitude
+                    if dir.Magnitude > maxD then
+                        dir = dir.Unit * maxD
+                    end
+                    PushTracer(origin, origin + dir)
+                    local rest = { table.unpack(args, 4, args.n) }
+                    return saOldNamecall(self, origin, dir, params, table.unpack(rest))
+                end
+            end
+        end
+        return saOldNamecall(self, ...)
+    elseif method == "FireServer" then
+        local isUseItem = false
+        pcall(function()
+            if self.Name == "UseItem" then isUseItem = true end
+        end)
+        if isUseItem then
+            local args = { ... }
+            local cd = args[3]
+            if type(cd) == "table" then
+                local sub = cd[utf8.char(1)]
+                if type(sub) == "table" and sub[utf8.char(0)] ~= nil then
+                    local center = (getgenv().Config.SilentFollow == "Follow Gun Tip") and SmoothGunTipScreen or nil
+                    local target = phem9(center)
+                    if target then
+                        local cam = workspace.CurrentCamera
+                        local aimCF = CFrame.lookAt(cam.CFrame.Position, target.Position)
+                        sub[utf8.char(0)] = util9:EncodeCFrame(aimCF)
+                        sub[utf8.char(2)] = target
+                        LastSilentTargetPart = target
+                    end
+                end
+            end
+        end
+        return saOldNamecall(self, ...)
+    end
+    return saOldNamecall(self, ...)
+end)
 
 -- // 10. ESP
 local function enemyOk(player)
@@ -1391,6 +1615,67 @@ local function getSlotNumber()
     return slots[getgenv().Config.WeaponSlot] or 3
 end
 
+-- // 12b. Ragebot Misc helpers (inventory / ammo / projectiles)
+local PROJECTILE_NAMES = { Slingshot = true, Bow = true, Daggers = true }
+
+local function GetFighterItems(fighter)
+    local keys = { "Items", "Inventory", "ItemSlots" }
+    for _, k in ipairs(keys) do
+        local ok, v = pcall(function() return fighter[k] end)
+        if ok and type(v) == "table" then return v end
+    end
+    local ok2, v2 = pcall(function() return fighter:Get("Items") end)
+    if ok2 and type(v2) == "table" then return v2 end
+    return nil
+end
+
+local function GetSlotItem(fighter, slot)
+    local items = GetFighterItems(fighter)
+    if not items then return nil end
+    local it = items[slot]
+    if type(it) == "table" then return it end
+    return nil
+end
+
+local function GetItemAmmo(item)
+    if not item then return nil end
+    local ok, a = pcall(function() return item:Get("Ammo") end)
+    if ok and type(a) == "number" then return a end
+    return nil
+end
+
+local function GetEquippedSlot(fighter)
+    local eq = fighter.EquippedItem
+    if not eq then return nil end
+    local items = GetFighterItems(fighter)
+    if items then
+        for slot = 1, 3 do
+            if items[slot] == eq then return slot end
+        end
+    end
+    local ok, s = pcall(function() return fighter:Get("EquippedSlot") end)
+    if ok and type(s) == "number" then return s end
+    local ok2, s2 = pcall(function() return eq:Get("Slot") end)
+    if ok2 and type(s2) == "number" then return s2 end
+    return nil
+end
+
+local function GetProjectileSlot(fighter)
+    local loaded = nil
+    local any = nil
+    for s = 1, 3 do
+        local it = GetSlotItem(fighter, s)
+        if it and PROJECTILE_NAMES[it.Name] then
+            if not any then any = s end
+            local am = GetItemAmmo(it)
+            if (am == nil or am > 0) and not loaded then
+                loaded = s
+            end
+        end
+    end
+    return loaded or any
+end
+
 task.spawn(function()
     local localFighter = FighterController.LocalFighter
     while not localFighter do
@@ -1409,9 +1694,60 @@ task.spawn(function()
         local localFighter = FighterController.LocalFighter
         if localFighter then
             pcall(function()
-                localFighter:EquipItem(getSlotNumber())
+                local slot = getSlotNumber()
+                if getgenv().Config.RageMiscProjectiles then
+                    local ps = GetProjectileSlot(localFighter)
+                    if ps then slot = ps end
+                end
+                localFighter:EquipItem(slot)
             end)
         end
+    end
+end)
+
+-- // 12c. Ragebot Misc swap loop (auto swap + projectiles only)
+task.spawn(function()
+    while true do
+        task.wait(0.2)
+        if not getgenv().Config.Enabled then continue end
+        if not getgenv().Config.RageMiscAutoSwap and not getgenv().Config.RageMiscProjectiles then continue end
+        local fighter = FighterController.LocalFighter
+        if not fighter then continue end
+        pcall(function()
+            local eq = fighter.EquippedItem
+            if not eq then return end
+            local eqAmmo = GetItemAmmo(eq)
+
+            if getgenv().Config.RageMiscProjectiles then
+                local isProj = PROJECTILE_NAMES[eq.Name] == true
+                if isProj and (eqAmmo == nil or eqAmmo > 0) then
+                    return
+                end
+                local ps = GetProjectileSlot(fighter)
+                if ps then
+                    if ps ~= GetEquippedSlot(fighter) then
+                        fighter:EquipItem(ps)
+                    end
+                    return
+                end
+                if eqAmmo == 0 then
+                    fighter:EquipItem(3)
+                end
+                return
+            end
+
+            if not getgenv().Config.RageMiscAutoSwap then return end
+            if eqAmmo == nil or eqAmmo > 0 then return end
+            local a1 = GetItemAmmo(GetSlotItem(fighter, 1)) or 0
+            local a2 = GetItemAmmo(GetSlotItem(fighter, 2)) or 0
+            if a1 == 0 and a2 == 0 then
+                fighter:EquipItem(3)
+            elseif a1 == 0 then
+                fighter:EquipItem(2)
+            elseif a2 == 0 then
+                fighter:EquipItem(1)
+            end
+        end)
     end
 end)
 
@@ -1469,7 +1805,7 @@ local function getClosestTarget()
     local closestPlayer = nil
     local closestRoot = nil
     local closestHead = nil
-    local closestDist = 500
+    local closestDist = math.huge
     for _, player in plrs:GetPlayers() do
         if not isEnemy(player) then continue end
         local pChar = player.Character
@@ -1511,6 +1847,41 @@ local RAGE_DEFAULT_RANGES = { In = 10, Out = 35 }
 local RagePhaseClock = 0
 local RageHoldCF = nil
 local RageHoldAt = 0
+local VOID_PERIOD = 1.2
+
+-- // 12d. Void desync path patterns
+local function GetVoidOffset(mode, t, depth)
+    if mode == "Void Y" then
+        local sign = (math.floor(t / VOID_PERIOD) % 2 == 0) and -1 or 1
+        return Vector3.new(0, sign * depth, 0)
+    elseif mode == "Drift" then
+        return Vector3.new(math.sin(t * 0.7) * depth, math.cos(t * 0.5) * depth * 0.5, math.cos(t * 0.7) * depth)
+    elseif mode == "Spiral" then
+        local a = t * 3
+        local rise = ((t % VOID_PERIOD) / VOID_PERIOD) * 2 - 1
+        return Vector3.new(math.sin(a) * depth * 0.6, rise * depth, math.cos(a) * depth * 0.6)
+    elseif mode == "Random" then
+        return Vector3.new(
+            (math.random() - 0.5) * 2 * depth,
+            (math.random() - 0.5) * 2 * depth,
+            (math.random() - 0.5) * 2 * depth
+        )
+    elseif mode == "Zigzag" then
+        local z = (math.floor(t * 4) % 2 == 0) and 1 or -1
+        return Vector3.new(z * depth, -depth * 0.5, -z * depth * 0.5)
+    elseif mode == "Infinity" then
+        local a = t * 2
+        return Vector3.new(math.sin(a) * depth, math.sin(a * 2) * depth * 0.5, math.cos(a) * depth * 0.3)
+    else
+        local a = t * 2.5
+        local sign = (math.floor(t / VOID_PERIOD) % 2 == 0) and -1 or 1
+        return Vector3.new(
+            math.sin(a) * depth * 0.5,
+            sign * depth + math.sin(a * 2) * depth * 0.25,
+            math.cos(a) * depth * 0.5
+        )
+    end
+end
 
 runS.Heartbeat:Connect(function(dt)
     if not getgenv().Config.Enabled then return end
@@ -1560,12 +1931,23 @@ runS.Heartbeat:Connect(function(dt)
         end
     end
 
+    -- Passive void/strafe cycle: void window hides (Void Time slider), attack window strafes (Attack Time slider)
+    local voidWeight = getgenv().Config.VoidTime
+    local attackWeight = getgenv().Config.AttackTime
+    local totalWeight = voidWeight + attackWeight
+    local voidFrac = 1
+    if totalWeight > 0.001 then
+        voidFrac = voidWeight / totalWeight
+    end
+    local phase = (tick() % VOID_PERIOD) / VOID_PERIOD
+    local inVoidWindow = phase < voidFrac
+
     if desyncCF and lplr.Character then
-        if getgenv().Config.RageHide and targetPlayer and deflecting[targetPlayer] then
-            local voidDepth = (getgenv().Config.RageHideVoid or 50) * 5
-            desyncCF = desyncCF * CFrame.new(0, -voidDepth, 0)
-        end
-        if getgenv().Config.RageStrafe then
+        if inVoidWindow then
+            local depth = 1 + (math.clamp(getgenv().Config.RageHideVoid or 50, 0, 100) / 100) * 2
+            local off = GetVoidOffset(getgenv().Config.VoidType or "Hybrid", tick(), depth)
+            desyncCF = desyncCF * CFrame.new(off)
+        else
             local t = tick() * 35
             local strafe = Vector3.new(math.sin(t) * 2.5, math.sin(t * 1.3) * 1.5, math.cos(t) * 2.5)
             desyncCF = desyncCF * CFrame.new(strafe)
@@ -1676,6 +2058,7 @@ local function handleReplicatePacket(...)
                     if hitPlayer and hitPlayer ~= LocalPlayer then
                         local partName = (isHead == true) and "Head" or hitPart.Name
                         local dmg = math.floor((tonumber(damage) or 0) + 0.5)
+                        PushTracer(GetGunTipWorld(), hitPart.Position)
                         if getgenv().Config.HitNotify then
                             Library:Notify(string.format("Hit %s in the %s for %d", hitPlayer.Name, partName, dmg), 2)
                         end
@@ -2108,4 +2491,43 @@ RunService.RenderStepped:Connect(function(dt)
     end
 end)
 
-Library:Notify("Rivals Internal v4083 — crosshair color restored, weapons menu gutted. RightShift for menu.", 5)
+-- // 17b. Bullet tracer renderer
+RunService.RenderStepped:Connect(function()
+    local cam = workspace.CurrentCamera
+    if not cam then
+        for i = 1, TRACER_POOL do tracerLines[i].Visible = false end
+        return
+    end
+    local now = tick()
+    local dur = math.max(getgenv().Config.TracerDuration or 1, 0.1)
+    local col = getgenv().Config.TracerColor or Color3.new(1, 1, 1)
+    for i = #TracerEvents, 1, -1 do
+        local ev = TracerEvents[i]
+        if now - ev.t > dur then
+            table.remove(TracerEvents, i)
+        end
+    end
+    local idx = 1
+    for _, ev in ipairs(TracerEvents) do
+        local line = tracerLines[idx]
+        if not line then break end
+        idx = idx + 1
+        local f, fOn = cam:WorldToViewportPoint(ev.from)
+        local t2, tOn = cam:WorldToViewportPoint(ev.to)
+        if fOn and tOn and f.Z > 0 and t2.Z > 0 then
+            local age = now - ev.t
+            line.Visible = true
+            line.From = Vector2.new(f.X, f.Y)
+            line.To = Vector2.new(t2.X, t2.Y)
+            line.Color = col
+            line.Transparency = math.clamp(1 - age / dur, 0, 1)
+        else
+            line.Visible = false
+        end
+    end
+    for i = idx, TRACER_POOL do
+        tracerLines[i].Visible = false
+    end
+end)
+
+Library:Notify("Rivals Internal v4088 — true silent redirect, split aimbot, tracers, passive void modes. RightShift for menu.", 5)
