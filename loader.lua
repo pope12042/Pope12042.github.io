@@ -194,46 +194,47 @@ end
 getgenv().Drawing = Drawing
 end
 
--- // Custom Sound Downloader
+-- // Custom Sound Downloader (scoped)
+local CustomHitSounds, CustomDeathSounds
+do
 local SoundCache = {}
 local function fetchSound(key, url)
-    if SoundCache[key] then return SoundCache[key] end
-    local fname = key .. ".mp3"
-    local i = 1
-    local base = key
-    while isfile(fname) do
-        fname = base .. tostring(i) .. ".mp3"
-        i = i + 1
-    end
-    if not isfile(fname) then
-        pcall(function()
-            writefile(fname, game:HttpGet(url))
-        end)
-    end
-    local asset = getcustomasset(fname)
-    SoundCache[key] = asset
-    return asset
+if SoundCache[key] then return SoundCache[key] end
+local fname = key .. ".mp3"
+local i = 1
+local base = key
+while isfile(fname) do
+fname = base .. tostring(i) .. ".mp3"
+i = i + 1
 end
-
-local CustomHitSounds = {
-    ["None"] = "",
-    ["Agpa"] = "rbxassetid://132463144859699",
-    ["Gamesense"] = "rbxassetid://4817809188",
-    ["Neverlose"] = "rbxassetid://139452805868562",
-    ["Bow Hit"] = "rbxassetid://135478009117226",
-    ["TF2"] = "rbxassetid://137392628136734",
-    ["Teto"] = "rbxassetid://137052121415213",
-    ["Ouch"] = fetchSound("Audio_ouch", "https://github.com/pope12042/ProjectAurora/raw/refs/heads/main/anime-ahh.mp3"),
-    ["Samsung"] = fetchSound("Audio_samsung", "https://github.com/pope12042/ProjectAurora/raw/refs/heads/main/yt1s_nijLeKo.mp3"),
+if not isfile(fname) then
+pcall(function()
+writefile(fname, game:HttpGet(url))
+end)
+end
+local asset = getcustomasset(fname)
+SoundCache[key] = asset
+return asset
+end
+CustomHitSounds = {
+["None"] = "",
+["Agpa"] = "rbxassetid://132463144859699",
+["Gamesense"] = "rbxassetid://4817809188",
+["Neverlose"] = "rbxassetid://139452805868562",
+["Bow Hit"] = "rbxassetid://135478009117226",
+["TF2"] = "rbxassetid://137392628136734",
+["Teto"] = "rbxassetid://137052121415213",
+["Ouch"] = fetchSound("Audio_ouch", "https://github.com/pope12042/ProjectAurora/raw/refs/heads/main/anime-ahh.mp3"),
+["Samsung"] = fetchSound("Audio_samsung", "https://github.com/pope12042/ProjectAurora/raw/refs/heads/main/yt1s_nijLeKo.mp3"),
 }
-
-local CustomDeathSounds = {
-    ["None"] = "",
-    ["Sata Andagi"] = fetchSound("Audio_sata", "https://github.com/pope12042/ProjectAurora/raw/refs/heads/main/sata-andagi-made-with-Voicemod.mp3"),
-    ["Giggle"] = fetchSound("Audio_giggle", "https://github.com/pope12042/ProjectAurora/raw/refs/heads/main/giggle-cute-anime-girl-sound-effect.mp3"),
-    ["Stop It Pls"] = fetchSound("Audio_stop", "https://github.com/pope12042/ProjectAurora/raw/refs/heads/main/stop-please_9yqGTDW.mp3"),
-    ["Fatality"] = fetchSound("Audio_fatality", "https://github.com/pope12042/ProjectAurora/raw/refs/heads/main/16_2.mp3"),
+CustomDeathSounds = {
+["None"] = "",
+["Sata Andagi"] = fetchSound("Audio_sata", "https://github.com/pope12042/ProjectAurora/raw/refs/heads/main/sata-andagi-made-with-Voicemod.mp3"),
+["Giggle"] = fetchSound("Audio_giggle", "https://github.com/pope12042/ProjectAurora/raw/refs/heads/main/giggle-cute-anime-girl-sound-effect.mp3"),
+["Stop It Pls"] = fetchSound("Audio_stop", "https://github.com/pope12042/ProjectAurora/raw/refs/heads/main/stop-please_9yqGTDW.mp3"),
+["Fatality"] = fetchSound("Audio_fatality", "https://github.com/pope12042/ProjectAurora/raw/refs/heads/main/16_2.mp3"),
 }
+end
 
 -- // 3. Services & Global Config
 local Players = game:GetService("Players")
@@ -276,18 +277,23 @@ Snow = false,
 SkyboxPreset = "None",
 AspectRatio = false, AspectRatioValue = 0.7,
 ShowDamageText = false, DamageTextColor = Color3.fromRGB(255, 60, 60), DamageTextFont = "Code",
-BulletTracers = false, TracerColor = Color3.fromRGB(80, 170, 255), TracerDuration = 1,
+BulletTracers = false, TracerColor = Color3.fromRGB(80, 170, 255), TracerDuration = 3,
+TracerStyle = "Beam", TracerSize = 1, TracerFadeTime = 0.5, TracerSegs = 64, TracerSpread = 0.026, TracerGlow = true,
 TargetHUD = false,
 RageEnabled = false, VoidTime = 0.5, AttackTime = 0.5, FireRate = 0.001, WeaponSlot = "Melee",
+CounterType = "none",
 StatusFollow = "Screen",
 NameSpoof = false, YourName = "Andy", EnemyName = "Johnny",
 LevelSpoof = false, SpoofLevel = 100, WinstreakSpoof = false, SpoofWinstreak = 10,
 RapidFire = false, RapidFireSpeed = -1, UnlockAll = false,
 FastMelee = false, FastMeleeCooldown = 0.1,
 Hitsound = "None", HitsoundVolume = 5, HitNotify = false,
+CustomHitNotifyText = "Hit {plr} in the {part} for {dmg} using {weapon}",
 DeathSound = "None", DeathSoundVolume = 5,
 InfiniteJump = false, Noclip = false,
 Fly = false, FlySpeed = 60,
+WalkSpeed = false, WalkSpeedValue = 2,
+SlidingSpeed = false, SlidingSpeedValue = 10,
 CrosshairEnabled = false, CrosshairSize = 10, CrosshairGap = 4, CrosshairThickness = 2, CrosshairSpin = false, CrosshairSpinSpeed = 0, CrosshairColor = Color3.new(1,1,1),
 CrosshairBreathing = false, CrosshairBreathingSpeed = 2,
 CrosshairTopColor = Color3.new(1,1,1), CrosshairBottomColor = Color3.new(1,1,1),
@@ -300,17 +306,19 @@ SkinChanger = false,
 AutoLoadConfig = false,
 }
 
--- // 4. Linoria UI Setup
+-- // 4. Linoria UI Setup (scoped)
+local Library, Options, Toggles, Window, Tabs, ThemeManager, SaveManager, SkyPresets
+do
 local repo = "https://raw.githubusercontent.com/pope12042/LinoriaLib/main/"
-local Library = loadstring(game:HttpGet(repo .. "Library.lua"))()
-local ThemeManager = loadstring(game:HttpGet(repo .. "addons/ThemeManager.lua"))()
-local SaveManager = loadstring(game:HttpGet(repo .. "addons/SaveManager.lua"))()
-local Options = Library.Options
-local Toggles = Library.Toggles
+Library = loadstring(game:HttpGet(repo .. "Library.lua"))()
+ThemeManager = loadstring(game:HttpGet(repo .. "addons/ThemeManager.lua"))()
+SaveManager = loadstring(game:HttpGet(repo .. "addons/SaveManager.lua"))()
+Options = Library.Options
+Toggles = Library.Toggles
 Library.ShowToggleFrameInKeybinds = true
 Library.ShowCustomCursor = true
 Library.NotifySide = "Left"
-local Window = Library:CreateWindow({
+Window = Library:CreateWindow({
 Title = "Project Aurora | dsc.gg/getaroura",
 Center = true,
 AutoShow = true,
@@ -321,7 +329,7 @@ NotifySide = "Left",
 TabPadding = 8,
 MenuFadeTime = 0.2
 })
-local Tabs = {
+Tabs = {
 Main = Window:AddTab("Main"),
 Visuals = Window:AddTab("Visuals"),
 Misc = Window:AddTab("Misc"),
@@ -356,6 +364,10 @@ MovementGroup:AddToggle("InfiniteJump", { Text = "Infinite Jump", Default = fals
 MovementGroup:AddToggle("Noclip", { Text = "Noclip", Default = false })
 MovementGroup:AddToggle("Fly", { Text = "Fly (camera direction)", Default = false, Tooltip = "Desktop: WASD + Space/Shift. Mobile: on-screen joystick + hold buttons." })
 MovementGroup:AddSlider("FlySpeed", { Text = "Fly Speed", Min = 10, Max = 300, Default = 60, Rounding = 0, Compact = true })
+MovementGroup:AddToggle("WalkSpeed", { Text = "Walk Speed", Default = false, Tooltip = "Lucent-style: hooks MechanicsController BASE_WALKSPEED upvalue with a proxy metatable multiplier." })
+MovementGroup:AddSlider("WalkSpeedValue", { Text = "Walk Multiplier", Min = 1, Max = 10, Default = 2, Rounding = 1, Compact = true })
+MovementGroup:AddToggle("SlidingSpeed", { Text = "Sliding Speed", Default = false, Tooltip = "Same upvalue hook, fires only while the Slide function is on the stack." })
+MovementGroup:AddSlider("SlidingSpeedValue", { Text = "Slide Multiplier", Min = 1, Max = 20, Default = 10, Rounding = 1, Compact = true })
 MovementGroup:AddLabel("Keybind"):AddKeyPicker("KeybindFly", { Default = "None", Mode = "Toggle", Text = "Fly" })
 local ChamsGroup = Tabs.Main:AddRightGroupbox("Viewmodel Chams")
 ChamsGroup:AddToggle("GunChams", { Text = "Gun Chams", Default = false })
@@ -365,7 +377,7 @@ ChamsGroup:AddToggle("ArmChams", { Text = "Arm Chams", Default = false })
 :AddColorPicker("ArmChamsFill", { Default = Color3.fromRGB(60, 180, 255), Title = "Arm Fill Color" })
 :AddColorPicker("ArmChamsOutline", { Default = Color3.new(0, 0, 0), Title = "Arm Outline Color" })
 ChamsGroup:AddSlider("ChamsFillTransparency", { Text = "Fill Transparency", Min = 0, Max = 1, Default = 0.45, Rounding = 2, Compact = true })
-ChamsGroup:AddToggle("ChamsWireframe", { Text = "Wireframe Mode", Default = false, Tooltip = "Renders gun/arm viewmodel parts as forcefield wireframe with thin white soft outline." })
+ChamsGroup:AddToggle("ChamsWireframe", { Text = "Wireframe Mode", Default = false, Tooltip = "Drops part transparency to 0.75 and renders a thin white outline via Highlight." })
 local ExploitGroup = Tabs.Main:AddRightGroupbox("Exploits & Audio")
 ExploitGroup:AddToggle("RapidFire", { Text = "Rapid Fire", Default = false })
 ExploitGroup:AddSlider("RapidFireSpeed", { Text = "Cooldown Override", Min = -100, Max = 100, Default = -1, Rounding = 0 })
@@ -384,7 +396,18 @@ for k in pairs(CustomDeathSounds) do table.insert(deathSoundKeys, k) end
 table.sort(deathSoundKeys)
 ExploitGroup:AddDropdown("DeathSound", { Text = "Death Sound", Values = deathSoundKeys, Default = 1 })
 ExploitGroup:AddSlider("DeathSoundVolume", { Text = "Death Sound Vol", Min = 0, Max = 10, Default = 5, Rounding = 1 })
-ExploitGroup:AddToggle("HitNotify", { Text = "Hit Notifications", Default = false, Tooltip = "Fires only on YOUR confirmed hits: Hit {Target} in the {part} for {damage}." })
+ExploitGroup:AddToggle("HitNotify", { Text = "Hit Notifications", Default = false, Tooltip = "Fires only on YOUR confirmed hits." })
+ExploitGroup:AddInput("CustomHitNotifyText", {
+Text = "Custom Hit Message",
+Default = "Hit {plr} in the {part} for {dmg} using {weapon}",
+Finished = true,
+Placeholder = "Hit {plr}...",
+})
+ExploitGroup:AddLabel("Variables:")
+ExploitGroup:AddLabel("{plr} = player")
+ExploitGroup:AddLabel("{dmg} = damage dealt")
+ExploitGroup:AddLabel("{part} = hit part")
+ExploitGroup:AddLabel("{weapon} = hit using gun name")
 local RageGroup = Tabs.Main:AddLeftGroupbox("Void Ragebot")
 RageGroup:AddToggle("RageEnabled", { Text = "Enable Ragebot", Default = false })
 RageGroup:AddSlider("VoidTime", { Text = "Void Time (hide window)", Min = 0, Max = 100, Default = 50, Suffix = "%", Rounding = 0 })
@@ -402,6 +425,19 @@ Multi = false,
 Text = "Void Type",
 Tooltip = "Desync path during the void window. Hybrid mixes spiral + Y + jitter.",
 })
+RageGroup:AddDropdown("CounterType", {
+Values = {"none", "kicia", "nebula"},
+Default = "none",
+Multi = false,
+Text = "Counter Type",
+Tooltip = "Anti-rage desync patterns. Nebula is currently disabled.",
+})
+Options.CounterType:OnChanged(function(val)
+if val == "nebula" then
+Library:Notify("Nebula counter is currently disabled.", 2)
+Options.CounterType:SetValue("none")
+end
+end)
 RageGroup:AddDropdown("RageMisc", {
 Values = {"Auto Swap Guns", "Projectiles Only"},
 Default = {},
@@ -477,10 +513,21 @@ WorldGroup:AddSlider("BloomSize", { Text = "Size", Min = 0, Max = 100, Default =
 WorldGroup:AddSlider("BloomThreshold", { Text = "Threshold", Min = 0, Max = 100, Default = 80, Rounding = 0 })
 WorldGroup:AddDivider()
 WorldGroup:AddToggle("Snow", { Text = "Snow", Default = false, Tooltip = "Falling particle snow field riding above you." })
-local BulletTracerGroup = Tabs.Visuals:AddLeftGroupbox("Bullet Tracers")
-BulletTracerGroup:AddToggle("BulletTracers", { Text = "Bullet Tracers", Default = false })
+local BulletTracerGroup = Tabs.Visuals:AddLeftGroupbox("Bullet Tracers (Lucent port)")
+BulletTracerGroup:AddToggle("BulletTracers", { Text = "Bullet Tracers", Default = false, Tooltip = "Hooks TracerEffect.Play: real muzzle-to-hitpoint tracers on your shots only." })
 :AddColorPicker("TracerColor", { Default = Color3.fromRGB(80, 170, 255), Title = "Tracer Color" })
-BulletTracerGroup:AddSlider("TracerDuration", { Text = "Trace Duration", Min = 0.1, Max = 5, Default = 1, Rounding = 1, Suffix = "s" })
+BulletTracerGroup:AddDropdown("TracerStyle", {
+Values = {"Beam", "Lightning V2", "Lightning", "Heartrate", "Chain", "Glitch", "Swirl", "Neon", "Plasma", "Laser"},
+Default = "Beam",
+Multi = false,
+Text = "Tracer Style",
+})
+BulletTracerGroup:AddSlider("TracerDuration", { Text = "Trace Duration", Min = 0.1, Max = 5, Default = 3, Rounding = 1, Suffix = "s" })
+BulletTracerGroup:AddSlider("TracerFadeTime", { Text = "Fade Time", Min = 0.1, Max = 3, Default = 0.5, Rounding = 1, Suffix = "s", Compact = true })
+BulletTracerGroup:AddSlider("TracerSize", { Text = "Tracer Size", Min = 0.1, Max = 5, Default = 1, Rounding = 1, Compact = true })
+BulletTracerGroup:AddSlider("TracerSegs", { Text = "Lightning Segs", Min = 2, Max = 64, Default = 64, Rounding = 0, Compact = true })
+BulletTracerGroup:AddSlider("TracerSpread", { Text = "Lightning Spread", Min = 0.005, Max = 0.5, Default = 0.026, Rounding = 3, Compact = true })
+BulletTracerGroup:AddToggle("TracerGlow", { Text = "Lightning Glow", Default = true })
 local TargetHUDGroup = Tabs.Visuals:AddRightGroupbox("Target HUD")
 TargetHUDGroup:AddToggle("TargetHUD", { Text = "Target HUD", Default = false, Tooltip = "Draggable card: player icon, gun icon + name, health bar, damage-taken bar, winning/losing/drawing." })
 TargetHUDGroup:AddLabel("Keybind"):AddKeyPicker("KeybindTargetHUD", { Default = "None", Mode = "Toggle", Text = "Target HUD" })
@@ -496,7 +543,7 @@ local SkyPresetOrder = {
 "MagentaOrange", "Aesthetic", "Alien", "Lunar", "Retro", "Realistic", "Midnight", "Moon",
 "NightMountains", "Art", "Ame", "Dawn",
 }
-local SkyPresets = {
+SkyPresets = {
 GreenHaze = { SkyboxBk = "rbxassetid://160193404", SkyboxDn = "rbxassetid://160193466", SkyboxFt = "rbxassetid://160193461", SkyboxLf = "rbxassetid://160193469", SkyboxRt = "rbxassetid://160193463", SkyboxUp = "rbxassetid://160193458", SunAngularSize = 0 },
 Space2 = { SkyboxBk = "rbxassetid://11844076072", SkyboxDn = "rbxassetid://11844069700", SkyboxFt = "rbxassetid://11844067209", SkyboxLf = "rbxassetid://11844063543", SkyboxRt = "rbxassetid://11844058446", SkyboxUp = "rbxassetid://11844053742", StarCount = 3000, SunAngularSize = 11, MoonAngularSize = 20 },
 PinkMountains = { SkyboxBk = "rbxassetid://160188495", SkyboxDn = "rbxassetid://160188614", SkyboxFt = "rbxassetid://160188609", SkyboxLf = "rbxassetid://160188589", SkyboxRt = "rbxassetid://160188597", SkyboxUp = "rbxassetid://160188588", StarCount = 3000 },
@@ -576,8 +623,8 @@ SpoofGroup:AddSlider("SpoofLevel", { Text = "Spoofed Level", Min = 1, Max = 1000
 SpoofGroup:AddToggle("WinstreakSpoof", { Text = "Winstreak Spoof", Default = false })
 SpoofGroup:AddSlider("SpoofWinstreak", { Text = "Spoofed Winstreak", Min = 0, Max = 1000, Default = 10, Rounding = 0 })
 local MenuGroup = Tabs["UI Settings"]:AddLeftGroupbox("Menu")
-MenuGroup:AddToggle("KeybindMenuOpen", { Default = Library.KeybindFrame.Visible, Text = "Open Keybind Menu", Callback = function(value) Library.KeybindFrame.Visible = value end})
-MenuGroup:AddToggle("ShowCustomCursor", {Text = "Custom Cursor", Default = true, Callback = function(Value) Library.ShowCustomCursor = Value end})
+MenuGroup:AddToggle("KeybindMenuOpen", { Default = Library.KeybindFrame.Visible, Text = "Open Keybind Menu", Callback = function(value) Library.KeybindFrame.Visible = value end })
+MenuGroup:AddToggle("ShowCustomCursor", { Text = "Custom Cursor", Default = true, Callback = function(Value) Library.ShowCustomCursor = Value end })
 MenuGroup:AddDivider()
 MenuGroup:AddLabel("Menu bind"):AddKeyPicker("MenuKeybind", { Default = "RightShift", NoUI = true, Text = "Menu keybind" })
 MenuGroup:AddButton("Unload", function() Library:Unload() end)
@@ -591,6 +638,7 @@ SaveManager:SetFolder("RivalsInternal/configs")
 SaveManager:BuildConfigSection(Tabs["UI Settings"])
 ThemeManager:ApplyToTab(Tabs["UI Settings"])
 SaveManager:LoadAutoloadConfig()
+end
 
 -- // 5. Screen Elements
 local gethui = gethui or function() return game:GetService("CoreGui") end
@@ -630,7 +678,6 @@ HitSound.Parent = gethui()
 local DeathSound = Instance.new("Sound")
 DeathSound.Volume = 0.5
 DeathSound.Parent = gethui()
-
 local DamageTextGui = Instance.new("ScreenGui")
 DamageTextGui.Name = "RivalsDamageTextGui"
 DamageTextGui.IgnoreGuiInset = true
@@ -673,33 +720,24 @@ local SmoothTargetScreen = Vector2.new(0, 0)
 local LastSilentTargetPart = nil
 local RageTargetHead = nil
 local StatusTargetPart = nil
--- // 5b. Bullet tracer pool
-local TRACER_POOL = 24
-local TracerEvents = {}
-local tracerLines = {}
-for tracerI = 1, TRACER_POOL do
-local tl = Drawing.new("Line")
-tl.Thickness = 2
-tl.Visible = false
-tracerLines[tracerI] = tl
-end
+-- // 5b. Tracer spawn forward-ref (Lucent system assigns later)
+local SpawnTracer = nil
 local function PushTracer(fromPos, toPos)
 if not getgenv().Config.BulletTracers then return end
-if not getgenv().Config.AimEnabled then return end
 if typeof(fromPos) ~= "Vector3" or typeof(toPos) ~= "Vector3" then return end
-table.insert(TracerEvents, { from = fromPos, to = toPos, t = tick() })
-if #TracerEvents > TRACER_POOL then
-table.remove(TracerEvents, 1)
+if SpawnTracer then
+SpawnTracer(fromPos, toPos)
 end
 end
+-- // 5c. Target HUD gui (scoped, handles hoisted)
+local THMain, THName, THPlayerIcon, THGunName, THGunIcon, THBarFill, THHealth, THStatus, THDamageFill, THDamageText
 do
--- // 5c. Target HUD gui (icons + gun name + damage-taken bar)
 local TargetHUDGui = Instance.new("ScreenGui")
 TargetHUDGui.Name = "AuroraTargetHUD"
 TargetHUDGui.IgnoreGuiInset = true
 TargetHUDGui.DisplayOrder = 991
 TargetHUDGui.Parent = gethui()
-local THMain = Instance.new("Frame")
+THMain = Instance.new("Frame")
 THMain.Name = "THMain"
 THMain.Size = UDim2.fromOffset(260, 104)
 THMain.Position = UDim2.fromOffset(40, 200)
@@ -710,7 +748,7 @@ THMain.Visible = false
 THMain.Parent = TargetHUDGui
 local THCorner = Instance.new("UICorner", THMain)
 THCorner.CornerRadius = UDim.new(0, 8)
-local THPlayerIcon = Instance.new("ImageLabel")
+THPlayerIcon = Instance.new("ImageLabel")
 THPlayerIcon.Name = "THPlayerIcon"
 THPlayerIcon.BackgroundTransparency = 1
 THPlayerIcon.Position = UDim2.fromOffset(8, 8)
@@ -720,7 +758,7 @@ THPlayerIcon.Image = ""
 THPlayerIcon.Parent = THMain
 local THPlayerIconCorner = Instance.new("UICorner", THPlayerIcon)
 THPlayerIconCorner.CornerRadius = UDim.new(0, 6)
-local THGunIcon = Instance.new("ImageLabel")
+THGunIcon = Instance.new("ImageLabel")
 THGunIcon.Name = "THGunIcon"
 THGunIcon.BackgroundTransparency = 1
 THGunIcon.Position = UDim2.fromOffset(212, 8)
@@ -728,7 +766,7 @@ THGunIcon.Size = UDim2.fromOffset(40, 40)
 THGunIcon.ScaleType = Enum.ScaleType.Fit
 THGunIcon.Image = ""
 THGunIcon.Parent = THMain
-local THName = Instance.new("TextLabel")
+THName = Instance.new("TextLabel")
 THName.BackgroundTransparency = 1
 THName.Position = UDim2.fromOffset(54, 8)
 THName.Size = UDim2.fromOffset(154, 16)
@@ -738,7 +776,7 @@ THName.TextXAlignment = Enum.TextXAlignment.Left
 THName.TextColor3 = Color3.fromRGB(240, 240, 240)
 THName.Text = "None"
 THName.Parent = THMain
-local THGunName = Instance.new("TextLabel")
+THGunName = Instance.new("TextLabel")
 THGunName.BackgroundTransparency = 1
 THGunName.Position = UDim2.fromOffset(54, 26)
 THGunName.Size = UDim2.fromOffset(154, 14)
@@ -757,14 +795,14 @@ THBarBack.BorderSizePixel = 0
 THBarBack.Parent = THMain
 local THBarCorner = Instance.new("UICorner", THBarBack)
 THBarCorner.CornerRadius = UDim.new(1, 0)
-local THBarFill = Instance.new("Frame")
+THBarFill = Instance.new("Frame")
 THBarFill.Size = UDim2.fromScale(1, 1)
 THBarFill.BackgroundColor3 = Color3.fromRGB(120, 220, 120)
 THBarFill.BorderSizePixel = 0
 THBarFill.Parent = THBarBack
 local THFillCorner = Instance.new("UICorner", THBarFill)
 THFillCorner.CornerRadius = UDim.new(1, 0)
-local THHealth = Instance.new("TextLabel")
+THHealth = Instance.new("TextLabel")
 THHealth.BackgroundTransparency = 1
 THHealth.Position = UDim2.fromOffset(8, 64)
 THHealth.Size = UDim2.fromOffset(120, 14)
@@ -774,7 +812,7 @@ THHealth.TextXAlignment = Enum.TextXAlignment.Left
 THHealth.TextColor3 = Color3.fromRGB(200, 200, 200)
 THHealth.Text = "0 HP"
 THHealth.Parent = THMain
-local THStatus = Instance.new("TextLabel")
+THStatus = Instance.new("TextLabel")
 THStatus.BackgroundTransparency = 1
 THStatus.Position = UDim2.fromOffset(132, 64)
 THStatus.Size = UDim2.fromOffset(120, 14)
@@ -793,14 +831,14 @@ THDamageBack.BorderSizePixel = 0
 THDamageBack.Parent = THMain
 local THDamageCorner = Instance.new("UICorner", THDamageBack)
 THDamageCorner.CornerRadius = UDim.new(1, 0)
-local THDamageFill = Instance.new("Frame")
+THDamageFill = Instance.new("Frame")
 THDamageFill.Size = UDim2.fromScale(0, 1)
 THDamageFill.BackgroundColor3 = Color3.fromRGB(255, 120, 60)
 THDamageFill.BorderSizePixel = 0
 THDamageFill.Parent = THDamageBack
 local THDamageFillCorner = Instance.new("UICorner", THDamageFill)
 THDamageFillCorner.CornerRadius = UDim.new(1, 0)
-local THDamageText = Instance.new("TextLabel")
+THDamageText = Instance.new("TextLabel")
 THDamageText.BackgroundTransparency = 1
 THDamageText.Position = UDim2.fromOffset(8, 88)
 THDamageText.Size = UDim2.fromOffset(244, 14)
@@ -826,6 +864,7 @@ if THDragging and (inp.UserInputType == Enum.UserInputType.MouseMovement or inp.
 THMain.Position = UDim2.fromOffset(inp.Position.X - 130, inp.Position.Y - 24)
 end
 end)
+end
 -- // 6. Gun info helpers (Max Ammo = remaining reserve)
 local CameraControllerModule = nil
 local function ResolveCameraController()
@@ -941,7 +980,8 @@ end
 end)
 return ""
 end
--- // 6c. Lucent gate checks (tool zoom / tool reload / fighter reloading)
+-- // 6c. Lucent gate checks (scoped, legacy)
+do
 local function GetLocalTool()
 local char = LocalPlayer.Character
 if not char then return nil end
@@ -968,7 +1008,8 @@ return lf:Get("Reloading")
 end)
 return ok and val == true
 end
--- // 7. Viewmodel chams reconcile (+ wireframe refined)
+end
+-- // 7. Viewmodel chams reconcile (+ wireframe: 0.75 transparency + thin white outline)
 local ChamsCache = {}
 local WireCache = {}
 local function ReconcileChams()
@@ -992,12 +1033,14 @@ targets[#targets + 1] = { model = model, kind = "Arm" }
 end
 end
 end
+end
 for _, entry in ipairs(targets) do
 local model, kind = entry.model, entry.kind
 seen[model] = true
 local wantOn = (kind == "Gun" and Toggles.GunChams.Value) or (kind == "Arm" and Toggles.ArmChams.Value)
+local wantWire = Toggles.ChamsWireframe and Toggles.ChamsWireframe.Value
 local cached = ChamsCache[model]
-if wantOn or (Toggles.ChamsWireframe and Toggles.ChamsWireframe.Value) then
+if wantOn or wantWire then
 if not cached then
 local h = Instance.new("Highlight")
 h.Adornee = model
@@ -1006,11 +1049,19 @@ h.Parent = model
 cached = { h = h }
 ChamsCache[model] = cached
 end
-if Toggles.ChamsWireframe and Toggles.ChamsWireframe.Value then
+if wantWire then
 cached.h.FillColor = Color3.new(1, 1, 1)
 cached.h.FillTransparency = 1
 cached.h.OutlineColor = Color3.new(1, 1, 1)
-cached.h.OutlineTransparency = 0.5
+cached.h.OutlineTransparency = 0
+for _, part in ipairs(entry.model:GetDescendants()) do
+if part:IsA("BasePart") then
+if WireCache[part] == nil then
+WireCache[part] = { Transparency = part.Transparency, Material = part.Material }
+end
+part.Transparency = 0.75
+end
+end
 else
 cached.h.FillColor = (kind == "Gun" and Options.GunChamsFill.Value or Options.ArmChamsFill.Value)
 cached.h.OutlineColor = (kind == "Gun" and Options.GunChamsOutline.Value or Options.ArmChamsOutline.Value)
@@ -1022,21 +1073,12 @@ elseif cached then
 cached.h.Enabled = false
 end
 end
-end
-if Toggles.ChamsWireframe and Toggles.ChamsWireframe.Value then
-for _, entry in ipairs(targets) do
-for _, part in ipairs(entry.model:GetDescendants()) do
-if part:IsA("BasePart") then
-if WireCache[part] == nil then
-WireCache[part] = part.Material
-end
-part.Material = Enum.Material.ForceField
-end
-end
-end
-else
-for part, mat in pairs(WireCache) do
-pcall(function() part.Material = mat end)
+if not (Toggles.ChamsWireframe and Toggles.ChamsWireframe.Value) then
+for part, original in pairs(WireCache) do
+pcall(function()
+part.Transparency = original.Transparency
+part.Material = original.Material
+end)
 WireCache[part] = nil
 end
 end
@@ -1047,12 +1089,12 @@ ChamsCache[model] = nil
 end
 end
 end
--- // 8. UI Sync Loop
+-- // 8. UI Sync Loop + snow + aim math + skybox + aspect (scoped)
+do
 local cc = Instance.new("ColorCorrectionEffect", Lighting)
 local bloom = Instance.new("BloomEffect", Lighting)
 local spinAngle = 0
 local chamsAccum = 0
--- // 8d. Snow field
 local SnowPart = Instance.new("Part")
 SnowPart.Name = "AuroraSnowField"
 SnowPart.Anchored = true
@@ -1077,7 +1119,6 @@ SnowEmitter.RotSpeed = NumberRange.new(-40, 40)
 SnowEmitter.LockedToPart = false
 SnowEmitter.Enabled = false
 SnowEmitter.Parent = SnowPart
--- // 8e. Lion aim math helpers + Kicia mobile camera steering
 local MOVE_CONST = Vector2.new(1, 0.77) * math.rad(0.5)
 local function WrapAngle(num)
 num = num % math.pi
@@ -1101,7 +1142,6 @@ end)
 if ok and type(mod) == "table" then MobileCameraController = mod end
 return MobileCameraController
 end
--- Inline section keybinds: picker state drives the matching toggle.
 local SECTION_BINDS = {
 { Picker = "KeybindSilentAim", Toggle = "AimEnabled" },
 { Picker = "KeybindAimbot", Toggle = "AimbotEnabled" },
@@ -1165,12 +1205,19 @@ getgenv().Config.DamageTextFont = Options.DamageTextFont.Value
 getgenv().Config.BulletTracers = Toggles.BulletTracers.Value
 getgenv().Config.TracerColor = Options.TracerColor.Value
 getgenv().Config.TracerDuration = Options.TracerDuration.Value
+getgenv().Config.TracerStyle = Options.TracerStyle.Value
+getgenv().Config.TracerSize = Options.TracerSize.Value
+getgenv().Config.TracerFadeTime = Options.TracerFadeTime.Value
+getgenv().Config.TracerSegs = Options.TracerSegs.Value
+getgenv().Config.TracerSpread = Options.TracerSpread.Value
+getgenv().Config.TracerGlow = Toggles.TracerGlow.Value
 getgenv().Config.TargetHUD = Toggles.TargetHUD.Value
 getgenv().Config.RageEnabled = Toggles.RageEnabled.Value
 getgenv().Config.VoidTime = Options.VoidTime.Value / 100
 getgenv().Config.AttackTime = Options.AttackTime.Value / 100
 getgenv().Config.FireRate = Options.FireRate.Value / 1000
 getgenv().Config.WeaponSlot = Options.WeaponSlot.Value
+getgenv().Config.CounterType = Options.CounterType.Value
 getgenv().Config.StatusFollow = Options.StatusFollow.Value
 getgenv().Config.RageHideVoid = Options.RageHideVoid.Value
 getgenv().Config.VoidType = Options.VoidType.Value
@@ -1192,10 +1239,15 @@ getgenv().Config.HitsoundVolume = Options.HitsoundVolume.Value / 10
 getgenv().Config.DeathSound = Options.DeathSound.Value
 getgenv().Config.DeathSoundVolume = Options.DeathSoundVolume.Value / 10
 getgenv().Config.HitNotify = Toggles.HitNotify.Value
+getgenv().Config.CustomHitNotifyText = Options.CustomHitNotifyText.Value
 getgenv().Config.InfiniteJump = Toggles.InfiniteJump.Value
 getgenv().Config.Noclip = Toggles.Noclip.Value
 getgenv().Config.Fly = Toggles.Fly.Value
 getgenv().Config.FlySpeed = Options.FlySpeed.Value
+getgenv().Config.WalkSpeed = Toggles.WalkSpeed.Value
+getgenv().Config.WalkSpeedValue = Options.WalkSpeedValue.Value
+getgenv().Config.SlidingSpeed = Toggles.SlidingSpeed.Value
+getgenv().Config.SlidingSpeedValue = Options.SlidingSpeedValue.Value
 getgenv().Config.CrosshairEnabled = Toggles.CrosshairEnabled.Value
 getgenv().Config.CrosshairSize = Options.CrosshairSize.Value
 getgenv().Config.CrosshairGap = Options.CrosshairGap.Value
@@ -1216,7 +1268,6 @@ getgenv().Config.CrosshairOutlineThickness = Options.CrosshairOutlineThickness.V
 local rageMiscSel = Options.RageMisc.Value or {}
 getgenv().Config.RageMiscAutoSwap = rageMiscSel["Auto Swap Guns"] == true
 getgenv().Config.RageMiscProjectiles = rageMiscSel["Projectiles Only"] == true
--- Section keybinds (PC keys only; touch devices never fire them)
 for _, bind in ipairs(SECTION_BINDS) do
 local picker = Options[bind.Picker]
 local tgl = Toggles[bind.Toggle]
@@ -1274,7 +1325,6 @@ else
 FOVCircleFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 end
 FOVCircleFrame.Visible = getgenv().Config.ShowFOV
--- Visible aimbot: desktop = mousemoverel, mobile = CameraController SetRotation (Kicia method)
 if getgenv().Config.AimbotEnabled then
 local isTouch = UserInputService.TouchEnabled
 local abCenter = nil
@@ -1357,7 +1407,6 @@ chamsAccum = 0
 ReconcileChams()
 end
 end)
--- // 8b. Skybox apply
 local AppliedSky = nil
 local function ApplySkybox(name)
 local preset = (name and name ~= "None") and SkyPresets[name] or nil
@@ -1382,7 +1431,6 @@ if preset.SunAngularSize then AppliedSky.SunAngularSize = preset.SunAngularSize 
 if preset.MoonAngularSize then AppliedSky.MoonAngularSize = preset.MoonAngularSize end
 end
 Options.SkyboxPreset:OnChanged(function(value) ApplySkybox(value) end)
--- // 8c. Aspect ratio
 local stretchBound = false
 local stretchCam, stretchBase, stretchResult = nil, nil, nil
 RunService:BindToRenderStep("RivalsStretch", Enum.RenderPriority.Camera.Value + 1, function()
@@ -1405,11 +1453,12 @@ local result = base * CFrame.new(0, 0, 0, 1, 0, 0, 0, y, 0, 0, 0, 1)
 stretchCam, stretchBase, stretchResult = cam, base, result
 cam.CFrame = result
 end)
--- // 9. Silent Aim (Lucent-style shot wrap + module raycast redirect + hit chance)
+end
+-- // 9. Silent Aim (scoped)
+do
 local phem2_cs = game:GetService("CollectionService")
 local phem7 = require(ReplicatedStorage.Modules.Utility)
 local phem8 = phem7.Raycast
-local util9 = require(ReplicatedStorage.Modules.Utility)
 function phem9(centerVec)
 local phem10 = centerVec or Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
 local phem11 = nil
@@ -1449,7 +1498,6 @@ end
 PushTracer(phem19, phem26)
 return { Position = phem26, Distance = phem28, Instance = phem25, Material = phem25.Material, Normal = -phem27 }
 end
--- // 9b. Silent shot wrap: snap camera INSIDE Gun.StartShooting, fire, restore same tick
 local SilentShotInstalled = false
 local function InstallSilentShotWrap()
 if SilentShotInstalled then return end
@@ -1516,7 +1564,9 @@ end
 end)
 end
 InstallSilentShotWrap()
--- // 10. ESP (+ skeleton)
+end
+-- // 10. ESP (scoped)
+do
 local function enemyOk(player)
 if player == LocalPlayer then return false end
 if not getgenv().Config.TeamCheck then return true end
@@ -1811,7 +1861,9 @@ end
 until true
 end
 end)
--- // 11. Mobile Fly UI
+end
+-- // 11. Mobile Fly UI (scoped)
+do
 local FlyGui = Instance.new("ScreenGui")
 FlyGui.Name = "RivalsFlyGui"
 FlyGui.IgnoreGuiInset = true
@@ -1858,8 +1910,8 @@ local corner = Instance.new("UICorner", btn)
 corner.CornerRadius = UDim.new(1, 0)
 return btn
 end
-local BtnUp = makeFlyButton("FlyUp", "â ²", -196)
-local BtnDown = makeFlyButton("FlyDown", "â ¼", -112)
+local BtnUp = makeFlyButton("FlyUp", "^", -196)
+local BtnDown = makeFlyButton("FlyDown", "v", -112)
 local joystickVec = Vector2.new(0, 0)
 local joystickTouch = nil
 local joyRadius = 52
@@ -1942,16 +1994,20 @@ if horizontal.Magnitude > 1 then horizontal = horizontal.Unit end
 local speed = getgenv().Config.FlySpeed
 hrp.AssemblyLinearVelocity = horizontal * speed + Vector3.new(0, vz * speed, 0)
 end)
--- // 12. RAGEBOT
+end
+-- // 12. RAGEBOT (scoped, cross-section handles hoisted)
+local runS, FighterController
+local deflecting = {}
+do
 local repS = cloneref(game:GetService("ReplicatedStorage"))
 local plrs = cloneref(game:GetService("Players"))
-local runS = cloneref(game:GetService("RunService"))
+runS = cloneref(game:GetService("RunService"))
 local ws = cloneref(game:GetService("Workspace"))
 local uis = cloneref(game:GetService("UserInputService"))
 local lplr = plrs.LocalPlayer
 local util = require(repS.Modules.Utility)
 local enum = require(repS.Modules.EnumLibrary)
-local FighterController = require(lplr.PlayerScripts.Controllers.FighterController)
+FighterController = require(lplr.PlayerScripts.Controllers.FighterController)
 local SpectateController = require(lplr.PlayerScripts.Controllers:WaitForChild("SpectateController"))
 FighterControllerSafe = FighterController
 local slots = {
@@ -1962,7 +2018,6 @@ Melee = 3
 local function getSlotNumber()
 return slots[getgenv().Config.WeaponSlot] or 3
 end
--- // 12b. Ragebot Misc helpers (inventory / ammo / projectiles)
 local PROJECTILE_NAMES = { Slingshot = true, Bow = true, Daggers = true }
 local function GetFighterItems(fighter)
 local keys = { "Items", "Inventory", "ItemSlots" }
@@ -2044,7 +2099,6 @@ end)
 end
 end
 end)
--- // 12c. Ragebot Misc swap loop (auto swap + projectiles only)
 task.spawn(function()
 while true do
 task.wait(0.2)
@@ -2088,7 +2142,6 @@ end)
 end
 end)
 local lastFire = 0
-local deflecting = {}
 plrs.PlayerRemoving:Connect(function(player)
 deflecting[player] = nil
 end)
@@ -2179,7 +2232,6 @@ local RagePhaseClock = 0
 local RageHoldCF = nil
 local RageHoldAt = 0
 local VOID_PERIOD = 1.2
--- // 12d. Void desync path patterns
 local function GetVoidOffset(mode, t, depth)
 if mode == "Void Y" then
 local sign = (math.floor(t / VOID_PERIOD) % 2 == 0) and -1 or 1
@@ -2258,7 +2310,6 @@ desyncCF = RageHoldCF
 end
 end
 end
--- Passive void/strafe cycle: void window hides (Void Time slider), attack window strafes (Attack Time slider)
 local voidWeight = getgenv().Config.VoidTime
 local attackWeight = getgenv().Config.AttackTime
 local totalWeight = voidWeight + attackWeight
@@ -2278,6 +2329,23 @@ local t = tick() * 35
 local strafe = Vector3.new(math.sin(t) * 2.5, math.sin(t * 1.3) * 1.5, math.cos(t) * 2.5)
 desyncCF = desyncCF * CFrame.new(strafe)
 end
+
+-- // KICIA COUNTER LOGIC
+if getgenv().Config.CounterType == "kicia" then
+local myRoot = lplr.Character and lplr.Character:FindFirstChild("HumanoidRootPart")
+if myRoot then
+local jitterOffset = Vector3.new(math.random(-50, 50), math.random(-50, 50), math.random(-50, 50))
+local oldCF = myRoot.CFrame
+myRoot.CFrame = oldCF + jitterOffset
+runS:BindToRenderStep("__kicia_counter", 102, function()
+if myRoot and myRoot.Parent then
+myRoot.CFrame = oldCF
+end
+runS:UnbindFromRenderStep("__kicia_counter")
+end)
+end
+end
+
 local myRoot = lplr.Character:FindFirstChild("HumanoidRootPart")
 if myRoot then
 local oldCF = myRoot.CFrame
@@ -2327,7 +2395,9 @@ cameradata,
 nil
 )
 end)
--- // 13. CONFIRMED-HIT FEEDBACK
+end
+-- // 13. CONFIRMED-HIT FEEDBACK (scoped)
+do
 local function localObjectId()
 local fighter = FighterControllerSafe and FighterControllerSafe.LocalFighter or nil
 local data = type(fighter) == "table" and rawget(fighter, "Data") or nil
@@ -2380,19 +2450,34 @@ if hitPlayer and hitPlayer ~= LocalPlayer then
 local partName = (isHead == true) and "Head" or hitPart.Name
 local dmg = math.floor((tonumber(damage) or 0) + 0.5)
 PushTracer(GetGunTipWorld(), hitPart.Position)
+
+local customMsg = getgenv().Config.CustomHitNotifyText or "Hit {plr} in the {part} for {dmg}"
+local gunName, _, _ = GetLocalGunInfo()
+local weaponName = gunName or "Unknown"
+local msg = customMsg:gsub("{plr}", hitPlayer.Name):gsub("{dmg}", dmg):gsub("{part}", partName):gsub("{weapon}", weaponName)
+
 if getgenv().Config.HitNotify then
-Library:Notify(string.format("Hit %s in the %s for %d", hitPlayer.Name, partName, dmg), 2)
+Library:Notify(msg, 2)
 end
+
+if getgenv().Config.CounterType == "kicia" then
+local myRoot = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+local dist = myRoot and (hitPart.Position - myRoot.Position).Magnitude or 0
+if dist > 60 or math.random(1, 5) == 1 then
+Library:Notify(hitPlayer.Name .. " is raging using kicia", 3)
+end
+end
+
 if getgenv().Config.Hitsound ~= "None" then
 HitSound.SoundId = CustomHitSounds[getgenv().Config.Hitsound]
 HitSound:Play()
 end
 local hum = character:FindFirstChildOfClass("Humanoid")
 if hum and (hum.Health <= 0) then
-    if getgenv().Config.DeathSound ~= "None" then
-        DeathSound.SoundId = CustomDeathSounds[getgenv().Config.DeathSound]
-        DeathSound:Play()
-    end
+if getgenv().Config.DeathSound ~= "None" then
+DeathSound.SoundId = CustomDeathSounds[getgenv().Config.DeathSound]
+DeathSound:Play()
+end
 end
 ShowDamageText(hitPart.Position, damage)
 end
@@ -2418,6 +2503,7 @@ end
 end
 end)
 end)
+end
 -- // 14. Status Text composer
 local currentStateText = ""
 runS.Heartbeat:Connect(function()
@@ -2566,8 +2652,9 @@ THStatus.Text = "Winning"
 THStatus.TextColor3 = Color3.fromRGB(120, 240, 120)
 end
 end)
-end
--- // 15. Spoofers, Rapid Fire & Fast Melee
+-- // 15. Spoofers, Rapid Fire & Fast Melee (scoped, ApplyFastMeleeState hoisted)
+local ApplyFastMeleeState
+do
 pcall(function()
 local Gun = require(LocalPlayer.PlayerScripts.Modules.ItemTypes.Gun)
 if Gun and Gun.Update then
@@ -2580,10 +2667,9 @@ return oldUpdate(self, dt, ...)
 end
 end
 end)
--- // 15b. Fast Melee (Lion-style ItemLibrary cooldown patch)
 local FAST_MELEE_KEYS = { "AttackCooldown", "HeavyAttackCooldown", "AttackDelay", "SwingCooldown" }
 local FastMeleeOriginals = {}
-local function ApplyFastMeleeState()
+ApplyFastMeleeState = function()
 pcall(function()
 local lib = require(ReplicatedStorage.Modules.ItemLibrary)
 if not lib or not lib.Items then return end
@@ -2645,7 +2731,9 @@ part.CanCollide = false
 end
 end
 end)
--- // 15c. Skin changer gui (icons from ItemLibrary / CosmeticLibrary)
+end
+-- // 15c. Skin changer gui (scoped)
+do
 local SkinGui = Instance.new("ScreenGui")
 SkinGui.Name = "AuroraSkinChanger"
 SkinGui.IgnoreGuiInset = true
@@ -2856,7 +2944,69 @@ SKRebuildWeapons()
 SKSetMode(SKMode)
 end
 end)
--- // 16. Unlock All Cosmetics
+end
+-- // 15d. Walk / Slide speed (scoped, QueueWalkSpeedHook hoisted)
+local QueueWalkSpeedHook
+do
+local WalkSpeedHooked = false
+local WalkSpeedOldUpvalue = nil
+local function InstallWalkSpeedHook()
+if WalkSpeedHooked then return true end
+local okMc, mc = pcall(function()
+return require(LocalPlayer.PlayerScripts.Controllers.MechanicsController)
+end)
+if not okMc or type(mc) ~= "table" then return false end
+local mt = getmetatable(mc)
+local idx = (type(mt) == "table") and rawget(mt, "__index") or nil
+local getter = (type(idx) == "table") and rawget(idx, "_GetWalkSpeed") or nil
+if type(getter) ~= "function" then return false end
+local targetTable = nil
+local targetIndex = nil
+for k, uv in pairs(debug.getupvalues(getter)) do
+if type(uv) == "table" and rawget(uv, "BASE_WALKSPEED") ~= nil then
+targetTable = uv
+targetIndex = k
+break
+end
+end
+if not targetIndex then return false end
+WalkSpeedOldUpvalue = targetTable
+debug.setupvalue(getter, targetIndex, setmetatable({}, {
+__index = function(_, key)
+if key ~= "BASE_WALKSPEED" then
+return rawget(WalkSpeedOldUpvalue, key)
+end
+local base = rawget(WalkSpeedOldUpvalue, "BASE_WALKSPEED")
+if getgenv().Config.SlidingSpeed and debug.info(3, "n") == "Slide" then
+return base * (getgenv().Config.SlidingSpeedValue or 10)
+end
+if getgenv().Config.WalkSpeed then
+return base * (getgenv().Config.WalkSpeedValue or 2)
+end
+return base
+end,
+}))
+WalkSpeedHooked = true
+return true
+end
+QueueWalkSpeedHook = function()
+if WalkSpeedHooked then return end
+task.spawn(function()
+for _ = 1, 60 do
+if InstallWalkSpeedHook() then return end
+task.wait(0.5)
+end
+end)
+end
+Toggles.WalkSpeed:OnChanged(function(val)
+if val then QueueWalkSpeedHook() end
+end)
+Toggles.SlidingSpeed:OnChanged(function(val)
+if val then QueueWalkSpeedHook() end
+end)
+end
+-- // 16. Unlock All Cosmetics (scoped)
+do
 local UnlockInstalled = false
 local function enableUnlockAll()
 if UnlockInstalled then return end
@@ -2878,7 +3028,9 @@ local _base = _cosLib.Cosmetics[nm]
 if not _base then return nil end
 local _d = {}
 for k, v in pairs(_base) do _d[k] = v end
-_d.Name = nm; _d.Type = _d.Type or ctype; _d.Seed = _d.Seed or math.random(1, 1000000)
+_d.Name = nm
+_d.Type = _d.Type or ctype
+_d.Seed = _d.Seed or math.random(1, 1000000)
 if _enumLib then
 local _s, _eid = pcall(_enumLib.ToEnum, _enumLib, nm)
 if _s and _eid then _d.Enum = _eid; _d.ObjectID = _d.ObjectID or _eid end
@@ -3074,7 +3226,9 @@ end
 Toggles.UnlockAll:OnChanged(function(val)
 if val then enableUnlockAll() end
 end)
--- // 17. Custom Crosshair
+end
+-- // 17. Custom Crosshair (scoped)
+do
 local CrosshairOutlines = {
 Top = Drawing.new("Line"), Bottom = Drawing.new("Line"),
 Left = Drawing.new("Line"), Right = Drawing.new("Line"),
@@ -3136,49 +3290,285 @@ CrosshairLines[name].Color = p.color
 CrosshairLines[name].Thickness = thickness
 end
 end)
--- // 17b. Bullet tracer renderer
-RunService.RenderStepped:Connect(function()
-local cam = workspace.CurrentCamera
-if not cam then
-for i = 1, TRACER_POOL do tracerLines[i].Visible = false end
-return
 end
-local now = tick()
-local dur = math.max(getgenv().Config.TracerDuration or 1, 0.1)
-local col = getgenv().Config.TracerColor or Color3.new(1, 1, 1)
-for i = #TracerEvents, 1, -1 do
-local ev = TracerEvents[i]
-if now - ev.t > dur then
-table.remove(TracerEvents, i)
+-- // 17b. Bullet Tracer System (scoped, TREnable hoisted)
+local TREnable
+do
+local TR = {
+Hooked = false,
+EffectHooked = false,
+Connection = nil,
+Retry = nil,
+Parts = {},
+Tracers = {},
+Dedupe = {},
+Frame = 0,
+}
+local TR_TEXTURES = {
+Line = "",
+Beam = "rbxassetid://12781852245",
+Lightning = "rbxassetid://446111271",
+Heartrate = "rbxassetid://5830549480",
+Chain = "rbxassetid://9632168658",
+Glitch = "rbxassetid://8089467613",
+Swirl = "rbxassetid://5638168605",
+Neon = "rbxassetid://6361963422",
+Plasma = "rbxassetid://8993645509",
+Laser = "rbxassetid://14549123968",
+}
+local function TRMuzzle()
+local viewModels = workspace:FindFirstChild("ViewModels")
+if not viewModels then return nil end
+local firstPerson = viewModels:FindFirstChild("FirstPerson")
+if not firstPerson then return nil end
+local pname = LocalPlayer.Name
+for _, child in ipairs(firstPerson:GetChildren()) do
+if child:IsA("Model") and child.Name:find("^" .. pname) then
+local itemVisual = child:FindFirstChild("ItemVisual")
+itemVisual = itemVisual and itemVisual:FindFirstChild("Body")
+local bodyPrimary = itemVisual and itemVisual:FindFirstChild("BodyPrimary")
+bodyPrimary = bodyPrimary and bodyPrimary:FindFirstChild("_muzzle")
+if bodyPrimary and bodyPrimary:IsA("Attachment") then
+return bodyPrimary.WorldPosition
 end
 end
-local idx = 1
-for _, ev in ipairs(TracerEvents) do
-local line = tracerLines[idx]
-if not line then break end
-idx = idx + 1
-local f, fOn = cam:WorldToViewportPoint(ev.from)
-local t2, tOn = cam:WorldToViewportPoint(ev.to)
-if fOn and tOn and f.Z > 0 and t2.Z > 0 then
-local age = now - ev.t
-line.Visible = true
-line.From = Vector2.new(f.X, f.Y)
-line.To = Vector2.new(t2.X, t2.Y)
-line.Color = col
-line.Transparency = math.clamp(1 - age / dur, 0, 1)
-else
-line.Visible = false
+end
+return nil
+end
+local function TRCreatePart(color, transparency, glow)
+local part = Instance.new("Part")
+part.Anchored = true
+part.CanCollide = false
+part.CanQuery = false
+part.CanTouch = false
+part.CastShadow = false
+part.Color = color
+part.Material = glow and Enum.Material.Neon or Enum.Material.SmoothPlastic
+part.Transparency = transparency
+part.Size = Vector3.new(0, 0, 0)
+part.CFrame = CFrame.new()
+part.Parent = workspace
+TR.Parts[#TR.Parts + 1] = part
+return part
+end
+local function TRLightningV2(startPos, endPos)
+local color = getgenv().Config.TracerColor
+local thick = 0.1 * getgenv().Config.TracerSize
+local glow = getgenv().Config.TracerGlow ~= false
+local duration = getgenv().Config.TracerDuration
+local segs = math.clamp(math.floor(getgenv().Config.TracerSegs or 8), 2, 64)
+local spread = getgenv().Config.TracerSpread or 0.026
+local delta = endPos - startPos
+local magnitude = delta.Magnitude
+if magnitude < 0.5 then return end
+local unit = delta.Unit
+local sideRef = Vector3.new(0, 1, 0)
+if math.abs(unit:Dot(sideRef)) > 0.88 then
+sideRef = Vector3.new(1, 0, 0)
+end
+local side = unit:Cross(sideRef).Unit
+local points = {}
+for i = 0, segs do
+points[i] = startPos + delta * i / segs
+end
+local parts = {}
+for i = 1, segs do
+parts[i] = TRCreatePart(color, 0, glow)
+end
+task.spawn(function()
+local wobbleBase = spread * 0.13 * magnitude
+local elapsed = 0
+while elapsed < duration do
+elapsed = elapsed + task.wait()
+local prog = elapsed / duration
+local transparency = math.min(1, prog * prog * 1.4)
+local wobble = wobbleBase * (1 - prog * 0.5)
+for i = 1, segs - 1 do
+points[i] = startPos + delta * i / segs + side * math.sin(elapsed * 6 + i * 1.9) * wobble
+end
+points[0] = startPos
+points[segs] = endPos
+for i = 1, segs do
+local a = points[i - 1]
+local b = points[i]
+local segLen = (b - a).Magnitude
+local part = parts[i]
+if segLen >= 0.01 and part and part.Parent then
+part.CFrame = CFrame.new(a, b) * CFrame.new(0, 0, -segLen * 0.5)
+local w = math.max(0.03, thick * (1 - prog * 0.5))
+part.Size = Vector3.new(w, w, segLen)
+part.Transparency = transparency
 end
 end
-for i = idx, TRACER_POOL do
-tracerLines[i].Visible = false
+end
+for i = 1, segs do
+if parts[i] and parts[i].Parent then
+parts[i]:Destroy()
+end
 end
 end)
--- // 18. Auto Load (settings)
+end
+local function TRBeam(startPos, endPos)
+local attachment0 = Instance.new("Attachment")
+attachment0.Parent = workspace.Terrain
+local attachment1 = Instance.new("Attachment")
+attachment1.Parent = workspace.Terrain
+local beam = Instance.new("Beam")
+beam.Attachment0 = attachment0
+beam.Attachment1 = attachment1
+beam.Color = ColorSequence.new(getgenv().Config.TracerColor)
+local width = (getgenv().Config.TracerStyle == "Laser" and 0.02 or 0.15) * getgenv().Config.TracerSize
+beam.Width0 = width
+beam.Width1 = width
+beam.Transparency = NumberSequence.new(0)
+beam.FaceCamera = true
+beam.LightEmission = 0.8
+beam.LightInfluence = 0.2
+local tex = TR_TEXTURES[getgenv().Config.TracerStyle]
+if tex and tex ~= "" then
+beam.Texture = tex
+beam.TextureLength = 4
+beam.TextureSpeed = 1
+end
+beam.Parent = workspace.Terrain
+attachment0.WorldPosition = startPos
+attachment1.WorldPosition = endPos
+TR.Parts[#TR.Parts + 1] = beam
+TR.Parts[#TR.Parts + 1] = attachment0
+TR.Parts[#TR.Parts + 1] = attachment1
+TR.Tracers[#TR.Tracers + 1] = {
+Beam = beam,
+Attachment0 = attachment0,
+Attachment1 = attachment1,
+StartPos = startPos,
+EndPos = endPos,
+Lifetime = getgenv().Config.TracerDuration,
+FadeTime = getgenv().Config.TracerFadeTime,
+CreatedTime = tick(),
+}
+end
+local function TRSpawn(startPos, endPos)
+if not startPos or not endPos then return end
+local key = string.format("%.1f_%.1f_%.1f_%.1f_%.1f_%.1f", startPos.X, startPos.Y, startPos.Z, endPos.X, endPos.Y, endPos.Z)
+local now = tick()
+local last = TR.Dedupe[key]
+if last and now - last < 0.05 then return end
+TR.Dedupe[key] = now
+if getgenv().Config.TracerStyle == "Lightning V2" then
+TRLightningV2(startPos, endPos)
+else
+TRBeam(startPos, endPos)
+end
+end
+SpawnTracer = TRSpawn
+local function TRDestroy(entry)
+if entry.Beam then entry.Beam:Destroy() end
+if entry.Attachment0 then entry.Attachment0:Destroy() end
+if entry.Attachment1 then entry.Attachment1:Destroy() end
+end
+local function TRUpdate()
+if #TR.Tracers == 0 then return end
+TR.Frame = TR.Frame + 1
+local now = tick()
+if TR.Frame % 120 == 0 then
+for k, v in next, TR.Dedupe, nil do
+if now - v > 1 then
+TR.Dedupe[k] = nil
+end
+end
+end
+local i = #TR.Tracers
+while i >= 1 do
+local entry = TR.Tracers[i]
+local age = now - entry.CreatedTime
+if entry.Lifetime <= age then
+TRDestroy(entry)
+TR.Tracers[i] = TR.Tracers[#TR.Tracers]
+TR.Tracers[#TR.Tracers] = nil
+else
+local fadeStart = entry.Lifetime - entry.FadeTime
+local alpha = 1
+if age >= fadeStart and entry.FadeTime > 0 then
+alpha = 1 - math.clamp((age - fadeStart) / entry.FadeTime, 0, 1)
+end
+if entry.Attachment0 then entry.Attachment0.WorldPosition = entry.StartPos end
+if entry.Attachment1 then entry.Attachment1.WorldPosition = entry.EndPos end
+entry.Beam.Transparency = NumberSequence.new(1 - alpha)
+end
+i = i - 1
+end
+end
+local function TRHookEffect()
+if TR.EffectHooked then return end
+pcall(function()
+local TracerEffect = require(LocalPlayer.PlayerScripts.Modules.TracerEffect)
+local play = TracerEffect.Play
+TracerEffect.Play = function(self, shotData, ...)
+if getgenv().Config.BulletTracers and shotData and shotData.IsLocal and shotData.RaycastResults then
+local muzzle = TRMuzzle()
+if muzzle then
+for _, raycastResult in ipairs(shotData.RaycastResults) do
+if raycastResult.Position then
+TRSpawn(muzzle, raycastResult.Position)
+end
+end
+end
+end
+return play(self, shotData, ...)
+end
+TR.EffectHooked = true
+end)
+end
+TREnable = function()
+if TR.Hooked then return end
+TR.Hooked = true
+TRHookEffect()
+if not TR.Connection then
+TR.Connection = RunService.RenderStepped:Connect(TRUpdate)
+end
+if not TR.Retry then
+TR.Retry = task.spawn(function()
+for _ = 1, 30 do
+if TR.EffectHooked or not getgenv().Config.BulletTracers then break end
+TRHookEffect()
+task.wait(0.5)
+end
+TR.Retry = nil
+end)
+end
+end
+local function TRDisable()
+TR.Hooked = false
+if TR.Connection then
+TR.Connection:Disconnect()
+TR.Connection = nil
+end
+for _, entry in ipairs(TR.Tracers) do
+TRDestroy(entry)
+end
+TR.Tracers = {}
+for _, part in ipairs(TR.Parts) do
+if part and part.Parent then
+part:Destroy()
+end
+end
+TR.Parts = {}
+end
+Toggles.BulletTracers:OnChanged(function(val)
+if val then
+TREnable()
+else
+TRDisable()
+end
+end)
+end
+-- // 18. Auto Load (scoped, restore fns hoisted)
+local AutoloadFlagOnDisk, LoadAutoloadConfig
+do
 local AUTOLOAD_FLAG = "RivalsInternal/autoload_on.txt"
 local AUTOLOAD_NAME = "autoload"
 local AutoLoadGroup = Tabs["UI Settings"]:AddRightGroupbox("Auto Load")
-local function AutoloadFlagOnDisk()
+AutoloadFlagOnDisk = function()
 local ok, exists = pcall(function()
 return isfile and isfile(AUTOLOAD_FLAG) or false
 end)
@@ -3188,7 +3578,7 @@ local function SaveAutoloadConfig()
 pcall(function() SaveManager:SaveConfig(AUTOLOAD_NAME, true) end)
 pcall(function() SaveManager:SaveConfig(AUTOLOAD_NAME) end)
 end
-local function LoadAutoloadConfig()
+LoadAutoloadConfig = function()
 local ok = pcall(function() SaveManager:LoadConfig(AUTOLOAD_NAME) end)
 if not ok then
 pcall(function() SaveManager:LoadAutoloadConfig() end)
@@ -3218,6 +3608,7 @@ AutoLoadGroup:AddButton("Re-save autoload now", function()
 SaveAutoloadConfig()
 Library:Notify("Autoload config re-saved.", 2)
 end)
+end
 -- // 19. Startup restore
 task.delay(1.5, function()
 if AutoloadFlagOnDisk() then
@@ -3225,6 +3616,12 @@ LoadAutoloadConfig()
 end
 task.delay(0.5, function()
 ApplyFastMeleeState()
+if Toggles.BulletTracers.Value then
+TREnable()
+end
+if Toggles.WalkSpeed.Value or Toggles.SlidingSpeed.Value then
+QueueWalkSpeedHook()
+end
 end)
 end)
-Library:Notify("Project Aurora | Wireframe refined, Audio/ESP upgraded. RightShift for menu.", 5)
+Library:Notify("Project Aurora | Kicia counter + custom hit formats live. RightShift for menu.", 5)
