@@ -1,0 +1,654 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Rae</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<style>
+@property --gradient-angle{syntax:"<angle>";initial-value:0deg;inherits:false}
+@property --gradient-angle-offset{syntax:"<angle>";initial-value:0deg;inherits:false}
+@property --gradient-percent{syntax:"<percentage>";initial-value:5%;inherits:false}
+@property --gradient-shine{syntax:"<color>";initial-value:white;inherits:false}
+:root{--card:rgba(255,255,255,.06);--sub:#9ca3af;--sep:rgba(255,255,255,.1);--fill:rgba(255,255,255,.1);--blue:#0a84ff;color-scheme:dark}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:#121212}
+body{margin:0;background:none;color:#fff;font:16px/1.45 -apple-system,"SF Pro Text",system-ui,sans-serif;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+svg.lucide{width:18px;height:18px;flex:none}
+#bg{position:fixed;inset:0;z-index:-1;overflow:hidden;background:#121212}
+#bg i{position:absolute;width:60vmax;height:60vmax;border-radius:50%;filter:blur(90px);opacity:.5;animation:dr 22s ease-in-out infinite alternate}
+#bg i:nth-child(1){background:var(--c0);top:-20%;left:-15%}
+#bg i:nth-child(2){background:var(--c1);bottom:-25%;right:-20%;animation-delay:-7s}
+#bg i:nth-child(3){background:var(--c2);top:30%;left:25%;opacity:.3;animation-delay:-14s}
+@keyframes dr{to{transform:translate(8vmax,6vmax) scale(1.15)}}
+.pg{max-width:560px;margin:0 auto;padding:0 16px 32px}
+h1{font-size:30px;line-height:1.1;font-weight:700;margin:8px 0 6px}
+.sub,.dim{color:var(--sub);font-size:14px}.sub{margin:0 0 18px}
+.top{display:flex;justify-content:space-between;align-items:center;height:48px;padding:0 12px;background:rgba(18,18,18,.55);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);flex:none}
+.pg .top{margin:0 -16px;position:sticky;top:0;z-index:5}
+.link{background:none;border:0;color:var(--blue);font:inherit;padding:8px 0}
+.ib{background:none;border:0;color:#fff;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;flex:none}.ib:active{background:var(--fill)}
+.lbl{font-size:13px;text-transform:uppercase;color:var(--sub);margin:20px 4px 6px}
+.card{background:var(--card);border-radius:16px;overflow:hidden;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.row{display:flex;align-items:center;gap:10px;min-height:50px;padding:8px 16px;width:100%;border:0;background:none;color:#fff;font:inherit;text-align:left;position:relative}
+.row+.row::before{content:"";position:absolute;top:0;left:16px;right:0;border-top:.5px solid var(--sep)}
+.grow{flex:1;min-width:0}.grow>div:first-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pill{display:block;width:100%;height:48px;margin-top:10px;border:0;border-radius:999px;background:var(--fill);color:#fff;font:500 15px inherit;font-family:inherit}
+.pill:hover{background:rgba(255,255,255,.2)}.pill.red{color:#ff453a}
+.inp{display:block;width:100%;padding:12px 18px;border:0;border-radius:12px;background:var(--fill);color:#fff;font:14px/1.45 inherit;font-family:inherit;outline:0;resize:none}
+.inp::placeholder{color:#d1d5db}.inp:focus{box-shadow:0 0 0 2px #9ca3af}
+.err{color:#f87171;font-size:14px;min-height:18px;margin:8px 4px}
+.auth{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 16px}
+.glass{width:100%;max-width:384px;border-radius:24px;background:linear-gradient(to right,rgba(255,255,255,.063),#121212);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 25px 50px -12px rgba(0,0,0,.6);padding:32px;display:flex;flex-direction:column;align-items:center}
+.logo{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.2);display:grid;place-items:center;margin-bottom:24px}
+.glass h2{font-size:24px;font-weight:600;margin:0 0 24px}
+.glass .f{width:100%;display:flex;flex-direction:column;gap:12px}
+.glass hr{border:0;border-top:1px solid rgba(255,255,255,.1);width:100%;margin:16px 0}
+.swap{font-size:12px;color:#9ca3af;text-align:center;margin-top:14px}.swap a{color:rgba(255,255,255,.8);text-decoration:underline;cursor:pointer}
+.shiny{--bg1:#000;--bg2:#1a1818;--hl:blue;--hl2:#8484ff;--animation:gradient-angle linear infinite;--duration:3s;--shadow-size:2px;--transition:800ms cubic-bezier(.25,1,.5,1);
+isolation:isolate;position:relative;overflow:hidden;cursor:pointer;outline-offset:4px;display:block;width:100%;margin-top:14px;padding:1rem 2rem;font:500 1.0625rem/1.2 inherit;font-family:inherit;border:1px solid transparent;border-radius:360px;color:#fff;
+background:linear-gradient(var(--bg1),var(--bg1)) padding-box,conic-gradient(from calc(var(--gradient-angle) - var(--gradient-angle-offset)),transparent,var(--hl) var(--gradient-percent),var(--gradient-shine) calc(var(--gradient-percent)*2),var(--hl) calc(var(--gradient-percent)*3),transparent calc(var(--gradient-percent)*4)) border-box;
+box-shadow:inset 0 0 0 1px var(--bg2);transition:var(--transition);transition-property:--gradient-angle-offset,--gradient-percent,--gradient-shine}
+.shiny::before,.shiny::after,.shiny span::before{content:"";pointer-events:none;position:absolute;inset-inline-start:50%;inset-block-start:50%;translate:-50% -50%;z-index:-1}
+.shiny:active{translate:0 1px}
+.shiny::before{--size:calc(100% - var(--shadow-size)*3);--position:2px;--space:calc(var(--position)*2);width:var(--size);height:var(--size);background:radial-gradient(circle at var(--position) var(--position),#fff calc(var(--position)/4),transparent 0) padding-box;background-size:var(--space) var(--space);background-repeat:space;mask-image:conic-gradient(from calc(var(--gradient-angle) + 45deg),#000,transparent 10% 90%,#000);border-radius:inherit;opacity:.4}
+.shiny::after{--animation:shimmer linear infinite;width:100%;aspect-ratio:1;background:linear-gradient(-50deg,transparent,var(--hl),transparent);mask-image:radial-gradient(circle at bottom,transparent 40%,#000);opacity:.6}
+.shiny span{display:block;z-index:1}
+.shiny span::before{--size:calc(100% + 1rem);width:var(--size);height:var(--size);box-shadow:inset 0 -1ex 2rem 4px var(--hl);opacity:0;transition:opacity var(--transition);animation:calc(var(--duration)*1.5) breathe linear infinite}
+.shiny,.shiny::before,.shiny::after{animation:var(--animation) var(--duration),var(--animation) calc(var(--duration)/.4) reverse paused;animation-composition:add}
+.shiny:is(:hover,:focus-visible){--gradient-percent:20%;--gradient-angle-offset:95deg;--gradient-shine:var(--hl2)}
+.shiny:is(:hover,:focus-visible),.shiny:is(:hover,:focus-visible)::before,.shiny:is(:hover,:focus-visible)::after{animation-play-state:running}
+.shiny:is(:hover,:focus-visible) span::before{opacity:1}
+.shiny.sm{width:44px;height:44px;padding:0;margin:0;flex:none}.shiny.sm span{display:grid;place-items:center;height:100%}
+@keyframes gradient-angle{to{--gradient-angle:360deg}}@keyframes shimmer{to{rotate:360deg}}@keyframes breathe{from,to{scale:1}50%{scale:1.2}}
+/* chat */
+.chat{height:100dvh;display:flex;flex-direction:column;max-width:720px;margin:0 auto}
+.tt{display:flex;flex-direction:column;align-items:center;line-height:1.2;min-width:0}.tt span{font-size:12px;color:var(--sub);max-width:50vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#ms{flex:1;overflow-y:auto;padding:12px 16px}
+.empty{margin-top:18vh;text-align:center}
+.um{margin:14px 0 14px auto;max-width:85%;width:fit-content;background:var(--fill);padding:9px 14px;border-radius:18px;white-space:pre-wrap;word-break:break-word}
+.chip{display:inline-flex;align-items:center;gap:6px;margin:6px 6px 0 0;padding:4px 10px;border-radius:999px;background:var(--fill);font-size:12px}
+.am{margin:14px 0}.am b.nm{font-size:13px;color:var(--sub);font-weight:600}
+.steps{display:flex;flex-direction:column;gap:4px;margin:4px 0 8px}
+.st{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub)}.st svg{width:15px;height:15px}
+.st.cur{color:#fff;animation:pl 1.2s ease-in-out infinite}@keyframes pl{50%{opacity:.45}}
+.md>*:first-child{margin-top:0}.md p{margin:.5em 0}.md ul,.md ol{padding-left:1.3em}.md a{color:#60a5fa}
+.md :not(pre)>code{background:var(--fill);padding:1px 6px;border-radius:6px;font-size:.9em}
+.md table{border-collapse:collapse;display:block;overflow-x:auto}.md td,.md th{border:1px solid var(--sep);padding:4px 10px}
+.cb{margin:10px 0;border-radius:12px;overflow:hidden;background:#0d1117;border:1px solid var(--sep)}
+.ch{display:flex;justify-content:space-between;align-items:center;padding:2px 4px 2px 12px;font-size:12px;color:var(--sub);background:rgba(255,255,255,.06)}
+.ch span{display:flex;align-items:center;gap:6px}.ch .ib{width:34px;height:34px;color:var(--sub)}
+.cb pre{margin:0;overflow-x:auto;padding:12px;font:13px/1.5 ui-monospace,Menlo,monospace}.cb pre code.hljs{background:none;padding:0}
+.comp{padding:8px 12px 12px;position:relative}
+.bar{display:flex;align-items:flex-end;gap:8px;background:rgba(255,255,255,.08);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-radius:26px;padding:4px 4px 4px 4px}
+.bar textarea{flex:1;border:0;background:none;color:#fff;font:16px/1.4 inherit;font-family:inherit;resize:none;outline:0;padding:11px 0;max-height:140px}
+#ch{padding:0 16px;display:flex;flex-wrap:wrap}
+#pop{position:absolute;bottom:64px;left:12px;background:#1c1c1e;border-radius:14px;padding:4px;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+#pop button{display:flex;align-items:center;gap:10px;width:150px;padding:10px 12px;border:0;background:none;color:#fff;font:15px inherit;font-family:inherit;border-radius:10px;text-align:left}#pop button:active{background:var(--fill)}
+.mi{margin-bottom:10px;padding:10px}.mh{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.tp{background:var(--fill);border:0;border-radius:999px;color:#fff;font:600 12px inherit;font-family:inherit;padding:5px 12px;outline:0;width:60%}
+.sw{appearance:none;-webkit-appearance:none;width:51px;height:31px;border-radius:16px;background:var(--fill);position:relative;transition:background .25s;flex:none;margin:0}
+.sw::after{content:"";position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.25);transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.sw:checked{background:#34c759}.sw:checked::after{transform:translateX(20px)}
+.seg{display:flex;background:var(--fill);border-radius:10px;padding:2px}
+.seg button{flex:1;border:0;background:none;color:#fff;font:500 14px inherit;font-family:inherit;padding:8px 0;border-radius:8px}
+.seg button.on{background:rgba(255,255,255,.18)}
+.card{border:1px solid rgba(255,255,255,.07)}
+@keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes pop{from{transform:scale(.4) rotate(-40deg);opacity:0}to{transform:none;opacity:1}}
+#app>*{animation:in .34s cubic-bezier(.2,.8,.2,1)}
+.um,.am,.empty{animation:in .32s cubic-bezier(.2,.8,.2,1) both}
+.st.cur{animation:in .3s cubic-bezier(.2,.8,.2,1),pl 1.2s ease-in-out .3s infinite}
+.st:not(.cur){opacity:.65}
+.ib,.pill,.row,.chip,.seg button,.link{transition:background .2s,transform .15s,opacity .2s}
+.ib:active,.pill:active,button.chip:active{transform:scale(.94)}
+.shiny.sm span svg{animation:pop .28s cubic-bezier(.2,.8,.2,1)}
+.shiny.sm.busy{--hl:#ff453a}
+#pop{opacity:0;transform:translateY(8px) scale(.96);transform-origin:bottom left;pointer-events:none;transition:opacity .18s,transform .2s cubic-bezier(.2,.8,.2,1)}
+#pop.open{opacity:1;transform:none;pointer-events:auto}
+button.chip{border:0;color:#fff;font:inherit;font-size:13px;padding:8px 14px;cursor:pointer}button.chip:hover{background:rgba(255,255,255,.2)}
+.sg{display:flex;flex-direction:column;gap:8px;align-items:center;margin-top:22px}
+.bar:focus-within{box-shadow:0 0 0 1px rgba(255,255,255,.18)}.bar{transition:box-shadow .2s}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+.ci{position:relative;width:32px;height:32px;border-radius:9px;background:var(--fill);display:grid;place-items:center;font-weight:600;font-size:14px;flex:none;overflow:hidden}
+.ci::before{content:attr(data-l);text-transform:uppercase}.ci img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.st .ci{width:16px;height:16px;border-radius:4px;font-size:9px}
+.pill{border-radius:14px}
+.sq{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;color:#fff;flex:none}.sq svg{width:18px;height:18px}
+.row.nav{min-height:54px;cursor:pointer}.row.nav+.row.nav::before{left:58px}.row.nav:active{background:rgba(255,255,255,.08)}
+.nav .dim{max-width:48%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.nav svg.ch,.nav .ch{color:var(--sub);width:18px;height:18px;margin-left:2px}
+.run{margin:-4px 0 12px;border-radius:12px;overflow:hidden;background:#0d1117;border:1px solid var(--sep);animation:in .25s both}
+.run iframe{display:block;width:100%;height:280px;border:0;background:#fff}
+.cons{border-top:1px solid var(--sep)}.ct{font-size:12px;color:var(--sub);padding:6px 12px}
+.cl{max-height:150px;overflow:auto;font:12px/1.5 ui-monospace,Menlo,monospace;padding:0 12px 8px}.cl:empty::before{content:"No output yet";color:var(--sub)}
+.cx{white-space:pre-wrap;word-break:break-word;color:#d1d5db}.cx.error{color:#ff6b6b}.cx.warn{color:#ffd166}
+.vx{padding:10px 12px;border-top:1px solid var(--sep);display:flex;flex-direction:column;gap:8px}.vx video{width:100%;border-radius:8px}.vx .pill{height:40px;margin:0}
+.live{margin:4px 0 6px 23px;max-height:220px;overflow:auto;background:#0d1117;border:1px solid var(--sep);border-radius:10px;padding:10px;font:12px/1.5 ui-monospace,Menlo,monospace;color:#d1d5db;white-space:pre}
+.st.fl{cursor:pointer}.st .cv{margin-left:auto;width:15px;height:15px}
+</style>
+</head>
+<body>
+<div id="bg"><i></i><i></i><i></i></div>
+<main id="app"></main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+const sb=supabase.createClient("https://nolklwapllgigshfejyz.supabase.co","sb_publishable_31WFsmjcaugoHhGfi0JS8Q_trmIO7Td");
+const $=s=>document.querySelector(s),app=$("#app");
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const I=(n,c="")=>`<i data-lucide="${n}" class="${c}"></i>`,ic=()=>lucide.createIcons();
+const B=(id,t)=>`<button class="shiny" id="${id}"><span>${t}</span></button>`;
+const setMsg=t=>{const m=$("#msg");if(m)m.textContent=t};
+const URL_="https://openrouter.ai/api/v1/chat/completions";
+const OR=(body)=>fetch(URL_,{method:"POST",headers:{Authorization:"Bearer "+S.key,"Content-Type":"application/json"},body:JSON.stringify(body)});
+const g=k=>{try{return localStorage.getItem(k)}catch(e){return null}},w=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
+const DEF={personality:"curious, warm and a little playful",system_prompt:"",palette:["#1f6feb","#0ea5a4","#f59e0b"],skills:[
+{name:"ui-style",v:4,trigger:"ui,ux,interface,website,webpage,web page,landing,layout,design,component,button,navbar,modal,dashboard,mockup,poster,portfolio,frontend,hero,theme,responsive,web app,html page,login screen,login page",text:`# UI style (frontend design)
+You are designing, not templating. Follow every step.
+
+## 1. Direction (write it first, one line)
+"Purpose: ... Audience: ... Direction: ... Memorable: ..."
+Pick one bold direction and commit: warm editorial, brutalist utility, soft glass, retro-futurist, playful toy, quiet luxury, technical blueprint. Do not mix them.
+
+## 2. Tokens (always CSS variables on :root)
+--bg, --surface, --text, --muted, --accent, --line, --radius, --shadow, --font-display, --font-body.
+Palette starters (adapt, never copy blindly): Ink #14110f / Paper #f4efe6 / Accent #e4572e. Forest #10231b / Cream #f3ecd9 / Accent #d9a441. Slate #0f172a / Fog #e2e8f0 / Accent #22d3a6.
+Redefine the variables in @media (prefers-color-scheme: dark) when the design supports both.
+
+## 3. Type
+Pairs (pick one, load from Google Fonts, give real fallbacks): Fraunces + Manrope, Bricolage Grotesque + Instrument Sans, DM Serif Display + DM Sans, Syne + Outfit, Space Grotesk + Source Serif 4.
+Scale with clamp(): h1 clamp(2.4rem, 7vw, 5rem) with letter-spacing -0.02em; body 1rem/1.6; line length max 65ch.
+Never use Inter, Roboto, Arial or system-ui as the display face.
+
+## 4. Layout and depth
+Mobile first. CSS grid, one clear focal point per screen, 8px spacing scale. Break the grid once on purpose (overlap, oversized type, an offset block). Backgrounds: gradient mesh, SVG-noise grain or a hairline grid that fits the direction. Cards use either a border or a shadow, not both.
+
+## 5. Motion
+Page-load reveal: elements fade and slide up with staggered animation-delay (60ms steps). Hover: translateY(-2px) plus shadow. Active: scale(.98). Transitions 150-250ms with cubic-bezier(.2,.8,.2,1). Wrap animation in @media (prefers-reduced-motion: no-preference).
+
+## 6. States and accessibility
+Every interactive element gets :hover, :focus-visible (2px accent outline, 3px offset), :active and :disabled. Data views get loading, empty and error states. Use real button, a, label and landmark elements (header, main, footer). Text contrast 4.5:1 or better, touch targets 44px or larger, alt text on images.
+
+## 7. Never
+Purple-to-blue gradient on white, a page that is only three identical cards, emoji as icons, lorem ipsum, a centered hero with a gradient blob, generic "Welcome to..." copy, one system font for everything.
+
+## 8. Deliver
+One complete index.html (doctype, viewport meta, title, CSS in a style tag, JS in a script tag), real copy and working interactions. Finish with 2-3 lines: the direction you chose and why.`},
+{name:"code-style",v:3,trigger:"code,script,function,bug,debug,python,javascript,js,typescript,html,css,sql,regex,program,snippet",text:`# Code style
+- Put every file in its own fenced block. The info string is the language then the filename, e.g. \`\`\`js app.js.
+- Write complete, runnable files. Never use placeholders like "...rest of code".
+- Read the user's code first; change only what is needed and say what changed.
+- Small functions, clear names, early returns, explicit error handling at boundaries.
+- Do not invent APIs, flags or package names. If unsure, say so.
+- Finish with how to run it and what to check.`},
+{name:"writing-style",v:2,trigger:"write,email,essay,letter,summary,report,draft,rewrite,proofread",text:`# Writing style
+- Lead with the answer or the draft, then add detail.
+- Plain words, short sentences, active voice. Cut filler openers and closers.
+- Match the reader and the occasion; keep the user's voice when editing.
+- For emails and documents give a subject or title, then the text, ready to send.`},
+{name:"video-style",v:1,trigger:"video,mp4,animation,animate,movie,clip,render",text:`# Video maker
+Rae turns video requests into frame-by-frame HTML. The app renders every frame and converts them to an MP4.
+Follow this contract exactly:
+- One file, \`\`\`html video.html.
+- One canvas: <canvas id="c" width="1280" height="720" style="max-width:100%;height:auto"></canvas>. Even width and height. Body margin 0, dark background.
+- window.VIDEO = { fps: 30, duration: 6 } (seconds, keep duration between 3 and 12).
+- window.drawFrame = (t) => { ... } paints the WHOLE picture for time t (seconds) with the 2D context. It must be a pure function of t: no requestAnimationFrame, setTimeout, Date.now() or unseeded Math.random(). Use easing on t, and a seeded random for particles.
+- Draw everything with canvas shapes, gradients and text in system fonts. No external images, fonts or scripts.
+- Call drawFrame(0) once on load so the preview shows a frame.
+- Plan scenes by time range (for example 0-2s intro, 2-5s main, 5-6s outro) with easeInOut transitions.
+After the code say: tap Run, then Export MP4.`}]};
+const S={user:null,key:g("rae_key")||"",model:g("rae_model")||"best-free",prov:g("rae_prov")||"auto",gkey:g("rae_gkey")||"",gmodel:g("rae_gmodel")||"gemini-flash-latest",conns:[],mcp:{},tools:[],tmap:{},ac:null,prof:null,mem:[],chats:[],chat:null,att:[],busy:0};
+marked.use({breaks:true,renderer:{code(code,info){const[l,f]=(info||"").split(/\s+/);return `<pre data-file="${esc(f||"")}"><code class="language-${esc(l||"plaintext")}">${esc(code)}</code></pre>`}}});
+
+const bg=()=>S.prof.palette.forEach((c,i)=>$("#bg").style.setProperty("--c"+i,c));
+function paintMd(el,text){
+  el.innerHTML=DOMPurify.sanitize(marked.parse(text||""));
+  el.querySelectorAll("a").forEach(a=>{a.target="_blank";a.rel="noopener"});
+  el.querySelectorAll("pre").forEach(pre=>{
+    const code=pre.querySelector("code"),f=pre.dataset.file,l=(code.className.match(/language-(\S+)/)||[])[1],wr=document.createElement("div");
+    wr.className="cb";pre.replaceWith(wr);
+    wr.innerHTML=`<div class="ch"><span>${I("file-code")}${esc(f||l||"code")}</span><div style="display:flex">${/^(html|js|javascript)$/i.test(l||"")?`<button class="ib rn" title="Run">${I("play")}</button>`:""}<button class="ib cp" title="Copy code">${I("copy")}</button></div></div>`;wr.append(pre);
+    try{hljs.highlightElement(code)}catch(e){}
+  });ic();
+}
+document.addEventListener("click",async e=>{
+  const rn=e.target.closest(".rn");if(rn)return runCode(rn.closest(".cb"));const xp=e.target.closest(".xp");if(xp)return exportMp4(xp.closest(".run"));const b=e.target.closest(".cp");if(!b)return;
+  const t=b.closest(".cb").querySelector("code").textContent;
+  try{await navigator.clipboard.writeText(t)}catch(x){const a=document.createElement("textarea");a.value=t;document.body.append(a);a.select();document.execCommand("copy");a.remove()}
+  b.innerHTML=I("check");ic();setTimeout(()=>{b.innerHTML=I("copy");ic()},1300);
+});
+
+const rm=k=>{try{localStorage.removeItem(k)}catch(e){}};
+const intent=t=>({mcp:/\b(mcp|connectors?|tool servers?)\b/i.test(t),code:/\b(code|script|function|bug|debug|error|python|javascript|js|typescript|html|css|sql|regex|program|snippet|component|compile|console)\b/i.test(t),ui:/\b(ui|ux|interface|website|webpage|web page|landing|layout|design|button|navbar|modal|dashboard|mockup|frontend|theme|responsive)\b/i.test(t),video:/\b(video|mp4|animation|animate|movie|clip|render)\b/i.test(t)});
+const parseFiles=t=>{const out=[],re=/```([^\n]*)\n([\s\S]*?)(```|$)/g;let m;while((m=re.exec(t))){const i=m[1].trim().split(/\s+/);out.push({lang:i[0]||"",name:i[1]||"",code:m[2],done:m[3]=="```"});if(m[3]!="```")break}return out};
+/* run code in a sandbox, show console, export video */
+function hook(id){
+  const send=(t,a)=>parent.postMessage({rae:1,id,t,a},"*");
+  ["log","info","warn","error"].forEach(k=>{const o=console[k];console[k]=(...a)=>{send(k,a.map(x=>{try{return typeof x=="string"?x:JSON.stringify(x)}catch(e){return String(x)}}).join(" "));o.apply(console,a)}});
+  addEventListener("error",e=>send("error",e.message+(e.lineno?" (line "+e.lineno+")":"")));
+  addEventListener("unhandledrejection",e=>send("error","Unhandled: "+(e.reason&&e.reason.message||e.reason)));
+  addEventListener("load",()=>{const c=document.querySelector("canvas");send("ready",{video:window.VIDEO||null,w:c&&c.width,h:c&&c.height})});
+  addEventListener("message",async e=>{const d=e.data;if(!d||d.rae!="frame")return;const c=document.querySelector("canvas");
+    try{window.drawFrame&&window.drawFrame(d.i/((window.VIDEO&&window.VIDEO.fps)||30));const b=await createImageBitmap(c);parent.postMessage({rae:1,id,t:"frame",i:d.i,b},"*",[b])}catch(x){send("error","Frame "+d.i+": "+x.message)}});
+}
+let RID=0;
+function runCode(cb){
+  const nx=cb.nextElementSibling;if(nx&&nx.classList.contains("run")){nx.remove();return}
+  const code=cb.querySelector("code"),src=code.textContent,l=((code.className.match(/language-(\S+)/)||[])[1]||"").toLowerCase(),id=++RID;
+  const tag="<script>("+hook.toString()+")("+id+")<\/script>";
+  const doc=l=="html"?(/<head[^>]*>/i.test(src)?src.replace(/<head[^>]*>/i,m=>m+tag):tag+src):"<!doctype html><meta name=viewport content='width=device-width,initial-scale=1'><body style='font:14px system-ui'>"+tag+"<script>"+src+"<\/script>";
+  const r=document.createElement("div");r.className="run";r.dataset.id=id;
+  r.innerHTML='<iframe sandbox="allow-scripts"></iframe><div class="cons"><div class="ct">Console</div><div class="cl"></div></div><div class="vx" hidden><button class="pill xp">Export MP4</button><div class="vs dim"></div></div>';
+  r.querySelector("iframe").srcdoc=doc;cb.after(r);
+}
+addEventListener("message",e=>{
+  const d=e.data;if(!d||d.rae!==1)return;
+  const r=document.querySelector('.run[data-id="'+d.id+'"]');if(!r||e.source!==r.querySelector("iframe").contentWindow)return;
+  if(d.t=="frame"){const f=r._fr&&r._fr[d.i];if(f)f(d.b);return}
+  if(d.t=="ready"){if(d.a.video){r._v=d.a;r.querySelector(".vx").hidden=false}return}
+  const l=r.querySelector(".cl"),x=document.createElement("div");x.className="cx "+d.t;x.textContent=d.a;l.append(x);l.scrollTop=1e9;
+});
+async function exportMp4(r){
+  const st=r.querySelector(".vs"),v=r._v.video,fps=v.fps||30,n=Math.round(fps*Math.min(v.duration||5,30));
+  if(!window.VideoEncoder)return st.textContent="This browser can’t encode video. Try Chrome or a recent Safari.";
+  try{
+    if(!window.Mp4Muxer)await new Promise((ok,no)=>{const sc=document.createElement("script");sc.src="https://cdn.jsdelivr.net/npm/mp4-muxer@5.1.3/build/mp4-muxer.js";sc.onload=ok;sc.onerror=()=>no(new Error("Couldn’t load the MP4 encoder library."));document.head.append(sc)});
+    const w=(r._v.w||1280)&~1,h=(r._v.h||720)&~1,fw=r.querySelector("iframe").contentWindow;let err=null;
+    const mux=new Mp4Muxer.Muxer({target:new Mp4Muxer.ArrayBufferTarget(),video:{codec:"avc",width:w,height:h},fastStart:"in-memory"});
+    const enc=new VideoEncoder({output:(c,m)=>mux.addVideoChunk(c,m),error:e=>err=e});
+    enc.configure({codec:"avc1.4d0028",width:w,height:h,bitrate:5e6,framerate:fps});r._fr={};
+    for(let i=0;i<n;i++){
+      const b=await new Promise((ok,no)=>{r._fr[i]=ok;fw.postMessage({rae:"frame",i},"*");setTimeout(()=>no(new Error("Frame "+i+" timed out. Does the page define drawFrame(t)?")),8000)});
+      if(err)throw err;
+      const f=new VideoFrame(b,{timestamp:Math.round(i*1e6/fps),duration:Math.round(1e6/fps)});
+      enc.encode(f,{keyFrame:i%fps==0});f.close();b.close();
+      while(enc.encodeQueueSize>6)await new Promise(q=>setTimeout(q,10));
+      st.textContent="Encoding "+Math.round((i+1)/n*100)+"%";
+    }
+    await enc.flush();if(err)throw err;mux.finalize();
+    const url=URL.createObjectURL(new Blob([mux.target.buffer],{type:"video/mp4"}));
+    st.innerHTML='<video controls playsinline src="'+url+'"></video><a href="'+url+'" download="rae-video.mp4" style="color:#60a5fa">Download MP4</a>';
+  }catch(e){st.textContent=e.message}
+}
+/* MCP login (OAuth with PKCE) */
+const b64u=b=>btoa(String.fromCharCode(...new Uint8Array(b))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+const rnd=n=>b64u(crypto.getRandomValues(new Uint8Array(n)));
+const redir=()=>location.origin+location.pathname;
+async function getJ(u){const r=await fetch(u);if(!r.ok)throw new Error(r.status);return r.json()}
+async function discover(c){
+  const o=new URL(c.url).origin;let as=o;
+  try{as=(await getJ(o+"/.well-known/oauth-protected-resource")).authorization_servers?.[0]||o}catch(e){}
+  for(const p of ["/.well-known/oauth-authorization-server","/.well-known/openid-configuration"])try{return await getJ(as+p)}catch(e){}
+  throw new Error("Couldn’t find a login page for this server.");
+}
+async function login(c){
+  if(!/^https?:/.test(location.protocol))throw new Error("Logging in needs this page hosted on https (or localhost), not opened as a file.");
+  const m=await discover(c);
+  let cid=g("rae_cid_"+c.id);
+  if(!cid){
+    if(!m.registration_endpoint)throw new Error("This server doesn’t allow app sign-up.");
+    const r=await fetch(m.registration_endpoint,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({client_name:"Rae",redirect_uris:[redir()],grant_types:["authorization_code","refresh_token"],response_types:["code"],token_endpoint_auth_method:"none"})});
+    if(!r.ok)throw new Error("Sign-up with the server failed ("+r.status+").");cid=(await r.json()).client_id;w("rae_cid_"+c.id,cid);
+  }
+  const ver=rnd(48),st=rnd(16),ch=b64u(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(ver)));
+  w("rae_oa",JSON.stringify({id:c.id,ver,st,te:m.token_endpoint,cid,ret:redir()}));
+  const u=new URL(m.authorization_endpoint);
+  Object.entries({response_type:"code",client_id:cid,redirect_uri:redir(),code_challenge:ch,code_challenge_method:"S256",state:st,resource:c.url}).forEach(([k,v])=>u.searchParams.set(k,v));
+  location.href=u.href;
+}
+async function finishLogin(){
+  const q=new URLSearchParams(location.search),code=q.get("code");if(!code)return 0;
+  let o=null;try{o=JSON.parse(g("rae_oa")||"null")}catch(e){}
+  history.replaceState(null,"",location.pathname);
+  if(!o||o.st!=q.get("state"))return 0;
+  const r=await fetch(o.te,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:new URLSearchParams({grant_type:"authorization_code",code,redirect_uri:o.ret,client_id:o.cid,code_verifier:o.ver})});
+  const j=await r.json();if(!j.access_token)throw new Error(j.error_description||j.error||"Login failed");
+  w("rae_tok_"+o.id,j.access_token);if(j.refresh_token){w("rae_rt_"+o.id,j.refresh_token);w("rae_te_"+o.id,o.te)}
+  rm("rae_auth_"+o.id);return o.id;
+}
+async function refreshTok(c){
+  try{const r=await fetch(g("rae_te_"+c.id),{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:new URLSearchParams({grant_type:"refresh_token",refresh_token:g("rae_rt_"+c.id),client_id:g("rae_cid_"+c.id)})});
+    const j=await r.json();if(!j.access_token)return 0;w("rae_tok_"+c.id,j.access_token);if(j.refresh_token)w("rae_rt_"+c.id,j.refresh_token);return 1}catch(e){return 0}
+}
+/* auth */
+function auth(mode="in"){
+  const inn=mode=="in";
+  app.innerHTML=`<section class="auth"><div class="glass"><div class="logo">${I("sparkles")}</div><h2>Rae</h2><div class="f"><input class="inp" id="un" placeholder="Username" autocomplete="username" autocapitalize="none" spellcheck="false"><input class="inp" id="pw" type="password" placeholder="Password" autocomplete="${inn?"current-password":"new-password"}"><div class="err" id="msg" style="margin:0;min-height:0"></div></div><hr>${B("go",inn?"Sign in":"Create account")}
+  <div class="swap">${inn?"Don’t have an account? <a id=\"sw\">Sign up, it’s free!</a>":"Already have an account? <a id=\"sw\">Sign in</a>"}</div></div></section>`;ic();
+  $("#sw").onclick=()=>auth(inn?"up":"in");
+  const go=async()=>{
+    const u=$("#un").value.trim().toLowerCase(),password=$("#pw").value;setMsg("");
+    if(!/^[a-z0-9_]{3,20}$/.test(u))return setMsg("Username: 3–20 letters, numbers or underscores.");
+    if(password.length<6)return setMsg("Password needs at least 6 characters.");
+    const email=u+"@mathgame.app",r=inn?await sb.auth.signInWithPassword({email,password}):await sb.auth.signUp({email,password});
+    if(r.error)return setMsg(r.error.message);
+    if(!r.data.session)return setMsg("Turn off email confirmation in Supabase Auth settings.");
+    boot();
+  };
+  $("#go").onclick=go;$("#pw").onkeydown=e=>{if(e.key=="Enter")go()};
+}
+async function boot(){try{S.jl=await finishLogin()}catch(e){S.je=e.message}
+  const{data:{session}}=await sb.auth.getSession();if(!session)return auth();
+  S.user=session.user;
+  const{data:p}=await sb.from("rae_profile").select("*").maybeSingle();
+  S.prof={personality:p?.personality||DEF.personality,system_prompt:p?.system_prompt||"",palette:p?.palette||DEF.palette,skills:(()=>{const st=p?.skills||[];return DEF.skills.map(d=>{const x=st.find(y=>y.name==d.name);return x&&(x.v||0)>=d.v?x:d}).concat(st.filter(x=>!DEF.skills.some(d=>d.name==x.name)))})()};
+  S.mem=(await sb.from("rae_memories").select("*").order("created_at")).data||[];
+  S.conns=(await sb.from("rae_connectors").select("*").order("created_at")).data||[];S.chat={id:null,title:"New chat",msgs:[]};bg();if(S.jl||S.je){const e=S.je;S.jl=S.je=0;return connView(e?"Login failed: "+e:"Logged in.")}chatView();
+}
+
+/* chat */
+function chatView(){
+  app.innerHTML=`<div class="chat"><div class="top"><button class="ib" id="mn">${I("menu")}</button><div class="tt"><b>Rae</b><span id="ct">${esc(S.chat.title)}</span></div><button class="ib" id="nw">${I("square-pen")}</button></div>
+  <div id="ms"></div><div id="ch"></div><div class="comp"><div id="pop"><button data-i="f1">${I("image")}Image</button><button data-i="f2">${I("file-text")}File</button><button data-i="f3">${I("music")}Sound</button></div>
+  <div class="bar"><button class="ib" id="pc">${I("paperclip")}</button><textarea id="in" rows="1" placeholder="Message Rae"></textarea><button class="shiny sm" id="sd"><span>${I("arrow-up")}</span></button></div></div>
+  <input type="file" hidden id="f1" accept="image/*"><input type="file" hidden id="f2" accept=".txt,.md,.json,.csv,.js,.ts,.py,.html,.css,.sql,.xml,.yml,.pdf"><input type="file" hidden id="f3" accept="audio/*"></div>`;
+  if(!S.chat.msgs.length)$("#ms").innerHTML=`<div class="empty"><h1>Hi, I’m Rae.</h1><p class="sub">Ask me anything, drop in a file, or tell me what to build.</p><div class="sg"><button class="chip">Design a landing page for a bakery</button><button class="chip">Explain this code to me</button><button class="chip">Help me plan my week</button></div></div>`;
+  S.chat.msgs.forEach(addMsg);ic();drawAtt();document.querySelectorAll(".sg .chip").forEach(b=>b.onclick=()=>{const t=$("#in");t.value=b.textContent;t.focus()});
+  $("#mn").onclick=menu;$("#nw").onclick=()=>{S.chat={id:null,title:"New chat",msgs:[]};S.att=[];chatView()};
+  $("#pc").onclick=()=>$("#pop").classList.toggle("open");
+  document.querySelectorAll("#pop button").forEach(b=>b.onclick=()=>{$("#pop").classList.remove("open");$("#"+b.dataset.i).click()});
+  ["f1","f2","f3"].forEach((id,k)=>$("#"+id).onchange=async e=>{const f=e.target.files[0];e.target.value="";if(f)await attach(f,["image","file","sound"][k])});
+  const ta=$("#in");ta.oninput=()=>{ta.style.height="auto";ta.style.height=Math.min(ta.scrollHeight,140)+"px"};
+  ta.onkeydown=e=>{if(e.key=="Enter"&&!e.shiftKey&&matchMedia("(pointer:fine)").matches){e.preventDefault();send()}};
+  $("#sd").onclick=()=>S.busy?S.ac.abort():send();setBtn(S.busy);
+}
+function addMsg(m){
+  const e=$("#ms .empty");if(e)e.remove();
+  const d=document.createElement("div");d.className=m.role=="user"?"um":"am";
+  if(m.role=="user")d.innerHTML=`<div>${esc(m.text)}</div>`+(m.att||[]).map(n=>`<span class="chip">${I("paperclip")}${esc(n)}</span>`).join("");
+  else{d.innerHTML=`<b class="nm">Rae</b><div class="steps"></div><div class="md"></div>`;paintMd(d.querySelector(".md"),m.text)}
+  $("#ms").append(d);ic();$("#ms").scrollTop=1e9;return d;
+}
+async function attach(f,k){
+  if(f.size>(k=="image"?3e7:8e6))return flash("That file is too large.");
+  const rd=()=>new Promise(r=>{const x=new FileReader();x.onload=()=>r(x.result);x.readAsDataURL(f)});
+  const pdf=/\.pdf$/i.test(f.name),a={name:f.name,kind:k=="image"?"image":k=="sound"?"sound":pdf?"pdf":"text",mime:f.type||(k=="sound"?"audio/mpeg":pdf?"application/pdf":"text/plain")};
+  if(a.kind=="sound"){a.data=(await rd()).split(",")[1];a.fmt=(f.name.split(".").pop()||"mp3").toLowerCase();a.icon="music"}
+  else if(a.kind=="text"){a.data=(await f.text()).slice(0,20000);a.icon="file-text"}
+  else if(a.kind=="image"){a.icon="image";try{const bm=await createImageBitmap(f),sc=Math.min(1,1568/Math.max(bm.width,bm.height)),cv=document.createElement("canvas");cv.width=Math.round(bm.width*sc);cv.height=Math.round(bm.height*sc);cv.getContext("2d").drawImage(bm,0,0,cv.width,cv.height);a.data=cv.toDataURL("image/jpeg",.85);a.mime="image/jpeg"}catch(e){a.data=await rd()}}
+  else{a.data=await rd();a.icon="file-text"}
+  S.att.push(a);drawAtt();
+}
+function flash(t){const c=$("#ch");c.innerHTML=`<span class="err">${esc(t)}</span>`;setTimeout(drawAtt,2500)}
+function drawAtt(){
+  $("#ch").innerHTML=S.att.map((a,i)=>`<span class="chip">${I(a.icon)}${esc(a.name)}<button class="ib" style="width:22px;height:22px" data-x="${i}">${I("x")}</button></span>`).join("");ic();
+  document.querySelectorAll("[data-x]").forEach(b=>b.onclick=()=>{S.att.splice(+b.dataset.x,1);drawAtt()});
+}
+function stepper(box){
+  const list=[],open={};let files=[];
+  const draw=fin=>{box.innerHTML=list.map((s,i)=>{
+    const f=s.fi!=null?files[s.fi]:null,lab=f&&f.done?s.label.replace(/^Creating/,"Created"):s.label;
+    return `<div class="st ${!fin&&i==list.length-1?"cur":""} ${f?"fl":""}" ${f?`data-fi="${s.fi}"`:""}>${s.ci?`<span class="ci" data-l="${esc(s.ci.l)}"><img src="${esc(s.ci.ico)}" onerror="this.remove()"></span>`:I(s.icon)}<span>${esc(lab)}</span>${f?I(open[s.fi]?"chevron-up":"chevron-down","cv"):""}</div>`
+      +(f&&open[s.fi]?`<pre class="live" data-fi="${s.fi}"><code>${esc(f.code)}${f.done?"":"▍"}</code></pre>`:"");
+  }).join("");ic();box.querySelectorAll(".live").forEach(p=>p.scrollTop=1e9)};
+  box.onclick=e=>{const r=e.target.closest(".st[data-fi]");if(!r)return;open[r.dataset.fi]=!open[r.dataset.fi];draw(box._fin)};
+  const step=(icon,label,ci,fi)=>{list.push({icon,label,ci,fi});draw()};
+  step.files=a=>{files=a;box.querySelectorAll(".live").forEach(p=>{const f=files[p.dataset.fi];if(f){p.firstChild.textContent=f.code+(f.done?"":"▍");p.scrollTop=1e9}})};
+  step.fin=()=>{box._fin=1;draw(1)};
+  return step;
+}
+const vis=t=>t.replace(/<rae>[\s\S]*$/,"").replace(/<(r(a(e)?)?)?$/,"");
+const scr=()=>{const m=$("#ms");if(m)m.scrollTop=1e9};
+function setBtn(on){const b=$("#sd");if(!b)return;b.querySelector("span").innerHTML=I(on?"pause":"arrow-up");b.classList.toggle("busy",!!on);ic()}
+const keyOf=p=>p=="gemini"?S.gkey:S.key;
+const provs=()=>S.prov=="auto"?["gemini","openrouter"].filter(keyOf):keyOf(S.prov)?[S.prov]:[];
+const hasKey=()=>provs().length>0;
+const icoOf=c=>g("rae_ico_"+c.id)||(()=>{try{return new URL(c.url).origin+"/favicon.ico"}catch(e){return ""}})();
+const nice=e=>e instanceof TypeError?"Couldn’t reach the model server. That is a network or browser block, not a rate limit. Check your connection and try again.":e.message;
+async function bad(r,n){const m=((await r.json().catch(()=>({}))).error?.message)||"";throw new Error(r.status==429?n+" is rate limited right now. "+m+" Wait a bit or switch provider.":m||n+" error "+r.status)}
+const gh=()=>({"Content-Type":"application/json","x-goog-api-key":S.gkey});
+const gURL=st=>`https://generativelanguage.googleapis.com/v1beta/models/${S.gmodel}:${st?"streamGenerateContent?alt=sse":"generateContent"}`;
+const bin=m=>(m.files||[]).filter(a=>a.kind!="text");
+const orC=m=>{const f=bin(m);return f.length?[{type:"text",text:(m.sk||"")+(m.txt||"See attached.")},...f.map(a=>a.kind=="image"?{type:"image_url",image_url:{url:a.data}}:a.kind=="sound"?{type:"input_audio",input_audio:{data:a.data,format:a.fmt}}:{type:"file",file:{filename:a.name,file_data:a.data}})]:((m.sk||"")+(m.txt||m.text))};
+const gP=m=>[{text:(m.sk||"")+(m.txt||m.text||"See attached.")},...bin(m).map(a=>({inlineData:{mimeType:a.mime,data:a.kind=="sound"?a.data:a.data.split(",")[1]}}))];
+async function sse(r,f){
+  const rd=r.body.getReader(),dec=new TextDecoder();let buf="";
+  for(;;){const{done,value}=await rd.read();if(done)return;buf+=dec.decode(value,{stream:true});
+    let i;while((i=buf.indexOf("\n"))>=0){const l=buf.slice(0,i).trim();buf=buf.slice(i+1);if(!l.startsWith("data:"))continue;const d=l.slice(5).trim();if(d=="[DONE]")continue;let j;try{j=JSON.parse(d)}catch(e){continue}f(j)}}
+}
+class MCP{
+  constructor(c){this.c=c;this.sid=null;this.n=0}
+  async rpc(method,params,note,retry){
+    const body={jsonrpc:"2.0",method,params};if(!note)body.id=++this.n;
+    const h={"Content-Type":"application/json",Accept:"application/json, text/event-stream"},tk=g("rae_tok_"+this.c.id);
+    if(tk)h.Authorization="Bearer "+tk;if(this.sid)h["Mcp-Session-Id"]=this.sid;
+    const r=await fetch(this.c.url,{method:"POST",headers:h,body:JSON.stringify(body)});
+    if(r.status==401&&!retry&&g("rae_rt_"+this.c.id)&&await refreshTok(this.c))return this.rpc(method,params,note,1);
+    if(!r.ok){const e=new Error(r.status==401?"Login required":"HTTP "+r.status);e.auth=r.status==401;throw e}
+    const sid=r.headers.get("Mcp-Session-Id");if(sid)this.sid=sid;if(note)return;
+    const t=await r.text();let j;
+    if((r.headers.get("content-type")||"").includes("event-stream")){for(const l of t.split("\n"))if(l.startsWith("data:")){try{const x=JSON.parse(l.slice(5));if(x.id===body.id){j=x;break}}catch(e){}}}else j=JSON.parse(t);
+    if(!j)throw new Error("No reply");if(j.error)throw new Error(j.error.message);return j.result;
+  }
+  async tools(){const ini=await this.rpc("initialize",{protocolVersion:"2025-03-26",capabilities:{},clientInfo:{name:"rae",version:"1"}});{const src=ini?.serverInfo?.icons?.[0]?.src;if(src&&/^(https:|data:image\/)/.test(src))w("rae_ico_"+this.c.id,src)}await this.rpc("notifications/initialized",{},1);return(await this.rpc("tools/list",{})).tools||[]}
+  async call(n,a){const r=await this.rpc("tools/call",{name:n,arguments:a});return(r.content||[]).map(c=>c.text||"["+c.type+"]").join("\n")||"(no output)"}
+}
+async function loadTools(step){
+  S.tools=[];S.tmap={};
+  await Promise.all(S.conns.filter(c=>c.enabled).map(async c=>{try{
+    const m=S.mcp[c.id]=S.mcp[c.id]||new MCP(c);
+    (await m.tools()).forEach(t=>{const n=("c"+c.id.slice(0,4)+"_"+t.name).replace(/[^\w-]/g,"_").slice(0,64);S.tmap[n]={c,m,t};S.tools.push({name:n,description:(t.description||"").slice(0,500),schema:t.inputSchema||{type:"object",properties:{}}})});
+  }catch(e){if(e.auth)w("rae_auth_"+c.id,"1");step(e.auth?"lock":"plug-zap",e.auth?c.name+" needs login (Connectors)":"Couldn’t reach "+c.name)}}));
+}
+async function freeModels(){
+  let c=null;try{c=JSON.parse(g("rae_fm")||"null")}catch(e){}
+  if(c&&Date.now()-c.t<36e5)return c.l;
+  const j=await(await fetch("https://openrouter.ai/api/v1/models")).json();
+  const l=(j.data||[]).filter(m=>+m.pricing?.prompt===0&&+m.pricing?.completion===0&&(m.architecture?.output_modalities||["text"]).join()=="text"&&!/embed|rerank|guard|safeguard/i.test(m.id)).map(m=>({id:m.id,name:m.name||m.id,ctx:m.context_length||0,created:m.created||0,mod:m.architecture?.input_modalities||["text"],tools:(m.supported_parameters||[]).includes("tools")}));
+  w("rae_fm",JSON.stringify({t:Date.now(),l}));return l;
+}
+const score=m=>{
+  const id=(m.id+" "+m.name).toLowerCase();let s=Math.log2(Math.max(m.ctx,4096));
+  const b=id.match(/(\d+(?:\.\d+)?)b\b/);if(b)s+=Math.log2(+b[1]+1)*1.2;
+  if(/ultra|pro|large|max|plus|super/.test(id))s+=3;
+  if(/mini|nano|lite|small|tiny|\b[1-4]b\b/.test(id))s-=3;
+  if(/coder|omni|\bvl\b/.test(id))s-=1;
+  return s+Math.max(0,3-(Date.now()/1000-m.created)/7.8e6);
+};
+async function orModels(hist){
+  if(S.model!="best-free"&&S.model!="openrouter/free")return[S.model];
+  let l;try{l=await freeModels()}catch(e){return["openrouter/free"]}
+  const f=bin(hist[hist.length-1]||{}),need=k=>f.some(x=>x.kind==k);
+  let q=l.filter(x=>(!need("image")||x.mod.includes("image"))&&(!need("sound")||x.mod.includes("audio"))&&(!need("pdf")||x.mod.includes("file")));
+  if(!q.length)throw new Error("No free OpenRouter model can read that attachment right now. Add a Gemini key in Settings, or choose a vision model.");
+  const t=q.filter(x=>x.tools);if(S.tools.length&&t.length)q=t;
+  return q.sort((a,b)=>score(b)-score(a)).slice(0,3).map(x=>x.id);
+}
+async function turn(pv,sys,hist,extra,on,signal){
+  let text="";
+  if(pv=="gemini"){
+    const body={systemInstruction:{parts:[{text:sys}]},contents:[...hist.map(m=>({role:m.role=="user"?"user":"model",parts:m.role=="user"?gP(m):[{text:m.text}]})),...extra]};
+    if(S.tools.length)body.tools=[{functionDeclarations:S.tools.map(t=>({name:t.name,description:t.description,parametersJsonSchema:t.schema}))}];
+    const r=await fetch(gURL(1),{method:"POST",headers:gh(),body:JSON.stringify(body),signal});
+    if(!r.ok)await bad(r,"Gemini");
+    const calls=[];
+    await sse(r,j=>(j.candidates?.[0]?.content?.parts||[]).forEach(p=>{if(p.text){text+=p.text;on(p.text)}if(p.functionCall)calls.push({name:p.functionCall.name,args:p.functionCall.args||{},raw:p})}));
+    return{text,calls,model:S.gmodel};
+  }
+  const ids=await orModels(hist);const body={...(ids.length>1?{models:ids}:{model:ids[0]}),stream:true,messages:[{role:"system",content:sys},...hist.map(m=>({role:m.role,content:m.role=="user"?orC(m):m.text})),...extra]};
+  if(S.tools.length)body.tools=S.tools.map(t=>({type:"function",function:{name:t.name,description:t.description,parameters:t.schema}}));
+  const r=await fetch(URL_,{method:"POST",headers:{Authorization:"Bearer "+S.key,"Content-Type":"application/json"},body:JSON.stringify(body),signal});
+  if(!r.ok)await bad(r,"OpenRouter");
+  const tc=[];let mdl="";
+  await sse(r,j=>{if(j.model)mdl=j.model;const d=j.choices?.[0]?.delta;if(!d)return;if(d.content){text+=d.content;on(d.content)}
+    (d.tool_calls||[]).forEach(x=>{const o=tc[x.index||0]=tc[x.index||0]||{id:"",name:"",args:""};if(x.id)o.id=x.id;if(x.function?.name)o.name+=x.function.name;if(x.function?.arguments)o.args+=x.function.arguments})});
+  return{text,model:mdl,calls:tc.filter(Boolean).map(o=>{let a={};try{a=JSON.parse(o.args||"{}")}catch(e){}return{id:o.id,name:o.name,args:a}})};
+}
+async function persist(chat){
+  const rows={title:chat.title,messages:chat.msgs.map(({role,text,att})=>({role,text,att})),updated_at:new Date().toISOString()};
+  if(chat.id)await sb.from("rae_chats").update(rows).eq("id",chat.id);
+  else{const{data}=await sb.from("rae_chats").insert(rows).select("id").single();if(data)chat.id=data.id}
+}
+async function send(){
+  const t=$("#in").value.trim();if((!t&&!S.att.length)||S.busy)return;
+  if(!hasKey())return flash(S.prov=="auto"?"Add a Gemini or OpenRouter key in Settings first.":"Add your "+(S.prov=="gemini"?"Gemini":"OpenRouter")+" key in Settings first.");
+  S.busy=1;S.ac=new AbortController();setBtn(1);$("#in").value="";$("#in").style.height="auto";
+  const chat=S.chat,atts=S.att;S.att=[];drawAtt();let txt=t;
+  atts.filter(a=>a.kind=="text").forEach(a=>txt+=`\n\n[File: ${a.name}]\n\`\`\`\n${a.data}\n\`\`\``);
+  const um={role:"user",text:t||"(attachment)",att:atts.map(a=>a.name),txt,files:atts};
+  chat.msgs.push(um);addMsg(um);
+  const am=addMsg({role:"assistant",text:""}),md=am.querySelector(".md"),step=stepper(am.querySelector(".steps"));
+  let full="",raf=0,ann=0,shown=0;
+  const flush=()=>{raf=0;const v=vis(full);paintMd(md,v);step.files(parseFiles(v));scr()};
+  const on=d=>{
+    full+=d;if(!shown&&!ann&&full.trim()&&full.trim()[0]!="`"){shown=1;step("pen-line","Writing reply")}
+    const n=(full.match(/```/g)||[]).length,li=full.lastIndexOf("```");
+    if(n%2==1&&n!=ann&&full.indexOf("\n",li)>0){ann=n;const f=full.slice(li+3,full.indexOf("\n",li)).trim().split(/\s+/)[1];step("file-code",f?"Creating "+f:"Creating file",null,(n-1)/2)}
+    if(!raf)raf=requestAnimationFrame(flush);
+  };
+  try{
+    atts.forEach(a=>step(a.icon,"Reading "+a.name));
+    {const wd=t.toLowerCase().match(/[a-z]{4,}/g)||[];if(S.mem.some(m=>wd.some(x=>(m.topic+" "+m.text).toLowerCase().includes(x))))step("brain","Reading memory")}
+    const ctx=chat.msgs.filter(m=>m.role=="user").slice(-2).map(m=>m.text).join(" ");const it=intent(t);let hit=S.prof.skills.filter(k=>{const w=k.trigger.split(",").map(x=>x.trim()).filter(Boolean);return w.length&&new RegExp("\\b("+w.join("|")+")\\b","i").test(ctx)});
+    if(it.mcp&&!it.code&&!it.ui&&!it.video)hit=hit.filter(k=>k.name=="writing-style");hit.forEach(k=>step("book-open","Reading "+k.name+"/skill.md"));um.sk=hit.map(k=>`<skill name="${k.name}">\n${k.text}\n</skill>\n\nFollow the skill above for this request.\n\n`).join("");
+    const useTools=S.conns.some(c=>c.enabled)&&(it.mcp||!(it.code||it.ui||it.video));if(useTools)step("plug","Connecting tools");
+    if(useTools)await loadTools(step);else{S.tools=[];S.tmap={}}
+    step("sparkles","Thinking");
+    const sys=`You are Rae, a personal AI agent. Personality: ${S.prof.personality}.\n${S.prof.system_prompt}\n\nToday is ${new Date().toDateString()}.\n\n`
+      +(S.mem.length?"What you remember about the user:\n"+S.mem.map(m=>`- [${m.topic}] ${m.text}`).join("\n")+"\n\n":"")
+      +(hit.length?"The latest user message contains skill files. Follow them closely and let them override your defaults.":"")
+      +`\n\nReply in Markdown. Put code in fenced blocks whose info string is the language then a filename, like \`\`\`html index.html. Make runnable web pages one self-contained html file the app can run. End EVERY final reply with one line: <rae>{"title":"2-4 word topic of this chat","remember":[{"topic":"1-2 word topic","text":"short fact"}]}</rae>. "remember" holds only durable facts or preferences the user just shared about themselves or their projects, otherwise []. Never remember passwords, keys or ID numbers. Never mention this line.`+(S.tools.length?"\n\nConnected tools you can call: "+S.tools.map(t=>t.name).join(", ")+".":S.conns.some(c=>c.enabled)?"":"\n\nNo connectors are connected right now, so never claim to use external tools. If asked about MCP, explain the user can add one in Menu > Connectors.")+"\n\nCode blocks in html or js get a Run button that shows the console output.";
+    const hist=chat.msgs.slice(-20),pl=provs();let used=0,um_model="";
+    for(let pi=0;pi<pl.length;pi++){
+      const pv=pl[pi],extra=[];
+      try{
+        for(let k=0;k<6;k++){
+          const res=await turn(pv,sys,hist,extra,on,S.ac.signal);um_model=res.model||um_model;
+          if(!res.calls.length)break;
+          const outs=[];
+          for(const c of res.calls){
+            const x=S.tmap[c.name];used=1;step("wrench","Using "+(x?x.c.name+": "+x.t.name:c.name),x&&{ico:icoOf(x.c),l:(x.c.name||"?")[0]});
+            let out;try{out=x?await x.m.call(x.t.name,c.args):"Unknown tool"}catch(e){out="Error: "+e.message}
+            outs.push({...c,out:String(out).slice(0,20000)});
+          }
+          if(pv=="gemini")extra.push({role:"model",parts:res.calls.map(c=>c.raw)},{role:"user",parts:outs.map(o=>({functionResponse:{name:o.name,response:{result:o.out}}}))});
+          else extra.push({role:"assistant",content:res.text||null,tool_calls:res.calls.map(c=>({id:c.id,type:"function",function:{name:c.name,arguments:JSON.stringify(c.args)}}))},...outs.map(o=>({role:"tool",tool_call_id:o.id,content:o.out})));
+          step("sparkles","Thinking");
+        }
+        if(!full.trim())throw new Error("Rae got an empty reply. Free models are busy sometimes, so try again.");
+        break;
+      }catch(e){
+        if(e.name=="AbortError"||full||used||pi==pl.length-1)throw e;
+        step("repeat","Switching to "+(pl[pi+1]=="gemini"?"Gemini":"OpenRouter"));
+      }
+    }
+    cancelAnimationFrame(raf);const text=vis(full).trim();paintMd(md,text);step.files(parseFiles(text));scr();
+    chat.msgs.push({role:"assistant",text});
+    if(um_model)am.insertAdjacentHTML("beforeend",`<div class="dim" style="margin-top:6px;font-size:12px">${esc(um_model.replace(":free",""))}</div>`);let meta=null;try{meta=JSON.parse((full.match(/<rae>([\s\S]*?)<\/rae>/)||[])[1])}catch(e){}
+    if(meta?.remember?.length){
+      let n=0;for(const m of meta.remember){
+        const tx=String(m.text||"").trim();if(!tx||S.mem.some(x=>x.text.toLowerCase()==tx.toLowerCase()))continue;
+        const{data}=await sb.from("rae_memories").insert({topic:String(m.topic||"Note").slice(0,30),text:tx}).select().single();if(data){S.mem.push(data);n++}
+      }if(n)step("save","Saving memory");
+    }
+    if(meta?.title&&chat.title=="New chat"){chat.title=String(meta.title).slice(0,40);const ct=$("#ct");if(ct)ct.textContent=chat.title;step("tag","Naming chat")}
+    await persist(chat);step.fin();
+  }catch(e){
+    cancelAnimationFrame(raf);
+    if(e.name=="AbortError"){const text=vis(full).trim();paintMd(md,text);step.files(parseFiles(text));step("pause","Stopped");step.fin();chat.msgs.push({role:"assistant",text:text||"_Stopped._"});await persist(chat)}
+    else{md.innerHTML=`<span class="err">${esc(nice(e))}</span>`;step.fin();chat.msgs.pop()}
+  }
+  delete um.sk;S.busy=0;setBtn(0);
+}
+
+/* menu, memory, settings */
+async function menu(){if(S.busy&&S.ac)S.ac.abort();
+  app.innerHTML=`<section class="pg"><div class="top"><button class="link" id="bk">Back</button><span></span></div><h1>Rae</h1><p class="lbl">Chats</p><div class="card" id="ls"><div class="row dim">Loading…</div></div>
+  <p class="lbl">Library</p><div class="card" id="lib">${NAV("brain","#ff9f0a","Memory",S.mem.length+" saved","mem")}${NAV("plug","#30d158","Connectors",S.conns.length+" added","conn")}${NAV("settings","#8e8e93","Settings","","set")}</div></section>`;
+  $("#bk").onclick=chatView;document.querySelectorAll("#lib [data-go]").forEach(b=>b.onclick=()=>({mem:memView,conn:connView,set:settings})[b.dataset.go]());
+  const{data}=await sb.from("rae_chats").select("id,title,updated_at").order("updated_at",{ascending:false}).limit(40);
+  $("#ls").innerHTML=(data||[]).length?data.map(c=>`<div class="row" data-id="${c.id}"><span class="grow"><div>${esc(c.title)}</div><div class="dim">${new Date(c.updated_at).toLocaleDateString(undefined,{month:"short",day:"numeric"})}</div></span><button class="ib" data-d="${c.id}">${I("trash-2")}</button></div>`).join(""):`<div class="row dim">No chats yet.</div>`;ic();
+  $("#ls").onclick=async e=>{
+    const d=e.target.closest("[data-d]");
+    if(d){await sb.from("rae_chats").delete().eq("id",d.dataset.d);if(S.chat.id==d.dataset.d)S.chat={id:null,title:"New chat",msgs:[]};return menu()}
+    const r=e.target.closest("[data-id]");if(!r)return;
+    const{data:c}=await sb.from("rae_chats").select("*").eq("id",r.dataset.id).single();
+    if(c){S.chat={id:c.id,title:c.title,msgs:c.messages};S.att=[];chatView()}
+  };
+}
+function memView(){
+  app.innerHTML=`<section class="pg"><div class="top"><button class="link" id="bk">Back</button><span></span></div><h1>Memory</h1><p class="sub">Rae saves what matters from your chats and files it under a topic. Edit or delete anything.</p><div id="ml"></div><button class="pill" id="ad">Add a note</button></section>`;
+  const draw=()=>{$("#ml").innerHTML=S.mem.length?[...S.mem].sort((a,b)=>a.topic.localeCompare(b.topic)).map(m=>`<div class="card mi" data-id="${m.id}"><div class="mh"><input class="tp" value="${esc(m.topic)}"><button class="ib dl">${I("trash-2")}</button></div><textarea class="inp" rows="2">${esc(m.text)}</textarea></div>`).join(""):`<p class="dim">Nothing saved yet.</p>`;ic()};
+  draw();$("#bk").onclick=menu;
+  $("#ml").onfocusout=async e=>{const c=e.target.closest(".mi");if(!c)return;const m=S.mem.find(x=>x.id==c.dataset.id);if(!m)return;
+    m.topic=c.querySelector(".tp").value.trim()||"Note";m.text=c.querySelector("textarea").value.trim()||m.text;await sb.from("rae_memories").update({topic:m.topic,text:m.text}).eq("id",m.id)};
+  $("#ml").onclick=async e=>{const b=e.target.closest(".dl");if(!b)return;const id=b.closest(".mi").dataset.id;await sb.from("rae_memories").delete().eq("id",id);S.mem=S.mem.filter(x=>x.id!=id);draw()};
+  $("#ad").onclick=async()=>{const{data}=await sb.from("rae_memories").insert({topic:"Note",text:"New note"}).select().single();if(data){S.mem.push(data);draw()}};
+}
+async function ask(sys,user){
+  if(provs()[0]=="gemini"){const j=await(await fetch(gURL(0),{method:"POST",headers:gh(),body:JSON.stringify({systemInstruction:{parts:[{text:sys}]},contents:[{role:"user",parts:[{text:user}]}]})})).json();return j.candidates[0].content.parts.map(p=>p.text||"").join("")}
+  const j=await(await OR({model:S.model,messages:[{role:"system",content:sys},{role:"user",content:user}]})).json();return j.choices[0].message.content;
+}
+async function mkPal(p){
+  const h=[...p].reduce((a,c)=>(a*31+c.charCodeAt(0))>>>0,7)%360;
+  let pal=[`hsl(${h} 70% 45%)`,`hsl(${(h+60)%360} 65% 40%)`,`hsl(${(h+180)%360} 60% 38%)`];
+  if(hasKey())try{
+    const t=await ask("Reply ONLY with a JSON array of exactly 3 CSS hex colors (#rrggbb), medium saturation, that visually express this AI personality.",p),a=JSON.parse(t.slice(t.indexOf("["),t.lastIndexOf("]")+1));
+    if(a.length==3&&a.every(c=>/^#[0-9a-f]{6}$/i.test(c)))pal=a;
+  }catch(e){}
+  return pal;
+}
+async function connView(msg){
+  app.innerHTML=`<section class="pg"><div class="top"><button class="link" id="bk">Back</button><span></span></div><h1>Connectors</h1><p class="sub">Connect remote MCP servers so Rae can use their tools. The server must allow requests from a browser (CORS).</p><div class="card" id="cl"></div>
+  <p class="lbl">Add connector</p><input class="inp" id="cn" placeholder="Name"><div style="height:8px"></div><input class="inp" id="cu" placeholder="https://example.com/mcp" autocapitalize="none"><div style="height:8px"></div><input class="inp" id="ck" type="password" placeholder="Access token (optional)"><p class="err" id="msg"></p>${B("ca","Add")}</section>`;
+  const draw=()=>{$("#cl").innerHTML=S.conns.length?S.conns.map(c=>`<div class="row" data-id="${c.id}"><span class="ci" data-l="${esc((c.name||"?")[0])}"><img src="${esc(icoOf(c))}" onerror="this.remove()"></span><span class="grow"><div>${esc(c.name)}</div><div class="dim" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${g("rae_auth_"+c.id)?`<span style="color:#ff9f0a">Needs login</span>`:esc(c.url)}</div></span>${g("rae_auth_"+c.id)?`<button class="ib" data-login="1">${I("log-in")}</button>`:""}<input type="checkbox" class="sw" ${c.enabled?"checked":""}><button class="ib" data-d="1">${I("trash-2")}</button></div>`).join(""):`<div class="row dim">No connectors yet.</div>`;ic()};
+  draw();$("#bk").onclick=menu;
+  if(typeof msg=="string")setMsg(msg);
+  $("#cl").onchange=async e=>{const r=e.target.closest("[data-id]"),c=S.conns.find(x=>x.id==r.dataset.id);c.enabled=e.target.checked;await sb.from("rae_connectors").update({enabled:c.enabled}).eq("id",c.id)};
+  $("#cl").onclick=async e=>{const lg=e.target.closest("[data-login]");if(lg){const c=S.conns.find(x=>x.id==lg.closest("[data-id]").dataset.id);try{await login(c)}catch(x){const t=prompt(x.message+"\n\nPaste an access token instead (optional):");if(t){w("rae_tok_"+c.id,t.trim());rm("rae_auth_"+c.id);delete S.mcp[c.id];draw();setMsg("Token saved.")}else setMsg(x.message)}return}const b=e.target.closest("[data-d]");if(!b)return;const id=b.closest("[data-id]").dataset.id;await sb.from("rae_connectors").delete().eq("id",id);S.conns=S.conns.filter(x=>x.id!=id);delete S.mcp[id];draw()};
+  $("#ca").onclick=async()=>{
+    const name=$("#cn").value.trim(),url=$("#cu").value.trim();
+    if(!name||!/^https:\/\//.test(url))return setMsg("Add a name and an https:// address.");
+    const{data,error}=await sb.from("rae_connectors").insert({name,url}).select().single();if(error)return setMsg(error.message);
+    const tk=$("#ck").value.trim();if(tk)w("rae_tok_"+data.id,tk);
+    S.conns.push(data);draw();setMsg("Checking…");
+    try{const n=(await new MCP(data).tools()).length;rm("rae_auth_"+data.id);draw();setMsg("Connected · "+n+" tools")}catch(e){if(e.auth){w("rae_auth_"+data.id,"1");draw();setMsg("This server needs you to log in. Tap the log-in button on its row.")}else setMsg("Saved, but couldn’t connect: "+e.message+". The server may block browser requests.")}
+  };
+}
+const NAV=(icon,color,label,detail,id)=>`<button class="row nav" data-go="${id}"><span class="sq" style="background:${color}">${I(icon)}</span><span class="grow">${label}</span>${detail?`<span class="dim">${esc(detail)}</span>`:""}${I("chevron-right","ch")}</button>`;
+const provName={auto:"Auto",openrouter:"OpenRouter",gemini:"Gemini"};
+async function saveProf(){
+  const P=S.prof,{error}=await sb.from("rae_profile").upsert({user_id:S.user.id,personality:P.personality,system_prompt:P.system_prompt,palette:P.palette,skills:P.skills,updated_at:new Date().toISOString()});
+  if(error)throw error;
+}
+function settings(){
+  const P=S.prof;
+  app.innerHTML=`<section class="pg"><div class="top"><button class="link" id="bk">Back</button><span class="dim">${esc(S.user.email.split("@")[0])}</span></div><h1>Settings</h1>
+  <div class="card">${NAV("sliders-horizontal","#0a84ff","Models & keys",provName[S.prov],"models")}${NAV("sparkles","#bf5af2","Personality",P.personality,"persona")}${NAV("message-square-text","#30b0c7","System message",P.system_prompt?"Set":"Empty","system")}${NAV("book-open","#ff9f0a","Skills",P.skills.length+" skills","skills")}</div>
+  <div class="card" style="margin-top:20px">${NAV("log-out","#ff453a","Sign out","","out")}</div></section>`;ic();
+  $("#bk").onclick=menu;
+  document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>b.dataset.go=="out"?sb.auth.signOut().then(()=>auth()):setSec(b.dataset.go));
+}
+function setSec(sec){
+  const P=S.prof;let prov=S.prov,title="",h="";
+  if(sec=="models"){title="Models & keys";
+    h=`<p class="lbl">Provider</p><div class="seg">${["auto","openrouter","gemini"].map(q=>`<button data-p="${q}" class="${prov==q?"on":""}">${provName[q]}</button>`).join("")}</div><p class="dim" style="margin:6px 4px 0">Auto tries Gemini first and switches to OpenRouter if it fails. It uses whichever keys you add.</p>
+    <p class="lbl">OpenRouter</p><input class="inp" id="ky" type="password" placeholder="API key" value="${esc(S.key)}" autocomplete="off"><div style="height:8px"></div><input class="inp" id="md" value="${esc(S.model)}" autocapitalize="none" spellcheck="false">
+    <p class="dim" style="margin:6px 4px 0">best-free lets Rae pick the strongest free model for each request. Free models can retain prompts.</p>
+    <p class="lbl">Gemini</p><input class="inp" id="gk" type="password" placeholder="Gemini API key" value="${esc(S.gkey)}" autocomplete="off"><div style="height:8px"></div><input class="inp" id="gm" value="${esc(S.gmodel)}" autocapitalize="none" spellcheck="false">
+    <p class="dim" style="margin:6px 4px 0">Get a key at aistudio.google.com. Free-tier prompts may be used to improve Google products. Keys stay on this device.</p>`}
+  else if(sec=="persona"){title="Personality";h=`<textarea class="inp" id="pe" rows="4">${esc(P.personality)}</textarea><p class="dim" style="margin:6px 4px 0">Rae picks the background colors from this.</p>`}
+  else if(sec=="system"){title="System message";h=`<textarea class="inp" id="sy" rows="8" placeholder="Extra rules for Rae, e.g. keep answers short.">${esc(P.system_prompt)}</textarea>`}
+  else{title="Skills";h=P.skills.map((k,i)=>`<p class="lbl">${esc(k.name)}/skill.md</p><textarea class="inp" data-k="${i}" rows="10">${esc(k.text)}</textarea>`).join("")+`<button class="pill" id="rs">Reset to defaults</button>`}
+  app.innerHTML=`<section class="pg"><div class="top"><button class="link" id="bk">Back</button><span></span></div><h1>${title}</h1>${h}<p class="err" id="msg"></p>${B("sv","Save")}</section>`;
+  $("#bk").onclick=settings;
+  document.querySelectorAll(".seg button").forEach(b=>b.onclick=()=>{prov=b.dataset.p;document.querySelectorAll(".seg button").forEach(x=>x.classList.toggle("on",x==b))});
+  if($("#rs"))$("#rs").onclick=async()=>{P.skills=JSON.parse(JSON.stringify(DEF.skills));try{await saveProf();setSec("skills")}catch(e){setMsg(e.message)}};
+  $("#sv").onclick=async()=>{
+    try{setMsg("Saving…");
+      if(sec=="models"){S.prov=prov;S.key=$("#ky").value.trim();S.model=$("#md").value.trim()||"best-free";S.gkey=$("#gk").value.trim();S.gmodel=$("#gm").value.trim()||"gemini-flash-latest";
+        w("rae_prov",S.prov);w("rae_key",S.key);w("rae_model",S.model);w("rae_gkey",S.gkey);w("rae_gmodel",S.gmodel)}
+      else if(sec=="persona"){const pe=$("#pe").value.trim()||DEF.personality;if(pe!=P.personality)P.palette=await mkPal(pe);P.personality=pe;await saveProf();bg()}
+      else if(sec=="system"){P.system_prompt=$("#sy").value.trim();await saveProf()}
+      else{document.querySelectorAll("[data-k]").forEach(t=>P.skills[+t.dataset.k].text=t.value);await saveProf()}
+      setMsg("Saved.");
+    }catch(e){setMsg(e.message)}
+  };
+}
+boot();
+</script>
+</body>
+</html>
