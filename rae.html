@@ -116,7 +116,7 @@ button.chip{border:0;color:#fff;font:inherit;font-size:13px;padding:8px 14px;cur
 .pill{border-radius:14px}
 .sq{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;color:#fff;flex:none}.sq svg{width:18px;height:18px}
 .row.nav{min-height:54px;cursor:pointer}.row.nav+.row.nav::before{left:58px}.row.nav:active{background:rgba(255,255,255,.08)}
-.nav .dim{max-width:48%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.nav svg.ch,.nav .ch{color:var(--sub);width:18px;height:18px;margin-left:2px}
+.nav .dim{max-width:48%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.nav .chv,.sbh .chv{color:var(--sub);width:18px;height:18px;margin-left:2px}
 .run{margin:-4px 0 12px;border-radius:12px;overflow:hidden;background:#0d1117;border:1px solid var(--sep);animation:in .25s both}
 .run iframe{display:block;width:100%;height:280px;border:0;background:#fff}
 .cons{border-top:1px solid var(--sep)}.ct{font-size:12px;color:var(--sub);padding:6px 12px}
@@ -125,10 +125,35 @@ button.chip{border:0;color:#fff;font:inherit;font-size:13px;padding:8px 14px;cur
 .vx{padding:10px 12px;border-top:1px solid var(--sep);display:flex;flex-direction:column;gap:8px}.vx video{width:100%;border-radius:8px}.vx .pill{height:40px;margin:0}
 .live{margin:4px 0 6px 23px;max-height:220px;overflow:auto;background:#0d1117;border:1px solid var(--sep);border-radius:10px;padding:10px;font:12px/1.5 ui-monospace,Menlo,monospace;color:#d1d5db;white-space:pre}
 .st.fl{cursor:pointer}.st .cv{margin-left:auto;width:15px;height:15px}
+[hidden]{display:none!important}
+#bg canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+#bg.gl i{display:none}
+#bg::after{content:"";position:absolute;inset:0;background:rgba(18,18,18,.46)}
+#side{position:fixed;top:0;bottom:0;left:0;width:300px;max-width:86vw;z-index:30;background:rgba(18,18,18,.72);-webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);border-right:1px solid var(--sep);transform:translateX(-103%);transition:transform .32s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+#side.open{transform:none}
+#sbx{position:fixed;inset:0;z-index:29;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .25s}#sbx.open{opacity:1;pointer-events:auto}
+@media(min-width:900px){body.sbon #side{transform:none}body.sbon #app{margin-left:300px}body.sbon #sbx{display:none}body.sbon #mn{display:none}}
+.sbh{display:flex;align-items:center;gap:12px;width:100%;padding:16px;border:0;background:none;color:#fff;font:inherit;text-align:left;flex:none}
+.sbs{flex:1;overflow-y:auto;padding:0 12px 12px}.sbs .lbl{margin:18px 4px 6px}.sbf{padding:4px 12px 8px;flex:none}
+#sbnew{display:flex;align-items:center;justify-content:center;gap:8px}
+.row.on{background:rgba(255,255,255,.08)}
+.av{display:grid;place-items:center;border-radius:28%;overflow:hidden;color:#fff;flex:none}.av img{width:100%;height:100%;object-fit:cover}.av svg{width:55%!important;height:55%!important}
+.igrid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}.igrid button{aspect-ratio:1;border:0;border-radius:12px;background:var(--fill);color:#fff;display:grid;place-items:center}
+.cgrid{display:grid;grid-template-columns:repeat(8,1fr);gap:8px}.cgrid button{aspect-ratio:1;border:0;border-radius:50%}
+.igrid button.on,.cgrid button.on{box-shadow:0 0 0 2px #fff}
+.cr{font-size:11px;color:var(--sub);text-align:center;padding:12px 8px 6px}
+.auth{position:relative}.auth>.cr{position:absolute;bottom:8px;left:0;right:0}
+.fc{margin:10px 0;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid var(--sep);overflow:hidden;animation:in .3s both}
+.fh{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border:0;background:none;color:#fff;font:inherit;text-align:left;cursor:pointer}
+.fh .grow>div:first-child{font-weight:600}.fh .cv{color:var(--sub);transition:transform .25s}.fc.open .fh .cv{transform:rotate(180deg)}
+.fb{border-top:1px solid var(--sep)}
+.tabs{display:flex;gap:4px;padding:8px 10px 0}.tb{border:0;background:none;color:var(--sub);font:500 13px inherit;font-family:inherit;padding:6px 12px;border-radius:8px}.tb.on{background:var(--fill);color:#fff}
+.fb .pane{padding:8px 10px 10px}.fb .cb{margin:0}.fb .run{margin:0}
 </style>
 </head>
 <body>
-<div id="bg"><i></i><i></i><i></i></div>
+<div id="bg"><canvas id="gl"></canvas><i></i><i></i><i></i></div>
+<aside id="side"></aside><div id="sbx"></div>
 <main id="app"></main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
@@ -203,16 +228,55 @@ After the code say: tap Run, then Export MP4.`}]};
 const S={user:null,key:g("rae_key")||"",model:g("rae_model")||"best-free",prov:g("rae_prov")||"auto",gkey:g("rae_gkey")||"",gmodel:g("rae_gmodel")||"gemini-flash-latest",conns:[],mcp:{},tools:[],tmap:{},ac:null,prof:null,mem:[],chats:[],chat:null,att:[],busy:0};
 marked.use({breaks:true,renderer:{code(code,info){const[l,f]=(info||"").split(/\s+/);return `<pre data-file="${esc(f||"")}"><code class="language-${esc(l||"plaintext")}">${esc(code)}</code></pre>`}}});
 
-const bg=()=>S.prof.palette.forEach((c,i)=>$("#bg").style.setProperty("--c"+i,c));
+const bg=()=>{S.prof.palette.forEach((c,i)=>$("#bg").style.setProperty("--c"+i,c));setGL(S.prof.palette)};
+function splitMd(t){
+  const n=(t.match(/```/g)||[]).length,li=t.lastIndexOf("```");
+  if(n%2==1&&t.indexOf("\n",li)<0)t=t.slice(0,li);
+  const out=[],re=/```([^\n]*)\n([\s\S]*?)(```|$)/g;let last=0,m,open=0;
+  while((m=re.exec(t))){
+    if(m.index>last)out.push({type:"text",text:t.slice(last,m.index)});
+    if(m[3]=="```"){const i=m[1].trim().split(/\s+/);out.push({type:"code",lang:(i[0]||"").toLowerCase(),name:i[1]||"",code:m[2].replace(/\n$/,"")})}else open=1;
+    last=re.lastIndex;if(open)break;
+  }
+  if(!open&&last<t.length)out.push({type:"text",text:t.slice(last)});
+  return out.filter(p=>p.type=="code"||p.text.trim());
+}
+const LK={html:["globe","#ff9f0a"],css:["palette","#0a84ff"],js:["braces","#d4a017"],javascript:["braces","#d4a017"],ts:["braces","#3178c6"],json:["braces","#8e8e93"],py:["terminal","#30b0c7"],python:["terminal","#30b0c7"],sql:["database","#bf5af2"]};
+function mkCard(b){
+  const runnable=/^(html|js|javascript)$/.test(b.lang)||/\.html?$/.test(b.name),[ico,col]=LK[b.lang]||["file-code","#8e8e93"];
+  const title=((b.lang=="html"&&(b.code.match(/<title[^>]*>([^<]{1,60})/i)||[])[1])||b.name||b.lang||"Code").trim();
+  const el=document.createElement("div");el.className="fc";
+  el.innerHTML=`<button class="fh"><span class="sq" style="background:${col}">${I(ico)}</span><span class="grow"><div>${esc(title)}</div><div class="dim">${esc([b.name&&b.name!=title?b.name:"",b.lang,b.code.split("\n").length+" lines"].filter(Boolean).join(" · "))}</div></span>${I("chevron-down","cv")}</button><div class="fb" hidden></div>`;
+  let built=0;
+  el.querySelector(".fh").onclick=()=>{
+    const fb=el.querySelector(".fb");fb.hidden=!fb.hidden;el.classList.toggle("open",!fb.hidden);
+    if(built||fb.hidden)return;built=1;
+    fb.innerHTML=(runnable?`<div class="tabs"><button class="tb on" data-t="pv">Preview</button><button class="tb" data-t="cd">Code</button></div><div class="pane pv"></div>`:"")+`<div class="pane cd" ${runnable?"hidden":""}></div>`;
+    const cb=document.createElement("div");cb.className="cb";
+    cb.innerHTML=`<div class="ch"><span>${I("file-code")}${esc(b.name||b.lang||"code")}</span><div style="display:flex"><button class="ib cp" title="Copy code">${I("copy")}</button></div></div><pre><code class="language-${esc(b.lang||"plaintext")}"></code></pre>`;
+    const c=cb.querySelector("code");c.textContent=b.code;try{hljs.highlightElement(c)}catch(e){}
+    fb.querySelector(".cd").append(cb);
+    if(runnable){
+      fb.querySelector(".pv").append(makeRun(b.code,b.lang));
+      fb.querySelectorAll(".tb").forEach(t=>t.onclick=()=>{fb.querySelectorAll(".tb").forEach(x=>x.classList.toggle("on",x==t));fb.querySelector(".pv").hidden=t.dataset.t!="pv";fb.querySelector(".cd").hidden=t.dataset.t!="cd"});
+    }
+    ic();
+  };
+  return el;
+}
 function paintMd(el,text){
-  el.innerHTML=DOMPurify.sanitize(marked.parse(text||""));
-  el.querySelectorAll("a").forEach(a=>{a.target="_blank";a.rel="noopener"});
-  el.querySelectorAll("pre").forEach(pre=>{
-    const code=pre.querySelector("code"),f=pre.dataset.file,l=(code.className.match(/language-(\S+)/)||[])[1],wr=document.createElement("div");
-    wr.className="cb";pre.replaceWith(wr);
-    wr.innerHTML=`<div class="ch"><span>${I("file-code")}${esc(f||l||"code")}</span><div style="display:flex">${/^(html|js|javascript)$/i.test(l||"")?`<button class="ib rn" title="Run">${I("play")}</button>`:""}<button class="ib cp" title="Copy code">${I("copy")}</button></div></div>`;wr.append(pre);
-    try{hljs.highlightElement(code)}catch(e){}
-  });ic();
+  const parts=splitMd(text||""),seg=el._seg||(el._seg=[]);
+  parts.forEach((p,i)=>{
+    const key=p.type=="code"?"c"+p.lang+"|"+p.name+"|"+p.code:"t"+p.text;
+    if(seg[i]&&seg[i].key==key)return;
+    let node;
+    if(p.type=="code")node=mkCard(p);
+    else{node=document.createElement("div");node.className="pr";node.innerHTML=DOMPurify.sanitize(marked.parse(p.text));node.querySelectorAll("a").forEach(a=>{a.target="_blank";a.rel="noopener"})}
+    if(seg[i])seg[i].el.replaceWith(node);else el.append(node);
+    seg[i]={key,el:node};
+  });
+  while(seg.length>parts.length)seg.pop().el.remove();
+  ic();
 }
 document.addEventListener("click",async e=>{
   const rn=e.target.closest(".rn");if(rn)return runCode(rn.closest(".cb"));const xp=e.target.closest(".xp");if(xp)return exportMp4(xp.closest(".run"));const b=e.target.closest(".cp");if(!b)return;
@@ -235,14 +299,17 @@ function hook(id){
     try{window.drawFrame&&window.drawFrame(d.i/((window.VIDEO&&window.VIDEO.fps)||30));const b=await createImageBitmap(c);parent.postMessage({rae:1,id,t:"frame",i:d.i,b},"*",[b])}catch(x){send("error","Frame "+d.i+": "+x.message)}});
 }
 let RID=0;
+function makeRun(src,l){
+  const id=++RID,tag="<script>("+hook.toString()+")("+id+")<\/script>";
+  const isHtml=l=="html"||/^\s*<(!doctype|html)/i.test(src);
+  const doc=isHtml?(/<head[^>]*>/i.test(src)?src.replace(/<head[^>]*>/i,m=>m+tag):/<html[^>]*>/i.test(src)?src.replace(/<html[^>]*>/i,m=>m+tag):tag+src):"<!doctype html><meta name=viewport content='width=device-width,initial-scale=1'><body style='font:14px system-ui'>"+tag+"<script>"+src+"<\/script>";
+  const r=document.createElement("div");r.className="run";r.dataset.id=id;
+  r.innerHTML='<iframe sandbox="allow-scripts allow-modals"></iframe><div class="cons"><div class="ct">Console</div><div class="cl"></div></div><div class="vx" hidden><button class="pill xp">Export MP4</button><div class="vs dim"></div></div>';
+  r.querySelector("iframe").srcdoc=doc;return r;
+}
 function runCode(cb){
   const nx=cb.nextElementSibling;if(nx&&nx.classList.contains("run")){nx.remove();return}
-  const code=cb.querySelector("code"),src=code.textContent,l=((code.className.match(/language-(\S+)/)||[])[1]||"").toLowerCase(),id=++RID;
-  const tag="<script>("+hook.toString()+")("+id+")<\/script>";
-  const doc=l=="html"?(/<head[^>]*>/i.test(src)?src.replace(/<head[^>]*>/i,m=>m+tag):tag+src):"<!doctype html><meta name=viewport content='width=device-width,initial-scale=1'><body style='font:14px system-ui'>"+tag+"<script>"+src+"<\/script>";
-  const r=document.createElement("div");r.className="run";r.dataset.id=id;
-  r.innerHTML='<iframe sandbox="allow-scripts"></iframe><div class="cons"><div class="ct">Console</div><div class="cl"></div></div><div class="vx" hidden><button class="pill xp">Export MP4</button><div class="vs dim"></div></div>';
-  r.querySelector("iframe").srcdoc=doc;cb.after(r);
+  const code=cb.querySelector("code");cb.after(makeRun(code.textContent,((code.className.match(/language-(\S+)/)||[])[1]||"").toLowerCase()));
 }
 addEventListener("message",e=>{
   const d=e.data;if(!d||d.rae!==1)return;
@@ -334,9 +401,9 @@ async function boot(){try{S.jl=await finishLogin()}catch(e){S.je=e.message}
   const{data:{session}}=await sb.auth.getSession();if(!session)return auth();
   S.user=session.user;
   const{data:p}=await sb.from("rae_profile").select("*").maybeSingle();
-  S.prof={personality:p?.personality||DEF.personality,system_prompt:p?.system_prompt||"",palette:p?.palette||DEF.palette,skills:(()=>{const st=p?.skills||[];return DEF.skills.map(d=>{const x=st.find(y=>y.name==d.name);return x&&(x.v||0)>=d.v?x:d}).concat(st.filter(x=>!DEF.skills.some(d=>d.name==x.name)))})()};
+  S.prof={personality:p?.personality||DEF.personality,system_prompt:p?.system_prompt||"",palette:p?.palette||DEF.palette,avatar:p?.avatar||null,skills:(()=>{const st=p?.skills||[];return DEF.skills.map(d=>{const x=st.find(y=>y.name==d.name);return x&&(x.v||0)>=d.v?x:d}).concat(st.filter(x=>!DEF.skills.some(d=>d.name==x.name)))})()};
   S.mem=(await sb.from("rae_memories").select("*").order("created_at")).data||[];
-  S.conns=(await sb.from("rae_connectors").select("*").order("created_at")).data||[];S.chat={id:null,title:"New chat",msgs:[]};bg();if(S.jl||S.je){const e=S.je;S.jl=S.je=0;return connView(e?"Login failed: "+e:"Logged in.")}chatView();
+  S.conns=(await sb.from("rae_connectors").select("*").order("created_at")).data||[];S.chat={id:null,title:"New chat",msgs:[]};bg();drawSb();if(S.jl||S.je){const e=S.je;S.jl=S.je=0;return connView(e?"Login failed: "+e:"Logged in.")}chatView();
 }
 
 /* chat */
@@ -347,7 +414,7 @@ function chatView(){
   <input type="file" hidden id="f1" accept="image/*"><input type="file" hidden id="f2" accept=".txt,.md,.json,.csv,.js,.ts,.py,.html,.css,.sql,.xml,.yml,.pdf"><input type="file" hidden id="f3" accept="audio/*"></div>`;
   if(!S.chat.msgs.length)$("#ms").innerHTML=`<div class="empty"><h1>Hi, I’m Rae.</h1><p class="sub">Ask me anything, drop in a file, or tell me what to build.</p><div class="sg"><button class="chip">Design a landing page for a bakery</button><button class="chip">Explain this code to me</button><button class="chip">Help me plan my week</button></div></div>`;
   S.chat.msgs.forEach(addMsg);ic();drawAtt();document.querySelectorAll(".sg .chip").forEach(b=>b.onclick=()=>{const t=$("#in");t.value=b.textContent;t.focus()});
-  $("#mn").onclick=menu;$("#nw").onclick=()=>{S.chat={id:null,title:"New chat",msgs:[]};S.att=[];chatView()};
+  $("#mn").onclick=openSb;$("#nw").onclick=()=>{S.chat={id:null,title:"New chat",msgs:[]};S.att=[];chatView()};
   $("#pc").onclick=()=>$("#pop").classList.toggle("open");
   document.querySelectorAll("#pop button").forEach(b=>b.onclick=()=>{$("#pop").classList.remove("open");$("#"+b.dataset.i).click()});
   ["f1","f2","f3"].forEach((id,k)=>$("#"+id).onchange=async e=>{const f=e.target.files[0];e.target.value="";if(f)await attach(f,["image","file","sound"][k])});
@@ -481,6 +548,7 @@ async function persist(chat){
   const rows={title:chat.title,messages:chat.msgs.map(({role,text,att})=>({role,text,att})),updated_at:new Date().toISOString()};
   if(chat.id)await sb.from("rae_chats").update(rows).eq("id",chat.id);
   else{const{data}=await sb.from("rae_chats").insert(rows).select("id").single();if(data)chat.id=data.id}
+  drawSb();
 }
 async function send(){
   const t=$("#in").value.trim();if((!t&&!S.att.length)||S.busy)return;
@@ -549,26 +617,13 @@ async function send(){
   }catch(e){
     cancelAnimationFrame(raf);
     if(e.name=="AbortError"){const text=vis(full).trim();paintMd(md,text);step.files(parseFiles(text));step("pause","Stopped");step.fin();chat.msgs.push({role:"assistant",text:text||"_Stopped._"});await persist(chat)}
-    else{md.innerHTML=`<span class="err">${esc(nice(e))}</span>`;step.fin();chat.msgs.pop()}
+    else{md._seg=[];md.innerHTML=`<span class="err">${esc(nice(e))}</span>`;step.fin();chat.msgs.pop()}
   }
   delete um.sk;S.busy=0;setBtn(0);
 }
 
 /* menu, memory, settings */
-async function menu(){if(S.busy&&S.ac)S.ac.abort();
-  app.innerHTML=`<section class="pg"><div class="top"><button class="link" id="bk">Back</button><span></span></div><h1>Rae</h1><p class="lbl">Chats</p><div class="card" id="ls"><div class="row dim">Loading…</div></div>
-  <p class="lbl">Library</p><div class="card" id="lib">${NAV("brain","#ff9f0a","Memory",S.mem.length+" saved","mem")}${NAV("plug","#30d158","Connectors",S.conns.length+" added","conn")}${NAV("settings","#8e8e93","Settings","","set")}</div></section>`;
-  $("#bk").onclick=chatView;document.querySelectorAll("#lib [data-go]").forEach(b=>b.onclick=()=>({mem:memView,conn:connView,set:settings})[b.dataset.go]());
-  const{data}=await sb.from("rae_chats").select("id,title,updated_at").order("updated_at",{ascending:false}).limit(40);
-  $("#ls").innerHTML=(data||[]).length?data.map(c=>`<div class="row" data-id="${c.id}"><span class="grow"><div>${esc(c.title)}</div><div class="dim">${new Date(c.updated_at).toLocaleDateString(undefined,{month:"short",day:"numeric"})}</div></span><button class="ib" data-d="${c.id}">${I("trash-2")}</button></div>`).join(""):`<div class="row dim">No chats yet.</div>`;ic();
-  $("#ls").onclick=async e=>{
-    const d=e.target.closest("[data-d]");
-    if(d){await sb.from("rae_chats").delete().eq("id",d.dataset.d);if(S.chat.id==d.dataset.d)S.chat={id:null,title:"New chat",msgs:[]};return menu()}
-    const r=e.target.closest("[data-id]");if(!r)return;
-    const{data:c}=await sb.from("rae_chats").select("*").eq("id",r.dataset.id).single();
-    if(c){S.chat={id:c.id,title:c.title,msgs:c.messages};S.att=[];chatView()}
-  };
-}
+function menu(){chatView()}
 function memView(){
   app.innerHTML=`<section class="pg"><div class="top"><button class="link" id="bk">Back</button><span></span></div><h1>Memory</h1><p class="sub">Rae saves what matters from your chats and files it under a topic. Edit or delete anything.</p><div id="ml"></div><button class="pill" id="ad">Add a note</button></section>`;
   const draw=()=>{$("#ml").innerHTML=S.mem.length?[...S.mem].sort((a,b)=>a.topic.localeCompare(b.topic)).map(m=>`<div class="card mi" data-id="${m.id}"><div class="mh"><input class="tp" value="${esc(m.topic)}"><button class="ib dl">${I("trash-2")}</button></div><textarea class="inp" rows="2">${esc(m.text)}</textarea></div>`).join(""):`<p class="dim">Nothing saved yet.</p>`;ic()};
@@ -592,9 +647,9 @@ async function mkPal(p){
   return pal;
 }
 async function connView(msg){
-  app.innerHTML=`<section class="pg"><div class="top"><button class="link" id="bk">Back</button><span></span></div><h1>Connectors</h1><p class="sub">Connect remote MCP servers so Rae can use their tools. The server must allow requests from a browser (CORS).</p><div class="card" id="cl"></div>
+  app.innerHTML=`<section class="pg"><div class="top"><button class="link" id="bk">Back</button><span></span></div><h1>Connectors</h1><p class="sub">Connect remote MCP servers so Rae can use their tools. The server must allow requests from a browser (CORS). Logging in opens the server’s own login page and brings you back, so this app has to be hosted on https (for example Netlify Drop or GitHub Pages), not opened as a file.</p><div class="card" id="cl"></div>
   <p class="lbl">Add connector</p><input class="inp" id="cn" placeholder="Name"><div style="height:8px"></div><input class="inp" id="cu" placeholder="https://example.com/mcp" autocapitalize="none"><div style="height:8px"></div><input class="inp" id="ck" type="password" placeholder="Access token (optional)"><p class="err" id="msg"></p>${B("ca","Add")}</section>`;
-  const draw=()=>{$("#cl").innerHTML=S.conns.length?S.conns.map(c=>`<div class="row" data-id="${c.id}"><span class="ci" data-l="${esc((c.name||"?")[0])}"><img src="${esc(icoOf(c))}" onerror="this.remove()"></span><span class="grow"><div>${esc(c.name)}</div><div class="dim" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${g("rae_auth_"+c.id)?`<span style="color:#ff9f0a">Needs login</span>`:esc(c.url)}</div></span>${g("rae_auth_"+c.id)?`<button class="ib" data-login="1">${I("log-in")}</button>`:""}<input type="checkbox" class="sw" ${c.enabled?"checked":""}><button class="ib" data-d="1">${I("trash-2")}</button></div>`).join(""):`<div class="row dim">No connectors yet.</div>`;ic()};
+  const draw=()=>{$("#cl").innerHTML=S.conns.length?S.conns.map(c=>`<div class="row" data-id="${c.id}"><span class="ci" data-l="${esc((c.name||"?")[0])}"><img src="${esc(icoOf(c))}" onerror="this.remove()"></span><span class="grow"><div>${esc(c.name)}</div><div class="dim" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${g("rae_auth_"+c.id)?`<span style="color:#ff9f0a">Needs login</span>`:esc(c.url)}</div></span><button class="ib" data-login="1" title="Log in" ${g("rae_auth_"+c.id)?'style="color:#ff9f0a"':""}>${I("log-in")}</button><input type="checkbox" class="sw" ${c.enabled?"checked":""}><button class="ib" data-d="1">${I("trash-2")}</button></div>`).join(""):`<div class="row dim">No connectors yet.</div>`;ic()};
   draw();$("#bk").onclick=menu;
   if(typeof msg=="string")setMsg(msg);
   $("#cl").onchange=async e=>{const r=e.target.closest("[data-id]"),c=S.conns.find(x=>x.id==r.dataset.id);c.enabled=e.target.checked;await sb.from("rae_connectors").update({enabled:c.enabled}).eq("id",c.id)};
@@ -605,13 +660,13 @@ async function connView(msg){
     const{data,error}=await sb.from("rae_connectors").insert({name,url}).select().single();if(error)return setMsg(error.message);
     const tk=$("#ck").value.trim();if(tk)w("rae_tok_"+data.id,tk);
     S.conns.push(data);draw();setMsg("Checking…");
-    try{const n=(await new MCP(data).tools()).length;rm("rae_auth_"+data.id);draw();setMsg("Connected · "+n+" tools")}catch(e){if(e.auth){w("rae_auth_"+data.id,"1");draw();setMsg("This server needs you to log in. Tap the log-in button on its row.")}else setMsg("Saved, but couldn’t connect: "+e.message+". The server may block browser requests.")}
+    try{const n=(await new MCP(data).tools()).length;rm("rae_auth_"+data.id);draw();setMsg("Connected · "+n+" tools")}catch(e){if(e.auth){w("rae_auth_"+data.id,"1");draw();setMsg("This server needs a login. Opening its login page…");try{await login(data)}catch(x){setMsg(x.message)}}else setMsg("Saved, but couldn’t connect: "+e.message+". The server may block browser requests.")}
   };
 }
-const NAV=(icon,color,label,detail,id)=>`<button class="row nav" data-go="${id}"><span class="sq" style="background:${color}">${I(icon)}</span><span class="grow">${label}</span>${detail?`<span class="dim">${esc(detail)}</span>`:""}${I("chevron-right","ch")}</button>`;
+const NAV=(icon,color,label,detail,id)=>`<button class="row nav" data-go="${id}"><span class="sq" style="background:${color}">${I(icon)}</span><span class="grow">${label}</span>${detail?`<span class="dim">${esc(detail)}</span>`:""}${I("chevron-right","chv")}</button>`;
 const provName={auto:"Auto",openrouter:"OpenRouter",gemini:"Gemini"};
 async function saveProf(){
-  const P=S.prof,{error}=await sb.from("rae_profile").upsert({user_id:S.user.id,personality:P.personality,system_prompt:P.system_prompt,palette:P.palette,skills:P.skills,updated_at:new Date().toISOString()});
+  const P=S.prof,{error}=await sb.from("rae_profile").upsert({user_id:S.user.id,personality:P.personality,system_prompt:P.system_prompt,palette:P.palette,avatar:P.avatar||null,skills:P.skills,updated_at:new Date().toISOString()});
   if(error)throw error;
 }
 function settings(){
@@ -634,7 +689,7 @@ function setSec(sec){
   else if(sec=="system"){title="System message";h=`<textarea class="inp" id="sy" rows="8" placeholder="Extra rules for Rae, e.g. keep answers short.">${esc(P.system_prompt)}</textarea>`}
   else{title="Skills";h=P.skills.map((k,i)=>`<p class="lbl">${esc(k.name)}/skill.md</p><textarea class="inp" data-k="${i}" rows="10">${esc(k.text)}</textarea>`).join("")+`<button class="pill" id="rs">Reset to defaults</button>`}
   app.innerHTML=`<section class="pg"><div class="top"><button class="link" id="bk">Back</button><span></span></div><h1>${title}</h1>${h}<p class="err" id="msg"></p>${B("sv","Save")}</section>`;
-  $("#bk").onclick=settings;
+  $("#bk").onclick=chatView;
   document.querySelectorAll(".seg button").forEach(b=>b.onclick=()=>{prov=b.dataset.p;document.querySelectorAll(".seg button").forEach(x=>x.classList.toggle("on",x==b))});
   if($("#rs"))$("#rs").onclick=async()=>{P.skills=JSON.parse(JSON.stringify(DEF.skills));try{await saveProf();setSec("skills")}catch(e){setMsg(e.message)}};
   $("#sv").onclick=async()=>{
@@ -648,6 +703,91 @@ function setSec(sec){
     }catch(e){setMsg(e.message)}
   };
 }
+/* mesh gradient background (WebGL) */
+const GLs={cols:[[.12,.43,.92],[.05,.64,.64],[.96,.62,.04],[.04,.13,.28]]};
+function rgb(c){const x=rgb.x||(rgb.x=document.createElement("canvas").getContext("2d",{willReadFrequently:true}));x.clearRect(0,0,1,1);x.fillStyle="#000";x.fillStyle=c;x.fillRect(0,0,1,1);const d=x.getImageData(0,0,1,1).data;return[d[0]/255,d[1]/255,d[2]/255]}
+function setGL(p){try{const c=(p||[]).slice(0,3).map(rgb);while(c.length<3)c.push(c[0]||[.1,.3,.8]);c.push(c[0].map(v=>v*.3));GLs.cols=c}catch(e){}}
+function startGL(){
+  const cv=$("#gl"),gl=cv&&cv.getContext("webgl",{antialias:false,alpha:false,powerPreference:"low-power"});if(!gl)return;
+  const VS="attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}";
+  const FS=`precision highp float;uniform vec2 R;uniform float T;uniform vec3 A,B,C,D;
+float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1.,0.)),f.x),mix(h(i+vec2(0.,1.)),h(i+vec2(1.,1.)),f.x),f.y);}
+void main(){
+  vec2 uv=(gl_FragCoord.xy-.5*R)/min(R.x,R.y);
+  float a=(length(uv)*3.1+T*.1)*.57,s=sin(a),c=cos(a);uv=mat2(c,-s,s,c)*uv*1.45;
+  vec2 q=uv;
+  for(int i=0;i<5;i++){float f=float(i)+1.;q+=.55/f*vec2(sin(q.y*1.7*f+T*.16+f),cos(q.x*1.5*f-T*.13+f));}
+  float k1=n(q*1.1+T*.03),k2=n(q*1.3-T*.04+7.),k3=n(q*.9+T*.03+13.);
+  vec3 col=mix(A,B,smoothstep(.2,.8,k1));col=mix(col,C,smoothstep(.3,.9,k2)*.8);col=mix(col,D,smoothstep(.45,.95,k3)*.75);
+  gl_FragColor=vec4(col,1.);}`;
+  const mk=(t,x)=>{const o=gl.createShader(t);gl.shaderSource(o,x);gl.compileShader(o);return o},pr=gl.createProgram();
+  gl.attachShader(pr,mk(gl.VERTEX_SHADER,VS));gl.attachShader(pr,mk(gl.FRAGMENT_SHADER,FS));gl.linkProgram(pr);
+  if(!gl.getProgramParameter(pr,gl.LINK_STATUS))return;
+  gl.useProgram(pr);const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
+  const l=gl.getAttribLocation(pr,"p");gl.enableVertexAttribArray(l);gl.vertexAttribPointer(l,2,gl.FLOAT,false,0,0);
+  const U={};["R","T","A","B","C","D"].forEach(n=>U[n]=gl.getUniformLocation(pr,n));
+  const fit=()=>{const k=.5*Math.min(devicePixelRatio||1,2);cv.width=Math.max(2,Math.round(innerWidth*k));cv.height=Math.max(2,Math.round(innerHeight*k));gl.viewport(0,0,cv.width,cv.height)};
+  fit();addEventListener("resize",fit);$("#bg").classList.add("gl");
+  const still=matchMedia("(prefers-reduced-motion:reduce)").matches;
+  const loop=t=>{gl.uniform2f(U.R,cv.width,cv.height);gl.uniform1f(U.T,t/1000);["A","B","C","D"].forEach((n,i)=>gl.uniform3fv(U[n],GLs.cols[i]));gl.drawArrays(gl.TRIANGLE_STRIP,0,4);if(!still)requestAnimationFrame(loop)};
+  requestAnimationFrame(loop);
+}
+
+/* sidebar */
+const user=()=>S.user.email.split("@")[0];
+const avatar=(A,z)=>A.type=="img"&&/^data:image\//.test(A.img||"")?`<span class="av" style="width:${z}px;height:${z}px"><img src="${esc(A.img)}"></span>`:`<span class="av" style="width:${z}px;height:${z}px;background:${esc(A.color||"#0a84ff")}">${I(A.icon||"user-round")}</span>`;
+const openSb=()=>{drawSb();$("#side").classList.add("open");$("#sbx").classList.add("open")};
+const closeSb=()=>{$("#side").classList.remove("open");$("#sbx").classList.remove("open")};
+async function drawSb(){
+  const el=$("#side");
+  if(!S.user||!S.prof){el.innerHTML="";document.body.classList.remove("sbon");return}
+  document.body.classList.add("sbon");
+  const A=S.prof.avatar||{type:"icon",icon:"user-round",color:"#0a84ff"};
+  const N=(icon,color,label,id,d)=>`<button class="row nav" data-go="${id}"><span class="sq" style="background:${color}">${I(icon)}</span><span class="grow">${label}</span>${d?`<span class="dim">${esc(d)}</span>`:""}${I("chevron-right","chv")}</button>`;
+  el.innerHTML=`<button class="sbh" id="sbp">${avatar(A,44)}<span class="grow"><b>${esc(user())}</b><div class="dim">Edit profile</div></span>${I("chevron-right","chv")}</button>
+  <div class="sbs"><button class="pill" id="sbnew" style="margin:0">${I("square-pen")}New chat</button>
+  <p class="lbl">Chats</p><div class="card" id="sbc"><div class="row dim">Loading…</div></div>
+  <p class="lbl">Library</p><div class="card">${N("brain","#ff9f0a","Memory","mem",S.mem.length+" saved")}${N("plug","#30d158","Connectors","conn",S.conns.length+" added")}</div>
+  <p class="lbl">Settings</p><div class="card">${N("sliders-horizontal","#0a84ff","Models & keys","models",provName[S.prov])}${N("sparkles","#bf5af2","Personality","persona","")}${N("message-square-text","#30b0c7","System message","system","")}${N("book-open","#ff9f0a","Skills","skills",S.prof.skills.length+"")}</div></div>
+  <div class="sbf"><div class="card">${N("log-out","#ff453a","Sign out","out","")}</div><div class="cr">© 2026 Project Aurora inc. All Rights Reserved.</div></div>`;ic();
+  const{data}=await sb.from("rae_chats").select("id,title,updated_at").order("updated_at",{ascending:false}).limit(25);
+  const c=$("#sbc");if(c){c.innerHTML=(data||[]).length?data.map(x=>`<div class="row${S.chat&&S.chat.id==x.id?" on":""}" data-ch="${x.id}"><span class="grow"><div>${esc(x.title)}</div></span><button class="ib" data-del="${x.id}">${I("trash-2")}</button></div>`).join(""):`<div class="row dim">No chats yet.</div>`;ic()}
+}
+$("#side").onclick=async e=>{
+  const go=e.target.closest("[data-go]"),del=e.target.closest("[data-del]"),ch=e.target.closest("[data-ch]");
+  const nav=f=>{closeSb();if(S.busy&&S.ac)S.ac.abort();f()};
+  if(del){const id=del.dataset.del;await sb.from("rae_chats").delete().eq("id",id);if(S.chat.id==id){S.chat={id:null,title:"New chat",msgs:[]};chatView()}return drawSb()}
+  if(ch){const{data:c}=await sb.from("rae_chats").select("*").eq("id",ch.dataset.ch).single();if(c)nav(()=>{S.chat={id:c.id,title:c.title,msgs:c.messages};S.att=[];chatView();drawSb()});return}
+  if(e.target.closest("#sbp"))return nav(profView);
+  if(e.target.closest("#sbnew"))return nav(()=>{S.chat={id:null,title:"New chat",msgs:[]};S.att=[];chatView();drawSb()});
+  if(go){const k=go.dataset.go;if(k=="out")return nav(async()=>{await sb.auth.signOut();S.user=null;S.prof=null;drawSb();auth()});
+    nav(()=>({mem:memView,conn:connView,models:()=>setSec("models"),persona:()=>setSec("persona"),system:()=>setSec("system"),skills:()=>setSec("skills")})[k]())}
+};
+$("#sbx").onclick=closeSb;
+
+/* profile: choose your own icon, color or photo */
+async function sqImg(f,n){const bm=await createImageBitmap(f),m=Math.min(bm.width,bm.height),c=document.createElement("canvas");c.width=c.height=n;c.getContext("2d").drawImage(bm,(bm.width-m)/2,(bm.height-m)/2,m,m,0,0,n,n);return c.toDataURL("image/jpeg",.85)}
+function profView(){
+  const P=S.prof;let A={...(P.avatar||{type:"icon",icon:"user-round",color:"#0a84ff"})};
+  const IC=["user-round","smile","cat","dog","rocket","ghost","flame","leaf","moon","sun","star","heart","zap","bot","crown","gem","music","gamepad-2","palette","camera","coffee","anchor","bird","fish"],CO=["#0a84ff","#30d158","#ff9f0a","#ff453a","#bf5af2","#64d2ff","#ff375f","#8e8e93"];
+  app.innerHTML=`<section class="pg"><div class="top"><button class="link" id="bk">Back</button><span class="dim">${esc(user())}</span></div><h1>Profile</h1><p class="sub">Pick an icon and color, or use your own photo.</p>
+  <div id="pv" style="display:grid;place-items:center;margin:8px 0 16px"></div>
+  <p class="lbl">Icon</p><div class="igrid" id="ig">${IC.map(n=>`<button data-i="${n}">${I(n)}</button>`).join("")}</div>
+  <p class="lbl">Color</p><div class="cgrid" id="cg">${CO.map(c=>`<button data-c="${c}" style="background:${c}"></button>`).join("")}</div>
+  <button class="pill" id="up" style="display:flex;align-items:center;justify-content:center;gap:8px">${I("image-plus")}Upload a photo</button><input type="file" hidden id="pf" accept="image/*"><p class="err" id="msg"></p>${B("sv","Save")}</section>`;
+  const draw=()=>{$("#pv").innerHTML=avatar(A,96);document.querySelectorAll("#ig button").forEach(b=>b.classList.toggle("on",A.type=="icon"&&b.dataset.i==A.icon));document.querySelectorAll("#cg button").forEach(b=>b.classList.toggle("on",A.type=="icon"&&b.dataset.c==A.color));ic()};
+  draw();$("#bk").onclick=chatView;
+  $("#ig").onclick=e=>{const b=e.target.closest("[data-i]");if(b){A={type:"icon",icon:b.dataset.i,color:A.color||"#0a84ff"};draw()}};
+  $("#cg").onclick=e=>{const b=e.target.closest("[data-c]");if(b){A={type:"icon",icon:A.icon||"user-round",color:b.dataset.c};draw()}};
+  $("#up").onclick=()=>$("#pf").click();
+  $("#pf").onchange=async e=>{const f=e.target.files[0];if(!f)return;try{A={type:"img",img:await sqImg(f,192)};draw()}catch(x){setMsg("Couldn’t read that image.")}};
+  $("#sv").onclick=async()=>{try{setMsg("Saving…");P.avatar=A;await saveProf();drawSb();chatView()}catch(x){setMsg(x.message)}};
+}
+
+/* copyright footer on every page */
+new MutationObserver(()=>{const r=app.firstElementChild;if(!r||r.querySelector(".cr"))return;const f=document.createElement("div");f.className="cr";f.textContent="© 2026 Project Aurora inc. All Rights Reserved.";(r.classList.contains("chat")?r.querySelector(".comp")||r:r).append(f)}).observe(app,{childList:true});
+startGL();
 boot();
 </script>
 </body>
